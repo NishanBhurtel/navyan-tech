@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Search,
-  ShoppingCart,
   User,
   Heart,
   Star,
@@ -14,118 +14,18 @@ import {
   Laptop,
   Gamepad2,
   Headphones,
+  ChevronDown,
+  Phone,
 } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Annoucement from "@/components/layout/Annoucement";
+import Footer from "@/components/layout/Footer";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground py-2 text-center text-sm font-medium">
-        🎉 Free shipping on orders over $500 | 30-day return policy | 24/7
-        customer support
-      </div>
-
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
-                <Cpu className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold font-serif text-foreground">
-                TechHub Pro
-              </span>
-            </Link>
-
-            {/* Search Section */}
-            <div className="flex-1 max-w-2xl mx-8">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search for computers, laptops, components..."
-                  className="w-full pl-12 pr-4 py-3 bg-muted rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                />
-                <Button
-                  size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4"
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
-
-            {/* Cart, Wishlist, Login */}
-            <div className="flex items-center space-x-2">
-              <Link href="/wishlist">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Heart className="w-5 h-5" />
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary">
-                    3
-                  </Badge>
-                </Button>
-              </Link>
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary">
-                  2
-                </Badge>
-              </Button>
-              <Link href="/login">
-                <Button
-                  variant="outline"
-                  className="flex items-center space-x-2 bg-transparent"
-                >
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">Login</span>
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-border bg-muted/30">
-          <div className="container mx-auto px-4">
-            <nav className="flex items-center justify-center space-x-8 py-3">
-              <Link
-                href="/category/computers"
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
-              >
-                <Monitor className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Computers</span>
-              </Link>
-              <Link
-                href="/category/laptops"
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
-              >
-                <Laptop className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Laptops</span>
-              </Link>
-              <Link
-                href="/category/components"
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
-              >
-                <Cpu className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Components</span>
-              </Link>
-              <Link
-                href="/category/gaming"
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
-              >
-                <Gamepad2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Gaming</span>
-              </Link>
-              <Link
-                href="/category/accessories"
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
-              >
-                <Headphones className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Accessories</span>
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Annoucement />
+      <Navbar />
 
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20">
         <div className="container mx-auto px-4">
@@ -179,14 +79,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            {/* <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-3xl"></div>
-              <img
-                src="/placeholder-bc56i.png"
-                alt="Premium Gaming PC Setup"
-                className="relative z-10 w-full h-auto rounded-2xl shadow-2xl"
-              />
-            </div> */}
+
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-3xl"></div>
               <img
@@ -379,10 +272,12 @@ export default function HomePage() {
                 image:
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmnPwZ2sFKQrU_ZaO9tc6Wttnsz8kfeGEapQ&s",
                 price: "$189.99",
-                rating: 4.8,
-                reviews: 145,
+                originalPrice: "$219.99",
+                rating: 4.7,
+                reviews: 234,
                 badge: "Fast",
-                badgeColor: "bg-green-600",
+                badgeColor: "bg-blue-600",
+                discount: "13% OFF",
                 category: "Memory",
               },
               {
@@ -395,7 +290,7 @@ export default function HomePage() {
                 rating: 4.9,
                 reviews: 456,
                 badge: "Speed",
-                badgeColor: "bg-purple-600",
+                badgeColor: "bg-green-600",
                 discount: "13% OFF",
                 category: "Storage",
               },
@@ -489,24 +384,23 @@ export default function HomePage() {
                         {product.name}
                       </h3>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${
-                                i < Math.floor(product.rating)
-                                  ? "text-yellow-400 fill-current"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          ({product.reviews})
-                        </span>
+
+                    <div className="flex items-center space-x-1">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3 h-3 ${
+                              i < Math.floor(product.rating)
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
                       </div>
+                      <span className="text-xs text-muted-foreground">
+                        ({product.reviews})
+                      </span>
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
@@ -1091,125 +985,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Cpu className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="text-2xl font-bold font-serif text-foreground">
-                  TechHub Pro
-                </span>
-              </Link>
-              <p className="text-muted-foreground">
-                Your trusted partner for premium computers, laptops, and
-                components. Building the future of technology, one PC at a time.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Products</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>
-                  <Link
-                    href="/category/gaming-laptops"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Gaming Laptops
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/category/desktop-pcs"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Desktop PCs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/category/components"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Components
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/category/accessories"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Accessories
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Support</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>
-                  <Link
-                    href="/contact"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Customer Service
-                  </Link>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Warranty
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Returns
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Company</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Press
-                  </a>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-            <p>
-              &copy; 2025 TechHub Pro. All rights reserved. Built with precision
-              and passion.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
