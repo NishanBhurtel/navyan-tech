@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Mail, Send, Users, Eye, BarChart3, Plus, Edit, Copy, Target } from "lucide-react"
+import { Mail, Send, Users, Eye, BarChart3, Plus, Edit, Copy } from "lucide-react"
 
 // Mock email templates
 const emailTemplates = [
@@ -168,7 +168,7 @@ export default function EmailMarketingPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center">
@@ -187,28 +187,6 @@ export default function EmailMarketingPage() {
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Campaigns Sent</p>
                 <p className="text-2xl font-bold text-gray-900">23</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Eye className="h-4 w-4 text-purple-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">Avg. Open Rate</p>
-                <p className="text-2xl font-bold text-gray-900">25.1%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Target className="h-4 w-4 text-orange-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">Avg. Click Rate</p>
-                <p className="text-2xl font-bold text-gray-900">3.7%</p>
               </div>
             </div>
           </CardContent>

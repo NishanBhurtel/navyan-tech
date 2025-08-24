@@ -66,6 +66,13 @@ export default function ProductsPage() {
     return matchesSearch && matchesCategory && matchesStatus
   })
 
+  const handleDelete = (productId: number) => {
+    if (confirm("Are you sure you want to delete this product?")) {
+      // Handle delete logic here
+      console.log("Deleting product:", productId)
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -186,15 +193,19 @@ export default function ProductsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/products/${product.id}`}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/products/${product.id}/edit`}>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit
+                            </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(product.id)}>
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete
                           </DropdownMenuItem>

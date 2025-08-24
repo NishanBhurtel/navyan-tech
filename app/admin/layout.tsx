@@ -5,18 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  LayoutDashboard,
-  Package,
-  Users,
-  ShoppingCart,
-  Mail,
-  FolderTree,
-  Menu,
-  X,
-  LogOut,
-  Settings,
-} from "lucide-react"
+import { LayoutDashboard, Package, Users, ShoppingCart, Mail, FolderTree, Menu, X, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const sidebarItems = [
@@ -26,7 +15,6 @@ const sidebarItems = [
   { href: "/admin/users", icon: Users, label: "Users" },
   { href: "/admin/orders", icon: ShoppingCart, label: "Order Inquiries" },
   { href: "/admin/email", icon: Mail, label: "Email Marketing" },
-  { href: "/admin/settings", icon: Settings, label: "Settings" },
 ]
 
 export default function AdminLayout({
