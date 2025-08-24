@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Slider } from "@/components/ui/slider"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { Separator } from "@/components/ui/separator";
 import {
   Search,
   ShoppingCart,
@@ -19,13 +19,15 @@ import {
   Grid3X3,
   List,
   SlidersHorizontal,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function CategoryPage() {
   const products = [
     {
       id: 1,
       name: "ASUS ROG Strix G15",
+      image:
+        "https://admin.itti.com.np/storage/product/asus-vivobook-14-x1405va-13th-gen-price-nepal-intel-core-i5-13420h-8gb-512gb-ssd-14-win11-backlit-keyboard-fingerprint/5f98fa29-937a-420c-8ab7-c3a003e91ccc.webp",
       price: "$1,299.99",
       originalPrice: "$1,499.99",
       rating: 4.6,
@@ -39,6 +41,8 @@ export default function CategoryPage() {
     {
       id: 2,
       name: "MSI Katana 15",
+      image:
+        "https://storage-asset.msi.com/global/picture/image/feature/nb/GF/Katana-15-A13V/photo15-3.png",
       price: "$999.99",
       rating: 4.4,
       reviews: 156,
@@ -51,6 +55,8 @@ export default function CategoryPage() {
     {
       id: 3,
       name: "Alienware m15 R7",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfIS5sk2rA13vnqxflvmQBVWayx_cvw9RRVg&s",
       price: "$2,199.99",
       originalPrice: "$2,499.99",
       rating: 4.8,
@@ -64,6 +70,8 @@ export default function CategoryPage() {
     {
       id: 4,
       name: "Razer Blade 15",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6meBb0BF0-kGk4iu3mHL18NPYvSXE_hmIWw&s",
       price: "$1,899.99",
       rating: 4.7,
       reviews: 203,
@@ -76,6 +84,8 @@ export default function CategoryPage() {
     {
       id: 5,
       name: "HP Omen 16",
+      image:
+        "https://cdn.hukut.com/HP-Omen-16-price-in-nepal-2.png1723027010319",
       price: "$1,149.99",
       originalPrice: "$1,299.99",
       rating: 4.5,
@@ -89,6 +99,8 @@ export default function CategoryPage() {
     {
       id: 6,
       name: "Lenovo Legion 5 Pro",
+      image:
+        "https://mudita.com.np/media/catalog/product/cache/5f4a658faeee583187031a67361d4d52/l/e/lenovo-legion-pro-5i-i9_1_1.webp",
       price: "$1,399.99",
       rating: 4.6,
       reviews: 245,
@@ -101,6 +113,8 @@ export default function CategoryPage() {
     {
       id: 7,
       name: "ASUS TUF Gaming A15",
+      image:
+        "https://www.asus.com/media/global/gallery/c0fgpdhpjyf8ajft_setting_xxx_0_90_end_800.png",
       price: "$899.99",
       originalPrice: "$1,099.99",
       rating: 4.3,
@@ -114,6 +128,8 @@ export default function CategoryPage() {
     {
       id: 8,
       name: "MSI GE76 Raider",
+      image:
+        "https://asset.msi.com/resize/image/global/product/product_1607066826c8f8cac0407f130ab5aedbc0763777cc.png62405b38c58fe0f07fcef2367d8a9ba1/1024.png",
       price: "$2,499.99",
       rating: 4.8,
       reviews: 89,
@@ -123,13 +139,14 @@ export default function CategoryPage() {
       brand: "MSI",
       category: "Gaming Laptop",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Announcement Bar */}
       <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground py-2 text-center text-sm font-medium">
-        🎉 Free shipping on orders over $500 | 30-day return policy | 24/7 customer support
+        🎉 Free shipping on orders over $500 | 30-day return policy | 24/7
+        customer support
       </div>
 
       {/* Header */}
@@ -141,7 +158,9 @@ export default function CategoryPage() {
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
                 <Cpu className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold font-serif text-foreground">TechHub Pro</span>
+              <span className="text-2xl font-bold font-serif text-foreground">
+                TechHub Pro
+              </span>
             </div>
 
             {/* Search Section */}
@@ -153,7 +172,10 @@ export default function CategoryPage() {
                   placeholder="Search for computers, laptops, components..."
                   className="w-full pl-12 pr-4 py-3 bg-muted rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 />
-                <Button size="sm" className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4">
+                <Button
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4"
+                >
                   Search
                 </Button>
               </div>
@@ -173,7 +195,10 @@ export default function CategoryPage() {
                   2
                 </Badge>
               </Button>
-              <Button variant="outline" className="flex items-center space-x-2 bg-transparent">
+              <Button
+                variant="outline"
+                className="flex items-center space-x-2 bg-transparent"
+              >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Login</span>
               </Button>
@@ -192,7 +217,10 @@ export default function CategoryPage() {
                 <Monitor className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 <span>Computers</span>
               </a>
-              <a href="#" className="flex items-center space-x-2 text-primary transition-colors font-medium group">
+              <a
+                href="#"
+                className="flex items-center space-x-2 text-primary transition-colors font-medium group"
+              >
                 <Laptop className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 <span>Laptops</span>
               </a>
@@ -231,12 +259,16 @@ export default function CategoryPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-2 mb-6">
                     <Filter className="w-5 h-5 text-primary" />
-                    <h2 className="text-xl font-bold font-serif text-foreground">Filters</h2>
+                    <h2 className="text-xl font-bold font-serif text-foreground">
+                      Filters
+                    </h2>
                   </div>
 
                   {/* Categories */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground">Categories</h3>
+                    <h3 className="font-semibold text-foreground">
+                      Categories
+                    </h3>
                     <div className="space-y-3">
                       {[
                         { name: "Gaming Laptops", count: 45 },
@@ -245,14 +277,19 @@ export default function CategoryPage() {
                         { name: "Workstations", count: 12 },
                         { name: "Chromebooks", count: 8 },
                       ].map((category) => (
-                        <div key={category.name} className="flex items-center space-x-2">
+                        <div
+                          key={category.name}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox id={category.name} />
                           <label
                             htmlFor={category.name}
                             className="text-sm text-foreground cursor-pointer flex-1 flex items-center justify-between"
                           >
                             <span>{category.name}</span>
-                            <span className="text-xs text-muted-foreground">({category.count})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({category.count})
+                            </span>
                           </label>
                         </div>
                       ))}
@@ -263,9 +300,17 @@ export default function CategoryPage() {
 
                   {/* Price Range */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground">Price Range</h3>
+                    <h3 className="font-semibold text-foreground">
+                      Price Range
+                    </h3>
                     <div className="space-y-4">
-                      <Slider defaultValue={[500, 2500]} max={3000} min={0} step={100} className="w-full" />
+                      <Slider
+                        defaultValue={[500, 2500]}
+                        max={3000}
+                        min={0}
+                        step={100}
+                        className="w-full"
+                      />
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <span>$500</span>
                         <span>$2,500</span>
@@ -288,14 +333,19 @@ export default function CategoryPage() {
                         { name: "Razer", count: 8 },
                         { name: "Acer", count: 6 },
                       ].map((brand) => (
-                        <div key={brand.name} className="flex items-center space-x-2">
+                        <div
+                          key={brand.name}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox id={brand.name} />
                           <label
                             htmlFor={brand.name}
                             className="text-sm text-foreground cursor-pointer flex-1 flex items-center justify-between"
                           >
                             <span>{brand.name}</span>
-                            <span className="text-xs text-muted-foreground">({brand.count})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({brand.count})
+                            </span>
                           </label>
                         </div>
                       ))}
@@ -316,14 +366,19 @@ export default function CategoryPage() {
                         { name: "AMD Ryzen 7", count: 25 },
                         { name: "AMD Ryzen 5", count: 18 },
                       ].map((processor) => (
-                        <div key={processor.name} className="flex items-center space-x-2">
+                        <div
+                          key={processor.name}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox id={processor.name} />
                           <label
                             htmlFor={processor.name}
                             className="text-sm text-foreground cursor-pointer flex-1 flex items-center justify-between"
                           >
                             <span>{processor.name}</span>
-                            <span className="text-xs text-muted-foreground">({processor.count})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({processor.count})
+                            </span>
                           </label>
                         </div>
                       ))}
@@ -334,7 +389,9 @@ export default function CategoryPage() {
 
                   {/* Graphics Card */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground">Graphics Card</h3>
+                    <h3 className="font-semibold text-foreground">
+                      Graphics Card
+                    </h3>
                     <div className="space-y-3">
                       {[
                         { name: "RTX 4080", count: 8 },
@@ -344,14 +401,19 @@ export default function CategoryPage() {
                         { name: "GTX 1660 Ti", count: 12 },
                         { name: "Integrated", count: 22 },
                       ].map((gpu) => (
-                        <div key={gpu.name} className="flex items-center space-x-2">
+                        <div
+                          key={gpu.name}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox id={gpu.name} />
                           <label
                             htmlFor={gpu.name}
                             className="text-sm text-foreground cursor-pointer flex-1 flex items-center justify-between"
                           >
                             <span>{gpu.name}</span>
-                            <span className="text-xs text-muted-foreground">({gpu.count})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({gpu.count})
+                            </span>
                           </label>
                         </div>
                       ))}
@@ -363,7 +425,10 @@ export default function CategoryPage() {
                   <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
                     Apply Filters
                   </Button>
-                  <Button variant="outline" className="w-full mt-2 bg-transparent">
+                  <Button
+                    variant="outline"
+                    className="w-full mt-2 bg-transparent"
+                  >
                     Clear All
                   </Button>
                 </CardContent>
@@ -377,8 +442,12 @@ export default function CategoryPage() {
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold font-serif text-foreground">Gaming Laptops</h1>
-                  <p className="text-muted-foreground mt-1">Showing {products.length} of 156 products</p>
+                  <h1 className="text-3xl font-bold font-serif text-foreground">
+                    Gaming Laptops
+                  </h1>
+                  <p className="text-muted-foreground mt-1">
+                    Showing {products.length} of 156 products
+                  </p>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
@@ -414,11 +483,18 @@ export default function CategoryPage() {
                       <div className="space-y-4">
                         {/* Product Image */}
                         <div className="w-full h-48 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center">
-                          <span className="text-sm text-gray-400">Product Image</span>
+                          {/* <span className="text-sm text-gray-400">
+                            Product Image
+                          </span> */}
+                          <img src={product.image} alt="" />
                         </div>
 
                         <div className="flex items-start justify-between">
-                          <Badge className={`${product.badgeColor} text-white text-xs`}>{product.badge}</Badge>
+                          <Badge
+                            className={`${product.badgeColor} text-white text-xs`}
+                          >
+                            {product.badge}
+                          </Badge>
                           <Button
                             size="icon"
                             variant="ghost"
@@ -429,11 +505,15 @@ export default function CategoryPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <p className="text-xs text-primary font-medium">{product.brand}</p>
+                          <p className="text-xs text-primary font-medium">
+                            {product.brand}
+                          </p>
                           <h3 className="text-lg font-bold font-serif text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                             {product.name}
                           </h3>
-                          <p className="text-sm text-muted-foreground">{product.specs}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {product.specs}
+                          </p>
                         </div>
 
                         <div className="flex items-center space-x-1">
@@ -441,16 +521,24 @@ export default function CategoryPage() {
                             {[...Array(5)].map((_, i) => (
                               <Star
                                 key={i}
-                                className={`w-3 h-3 ${i < Math.floor(product.rating) ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                                className={`w-3 h-3 ${
+                                  i < Math.floor(product.rating)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-300"
+                                }`}
                               />
                             ))}
                           </div>
-                          <span className="text-xs text-muted-foreground">({product.reviews})</span>
+                          <span className="text-xs text-muted-foreground">
+                            ({product.reviews})
+                          </span>
                         </div>
 
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2">
-                            <span className="text-xl font-bold font-serif text-foreground">{product.price}</span>
+                            <span className="text-xl font-bold font-serif text-foreground">
+                              {product.price}
+                            </span>
                             {product.originalPrice && (
                               <span className="text-sm text-muted-foreground line-through">
                                 {product.originalPrice}
@@ -510,11 +598,13 @@ export default function CategoryPage() {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Cpu className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <span className="text-2xl font-bold font-serif text-foreground">TechHub Pro</span>
+                <span className="text-2xl font-bold font-serif text-foreground">
+                  TechHub Pro
+                </span>
               </div>
               <p className="text-muted-foreground">
-                Your trusted partner for premium computers, laptops, and components. Building the future of technology,
-                one PC at a time.
+                Your trusted partner for premium computers, laptops, and
+                components. Building the future of technology, one PC at a time.
               </p>
             </div>
             <div>
@@ -594,10 +684,13 @@ export default function CategoryPage() {
             </div>
           </div>
           <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2025 TechHub Pro. All rights reserved. Built with precision and passion.</p>
+            <p>
+              &copy; 2025 TechHub Pro. All rights reserved. Built with precision
+              and passion.
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
