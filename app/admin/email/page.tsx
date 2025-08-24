@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,20 @@ import {
   Copy,
   Target,
 } from "lucide-react";
+=======
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Mail, Send, Users, Eye, BarChart3, Plus, Edit, Copy } from "lucide-react"
+>>>>>>> c219c42b360931b846cd4f04e96275bb3712e600
 
 // Mock email templates
 const emailTemplates = [
@@ -228,7 +243,7 @@ export default function EmailMarketingPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center">
@@ -255,6 +270,7 @@ export default function EmailMarketingPage() {
             </div>
           </CardContent>
         </Card>
+<<<<<<< HEAD
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center">
@@ -281,6 +297,8 @@ export default function EmailMarketingPage() {
             </div>
           </CardContent>
         </Card>
+=======
+>>>>>>> c219c42b360931b846cd4f04e96275bb3712e600
       </div>
 
       {/* Main Content */}

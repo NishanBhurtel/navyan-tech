@@ -159,7 +159,7 @@ export default function UsersPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center">
@@ -189,17 +189,6 @@ export default function UsersPage() {
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Inactive</p>
                 <p className="text-2xl font-bold text-gray-900">{userStats.inactive}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Ban className="h-4 w-4 text-red-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">Banned</p>
-                <p className="text-2xl font-bold text-gray-900">{userStats.banned}</p>
               </div>
             </div>
           </CardContent>
@@ -278,7 +267,6 @@ export default function UsersPage() {
                   <TableHead>Role</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Orders</TableHead>
-                  <TableHead>Total Spent</TableHead>
                   <TableHead>Last Login</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -312,7 +300,6 @@ export default function UsersPage() {
                       <Badge className={getStatusColor(user.status)}>{user.status}</Badge>
                     </TableCell>
                     <TableCell className="font-medium">{user.totalOrders}</TableCell>
-                    <TableCell className="font-medium">₹{user.totalSpent.toLocaleString()}</TableCell>
                     <TableCell className="text-sm text-gray-500">{user.lastLogin}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
@@ -401,10 +388,6 @@ export default function UsersPage() {
                   <div>
                     <Label>Total Orders</Label>
                     <p className="text-sm text-gray-900">{selectedUser.totalOrders}</p>
-                  </div>
-                  <div>
-                    <Label>Total Spent</Label>
-                    <p className="text-sm text-gray-900">₹{selectedUser.totalSpent.toLocaleString()}</p>
                   </div>
                 </div>
               )}
