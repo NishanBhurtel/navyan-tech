@@ -1,0 +1,53 @@
+import mongoose from "mongoose";
+
+interface IUser extends Document {
+  userName: {
+    firstName: string;
+    lastName: string;
+  };
+  email: string;
+  password: string;
+  phoneNumber: Number;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const UserSchema = new mongoose.Schema(
+  {
+    userName: {
+      firstName: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      default: "customer",
+    },
+    phoneNumber: {
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+const User = mongoose.model<IUser>("User", UserSchema);
+
+export default User;
