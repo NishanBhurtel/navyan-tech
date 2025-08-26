@@ -1,47 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Mail,
-  Send,
-  Users,
-  Eye,
-  BarChart3,
-  Plus,
-  Edit,
-  Copy,
-  Target,
-} from "lucide-react";
-=======
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -54,7 +12,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Mail, Send, Users, Eye, BarChart3, Plus, Edit, Copy } from "lucide-react"
->>>>>>> c219c42b360931b846cd4f04e96275bb3712e600
 
 // Mock email templates
 const emailTemplates = [
@@ -164,7 +121,7 @@ export default function EmailMarketingPage() {
     scheduledFor: "",
   });
 
-  const handleTemplateSelect = (templateId) => {
+  const handleTemplateSelect = (templateId: string) => {
     const template = emailTemplates.find(
       (t) => t.id === Number.parseInt(templateId)
     );
@@ -196,7 +153,7 @@ export default function EmailMarketingPage() {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status:"sent" | "scheduled" | "draft") => {
     switch (status) {
       case "sent":
         return "bg-green-100 text-green-800";
@@ -209,7 +166,7 @@ export default function EmailMarketingPage() {
     }
   };
 
-  const getCategoryColor = (category) => {
+  const getCategoryColor = (category: "promotion" | "newsletter" | "transactional") => {
     switch (category) {
       case "promotion":
         return "bg-orange-100 text-orange-800";
@@ -234,12 +191,6 @@ export default function EmailMarketingPage() {
             Create and send email campaigns to your customers
           </p>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Analytics
-          </Button>
-        </div>
       </div>
 
       {/* Stats Cards */}
@@ -257,56 +208,12 @@ export default function EmailMarketingPage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Mail className="h-4 w-4 text-green-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">
-                  Campaigns Sent
-                </p>
-                <p className="text-2xl font-bold text-gray-900">23</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-<<<<<<< HEAD
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Eye className="h-4 w-4 text-purple-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">
-                  Avg. Open Rate
-                </p>
-                <p className="text-2xl font-bold text-gray-900">25.1%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Target className="h-4 w-4 text-orange-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">
-                  Avg. Click Rate
-                </p>
-                <p className="text-2xl font-bold text-gray-900">3.7%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-=======
->>>>>>> c219c42b360931b846cd4f04e96275bb3712e600
       </div>
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="flex w-[685px]">
           <TabsTrigger value="compose">Compose Email</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="campaigns">Campaign History</TabsTrigger>
         </TabsList>
 
         {/* Compose Email Tab */}
@@ -319,29 +226,7 @@ export default function EmailMarketingPage() {
                   <CardTitle>Create Email Campaign</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="template">Email Template (Optional)</Label>
-                    <Select
-                      value={selectedTemplate}
-                      onValueChange={handleTemplateSelect}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose a template or start from scratch" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">Start from scratch</SelectItem> //
-                        Updated value to "0"
-                        {emailTemplates.map((template) => (
-                          <SelectItem
-                            key={template.id}
-                            value={template.id.toString()}
-                          >
-                            {template.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+           
 
                   <div>
                     <Label htmlFor="subject">Subject Line *</Label>
@@ -378,13 +263,6 @@ export default function EmailMarketingPage() {
 
                   <div className="flex space-x-2">
                     <Button
-                      variant="outline"
-                      onClick={() => setIsPreviewOpen(true)}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Preview
-                    </Button>
-                    <Button
                       onClick={handleSendEmail}
                       className="bg-green-600 hover:bg-green-700"
                     >
@@ -395,248 +273,9 @@ export default function EmailMarketingPage() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Audience Selection */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Audience</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="audience">Select Recipients</Label>
-                    <Select
-                      value={emailData.audience}
-                      onValueChange={(value) =>
-                        setEmailData((prev) => ({ ...prev, audience: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {audienceSegments.map((segment) => (
-                          <SelectItem key={segment.id} value={segment.id}>
-                            {segment.name} ({segment.count})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {
-                      audienceSegments.find((s) => s.id === emailData.audience)
-                        ?.description
-                    }
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Schedule */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Schedule</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div>
-                    <Label htmlFor="schedule">Send Time (Optional)</Label>
-                    <Input
-                      id="schedule"
-                      type="datetime-local"
-                      value={emailData.scheduledFor}
-                      onChange={(e) =>
-                        setEmailData((prev) => ({
-                          ...prev,
-                          scheduledFor: e.target.value,
-                        }))
-                      }
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Leave empty to send immediately
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </div>
-        </TabsContent>
-
-        {/* Templates Tab */}
-        <TabsContent value="templates">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Email Templates
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Template
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {emailTemplates.map((template) => (
-                  <Card
-                    key={template.id}
-                    className="hover:shadow-md transition-shadow"
-                  >
-                    <CardContent className="pt-6">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-900">
-                            {template.name}
-                          </h3>
-                          <Badge
-                            className={getCategoryColor(template.category)}
-                          >
-                            {template.category}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          {template.subject}
-                        </p>
-                        <p className="text-xs text-gray-500 line-clamp-2">
-                          {template.preview}
-                        </p>
-                        <div className="flex items-center justify-between text-xs text-gray-400">
-                          <span>Last used: {template.lastUsed}</span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-3 w-3 mr-1" />
-                            Preview
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Edit className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Copy className="h-3 w-3 mr-1" />
-                            Use
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Campaign History Tab */}
-        <TabsContent value="campaigns">
-          <Card>
-            <CardHeader>
-              <CardTitle>Campaign History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Campaign</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Recipients</TableHead>
-                      <TableHead>Sent</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Open Rate</TableHead>
-                      <TableHead>Click Rate</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {campaignHistory.map((campaign) => (
-                      <TableRow key={campaign.id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium text-gray-900">
-                              {campaign.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {campaign.id}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs truncate">
-                          {campaign.subject}
-                        </TableCell>
-                        <TableCell>
-                          {campaign.recipients.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="text-sm text-gray-500">
-                          {campaign.sent}
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getStatusColor(campaign.status)}>
-                            {campaign.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="font-medium text-green-600">
-                          {campaign.openRate}
-                        </TableCell>
-                        <TableCell className="font-medium text-blue-600">
-                          {campaign.clickRate}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-1">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-3 w-3" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Copy className="h-3 w-3" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <BarChart3 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Email Preview Dialog */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Email Preview</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <div className="border-b pb-2 mb-4">
-                <div className="text-sm text-gray-600">Subject:</div>
-                <div className="font-medium">
-                  {emailData.subject || "No subject"}
-                </div>
-              </div>
-              <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap">
-                  {emailData.content || "No content"}
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>
-                Close
-              </Button>
-              <Button
-                onClick={handleSendEmail}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <Send className="h-4 w-4 mr-2" />
-                Send Now
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
