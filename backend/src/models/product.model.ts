@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface IProductModel extends Document {
+export interface IProductModel extends Document {
   name: string;
   price: number;
   quantity: number;
   description: string;
   images: string[];
   specifications: {};
+  categoryID: string;
   technicalSpecification: {
     performance: {
       brand: string;
@@ -103,6 +104,10 @@ const ProductSchema: Schema = new Schema(
     },
     specifications: {
       type: Object,
+    },
+    categoryID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "subCategory",
     },
   },
   { timestamps: true }

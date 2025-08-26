@@ -10,9 +10,9 @@ export const createProductSchema = z.object({
     badge: z.string(),
     badgeColor: z.string(),
     category: z.string(),
-    produtInStock: z.boolean(),
+    productInStock: z.boolean(),
     stockAlert: z.number(),
-    specifications: z.object({}).optional(),
+    specifications: z.record(z.any()).optional(),
 });
 
 export const getAllProductSchema = z.object({
