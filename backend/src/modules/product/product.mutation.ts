@@ -13,48 +13,69 @@ export const createProduct: AppRouteMutationImplementation<
       image,
       price,
       originalPrice,
-      brand,
+
       details,
       badge,
       badgeColor,
-      category,
+      categoryID,
       productInStock,
       stockAlert,
       specifications,
+      technicalSpecification,
     } = req.body;
 
-    // Map schema fields to repository fields
+    // Destructure nested values with defaults
+    const {
+      performance: {
+        brand = "",
+        series = "",
+        cpu = "",
+        graphics = "",
+        display = "",
+        operatingSystem = "",
+      } = {},
+      memoryAndStorage: {
+        mainMemory = "",
+        storage = "",
+        connectivity = "",
+        camera = "",
+        audio = "",
+        battery = "",
+        weight = "",
+        warranty = "",
+      } = {},
+    } = technicalSpecification || {};
+
     const newProduct = await productRepository.save({
       name,
       price,
-      quantity: productInStock ? 1 : 0, // mapping productInStock to quantity
+      quantity: productInStock ? 1 : 0, // map productInStock to quantity
       description: details,
       images: image,
       technicalSpecification: {
         performance: {
-          brand,
-          series: "",
-          cpu: "",
-          graphics: "",
-          display: "",
-          operatingSystem: "",
+          brand: brand || "",
+          series,
+          cpu,
+          graphics,
+          display,
+          operatingSystem,
         },
         memoryAndStorage: {
-          audio: "",
-          mainMemory: "",
-          storage: "",
-          connectivity: "",
-          camera: "",
-          battery: "",
-          weight: "",
-          warrenty: "",
+          mainMemory,
+          storage,
+          connectivity,
+          camera,
+          audio,
+          battery,
+          weight,
+          warranty,
         },
       },
       specifications: specifications ?? {},
-      categoryID: category,
+      categoryID,
     });
 
-    // ✅ Return the correct shape
     return {
       status: 201,
       body: {
@@ -76,11 +97,80 @@ export const createProduct: AppRouteMutationImplementation<
   }
 };
 
+// export const updateProductDetails: AppRouteMutationImplementation<
+//   typeof productContract.updateProductDetails
+// > = async ({ req, res }) => {
+//   try {
+//     const { productID } = req.params;
+//     const {
+//       name,
+//       image,
+//       price,
+//       originalPrice,
+//       brand,
+//       details,
+//       badge,
+//       des,
+//       produtInStock,
+//       stockAlert,
+//       specifications,
+//     } = req.body;
+
+//     const updatedProduct = await productRepository.update(productID, {
+//       name,
+//       price,
+//       quantity: produtInStock ? 1 : 0, // map productInStock to quantity
+//       description: details,
+//       images: image,
+//       technicalSpecification: {
+//         performance: {
+//           brand,
+//           series: "",
+//           cpu: "",
+//           graphics: "",
+//           display: "",
+//           operatingSystem: "",
+//         },
+//         memoryAndStorage: {
+//           audio: "",
+//           mainMemory: "",
+//           storage: "",
+//           connectivity: "",
+//           camera: "",
+//           battery: "",
+//           weight: "",
+//           warranty: "",
+//         },
+//       },
+//       specifications: specifications ?? {},
+//       categoryID: category,
+//     });
+
+//     return {
+//       status: 200,
+//       body: {
+//         success: true,
+//         message: "successfully updated product details",
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       status: 500,
+//       body: {
+//         success: false,
+//         message: "Failed to update product details",
+//         error: (error as Error).message,
+//       },
+//     };
+//   }
+// };
+
 export const updateProductDetails: AppRouteMutationImplementation<
   typeof productContract.updateProductDetails
-> = async ({ req, res }) => {
+> = async ({ req }) => {
   try {
     const { productID } = req.params;
+
     const {
       name,
       image,
@@ -89,47 +179,81 @@ export const updateProductDetails: AppRouteMutationImplementation<
       brand,
       details,
       badge,
-      category,
-      produtInStock,
+      badgeColor,
+      categoryID,
+      productInStock,
       stockAlert,
       specifications,
+      technicalSpecification, // ✅ expect nested object
     } = req.body;
 
-    const updatedProduct = await productRepository.update(productID, {
+    // ✅ safely destructure nested fields
+    const {
+      performance: {
+        series = "",
+        cpu = "",
+        graphics = "",
+        display = "",
+        operatingSystem = "",
+      } = {},
+      memoryAndStorage: {
+        mainMemory = "",
+        storage = "",
+        connectivity = "",
+        camera = "",
+        audio = "",
+        battery = "",
+        weight = "",
+        warranty = "",
+      } = {},
+    } = technicalSpecification || {};
+
+    const updatedProduct = await productRepository.updateProduct(productID, {
       name,
       price,
-      quantity: produtInStock ? 1 : 0, // map productInStock to quantity
+      quantity: productInStock ? 1 : 0,
       description: details,
       images: image,
       technicalSpecification: {
         performance: {
           brand,
-          series: "",
-          cpu: "",
-          graphics: "",
-          display: "",
-          operatingSystem: "",
+          series,
+          cpu,
+          graphics,
+          display,
+          operatingSystem,
         },
         memoryAndStorage: {
-          audio: "",
-          mainMemory: "",
-          storage: "",
-          connectivity: "",
-          camera: "",
-          battery: "",
-          weight: "",
-          warrenty: "",
+          mainMemory,
+          storage,
+          connectivity,
+          camera,
+          audio,
+          battery,
+          weight,
+          warranty,
         },
       },
       specifications: specifications ?? {},
-      categoryID: category,
+      categoryID,
     });
+
+    if (!updatedProduct) {
+      return {
+        status: 404,
+        body: {
+          success: false,
+          error: "Product not found",
+        },
+      };
+    }
 
     return {
       status: 200,
       body: {
         success: true,
-        message: "successfully updated product details",
+        message: "Successfully updated product details",
+        data: updatedProduct,
       },
     };
   } catch (error) {

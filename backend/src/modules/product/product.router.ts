@@ -12,4 +12,5 @@ export const productRouter = s.router(productContract, {
   updateProductDetails: productMutationHandler.updateProductDetails,
   removeProduct: productMutationHandler.removeProduct,
   getProductDetailsByID: productQueryHandler.getProductDetailsByID,
+  getAllProduct: productQueryHandler.getALLProduct,
 });

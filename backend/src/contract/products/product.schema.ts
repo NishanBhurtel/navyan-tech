@@ -9,27 +9,55 @@ export const createProductSchema = z.object({
   details: z.string(),
   badge: z.string().optional(),
   badgeColor: z.string().optional(),
-  category: z.string(),
+  categoryID: z.string(),
   productInStock: z.boolean(),
   stockAlert: z.number(),
+
+  technicalSpecification: z
+    .object({
+      performance: z.object({
+        brand: z.string(),
+        series: z.string(),
+        cpu: z.string(),
+        graphics: z.string(),
+        display: z.string(),
+        operatingSystem: z.string(),
+      }),
+      memoryAndStorage: z.object({
+        mainMemory: z.string(),
+        storage: z.string(),
+        connectivity: z.string(),
+        camera: z.string(),
+        audio: z.string(),
+        battery: z.string(),
+        weight: z.string(),
+        warranty: z.string(),
+      }),
+    })
+    .optional(),
+
   specifications: z.record(z.any()).optional(),
 });
 
-export const getAllProductSchema = z.object({
-  _id: z.string(),
-  name: z.string(),
-  image: z.string().array(),
-  price: z.number(),
-  originalPrice: z.number(),
-  brand: z.string(),
-  details: z.string(),
-  badge: z.string(),
-  BadgeColor: z.string(),
-  category: z.string(),
-  produtInStock: z.boolean(),
-  stockAlert: z.number(),
-  specifications: z.object({}).optional(),
-});
+export const getAllProductSchema = z.array(
+  z.object({
+    success: z.boolean(),
+    message: z.string(),
+    _id: z.string(),
+    name: z.string(),
+    image: z.string().array(),
+    price: z.number(),
+    originalPrice: z.number(),
+    brand: z.string(),
+    details: z.string(),
+    badge: z.string(),
+    BadgeColor: z.string(),
+    category: z.string(),
+    produtInStock: z.boolean(),
+    stockAlert: z.number(),
+    specifications: z.object({}).optional(),
+  })
+);
 
 export const getProductDetailsByID = z.object({
   success: z.boolean(),
@@ -50,19 +78,39 @@ export const getProductDetailsByID = z.object({
 });
 
 export const updateProductDetailsSchema = z.object({
-  _id: z.string(),
-  name: z.string(),
-  image: z.string().array(),
-  price: z.number(),
-  originalPrice: z.number(),
-  brand: z.string(),
-  details: z.string(),
-  badge: z.string(),
-  BadgeColor: z.string(),
-  category: z.string(),
-  produtInStock: z.boolean(),
-  stockAlert: z.number(),
-  specifications: z.object({}).optional(),
+  name: z.string().min(1, "Product name is required"),
+  image: z.array(z.string()), // array of image URLs
+  price: z.number().positive("Price must be greater than 0"),
+  originalPrice: z.number().positive("Original price must be greater than 0"),
+  brand: z.string().min(1, "Brand is required"),
+  details: z.string().optional(),
+  badge: z.string().optional(),
+  badgeColor: z.string().optional(),
+  categoryID: z.string().min(1, "Category is required"),
+  productInStock: z.boolean(),
+  stockAlert: z.number().min(0),
+
+  technicalSpecification: z.object({
+    performance: z.object({
+      series: z.string().optional(),
+      cpu: z.string().optional(),
+      graphics: z.string().optional(),
+      display: z.string().optional(),
+      operatingSystem: z.string().optional(),
+      brand: z.string().optional(),
+    }),
+    memoryAndStorage: z.object({
+      mainMemory: z.string().optional(),
+      storage: z.string().optional(),
+      connectivity: z.string().optional(),
+      camera: z.string().optional(),
+      audio: z.string().optional(),
+      battery: z.string().optional(),
+      weight: z.string().optional(),
+      warranty: z.string().optional(),
+    }),
+  }),
+  specifications: z.record(z.string(), z.any()).optional(),
 });
 
 export const removeProductSchema = z.object({

@@ -7,6 +7,7 @@ import {
   removeProductSchema,
   updateProductDetailsSchema,
   getProductDetailsByID,
+  getAllProductSchema,
 } from "./product.schema";
 
 const c = initContract();
@@ -35,6 +36,16 @@ export const productContract = c.router({
       400: errorSchema,
       404: errorSchema,
       500: errorSchema,
+    },
+  },
+  getAllProduct: {
+    method: "GET",
+    path: "/products/details",
+    summary: "get all product details",
+    responses: {
+      200: getAllProductSchema,
+      500: errorSchema,
+      404: errorSchema,
     },
   },
   updateProductDetails: {

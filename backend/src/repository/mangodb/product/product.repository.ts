@@ -24,44 +24,67 @@ class ProductRepository {
   ) {
     try {
       const product = new this.productModel({
-        name: productData.name,
-        price: productData.price,
-        quantity: productData.quantity,
-        description: productData.description,
-        images: productData.images,
+        name: productData.name || "",
+        price: productData.price || 0,
+        quantity: productData.quantity || 0,
+        description: productData.description || "",
+        images: productData.images || [],
         technicalSpecification: {
           performance: {
-            brand: productData.technicalSpecification.performance.brand,
-            series: productData.technicalSpecification.performance.series,
-            cpu: productData.technicalSpecification.performance.cpu,
-            graphics: productData.technicalSpecification.performance.graphics,
-            display: productData.technicalSpecification.performance.display,
+            brand: productData.technicalSpecification?.performance?.brand || "",
+            series:
+              productData.technicalSpecification?.performance?.series || "",
+            cpu: productData.technicalSpecification?.performance?.cpu || "",
+            graphics:
+              productData.technicalSpecification?.performance?.graphics || "",
+            display:
+              productData.technicalSpecification?.performance?.display || "",
             operatingSystem:
-              productData.technicalSpecification.performance.operatingSystem,
+              productData.technicalSpecification?.performance
+                ?.operatingSystem || "",
           },
           memoryAndStorage: {
-            audio: productData.technicalSpecification.memoryAndStorage.audio,
+            audio:
+              productData.technicalSpecification?.memoryAndStorage?.audio || "",
             mainMemory:
-              productData.technicalSpecification.memoryAndStorage.mainMemory,
+              productData.technicalSpecification?.memoryAndStorage
+                ?.mainMemory || "",
             storage:
-              productData.technicalSpecification.memoryAndStorage.storage,
+              productData.technicalSpecification?.memoryAndStorage?.storage ||
+              "",
             connectivity:
-              productData.technicalSpecification.memoryAndStorage.connectivity,
-            camera: productData.technicalSpecification.memoryAndStorage.camera,
+              productData.technicalSpecification?.memoryAndStorage
+                ?.connectivity || "",
+            camera:
+              productData.technicalSpecification?.memoryAndStorage?.camera ||
+              "",
             battery:
-              productData.technicalSpecification.memoryAndStorage.battery,
-            weight: productData.technicalSpecification.memoryAndStorage.weight,
+              productData.technicalSpecification?.memoryAndStorage?.battery ||
+              "",
+            weight:
+              productData.technicalSpecification?.memoryAndStorage?.weight ||
+              "",
             warrenty:
-              productData.technicalSpecification.memoryAndStorage.warrenty,
+              productData.technicalSpecification?.memoryAndStorage?.warranty ||
+              "",
           },
         },
-        specifications: productData.specifications,
-        categoryID: productData.categoryID,
+        specifications: productData.specifications || {},
+        categoryID: productData.categoryID || "",
       });
 
-      return await product.save();
-    } catch (error) {
-      throw new Error(`Error saving product: ${error}`);
+      const savedProduct = await product.save();
+      return {
+        success: true,
+        productID: savedProduct._id.toString(),
+        message: "Product saved successfully",
+        data: savedProduct,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || "Error saving product",
+      };
     }
   }
 
@@ -129,25 +152,72 @@ class ProductRepository {
     }
   }
 
-  // ✅ Update product
-  async update(
-    id: string,
-    data: Pick<
-      IProductModel,
-      | "name"
-      | "price"
-      | "quantity"
-      | "description"
-      | "images"
-      | "technicalSpecification"
-      | "specifications"
-      | "categoryID"
-    >
-  ) {
+  updateProduct = async (
+    productId: string,
+    productData: Partial<IProductModel>
+  ) => {
     try {
-      return await this.productModel.findByIdAndUpdate(id, data, { new: true });
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
+        productId,
+        { $set: productData },
+        { new: true, runValidators: true }
+      );
+      return updatedProduct;
     } catch (error) {
-      throw new Error(`Error updating product: ${error}`);
+      throw new Error("Error updating product: " + (error as Error).message);
+    }
+  };
+
+  // // ✅ Update product
+  // async update(
+  //   id: string,
+  //   data: Pick<
+  //     IProductModel,
+  //     | "name"
+  //     | "price"
+  //     | "quantity"
+  //     | "description"
+  //     | "images"
+  //     | "technicalSpecification"
+  //     | "specifications"
+  //     | "categoryID"
+  //   >
+  // ) {
+  //   try {
+  //     return await this.productModel.findByIdAndUpdate(id, data, { new: true });
+  //   } catch (error) {
+  //     throw new Error(`Error updating product: ${error}`);
+  //   }
+  // }
+
+  async getAllProducts(): Promise<any[]> {
+    try {
+      // Fetch all products from DB
+      const products = await Product.find().populate("categoryID").exec();
+
+      // Map to match getAllProductSchema
+      return products.map((p: IProductModel) => ({
+        _id: p._id.toString(),
+        name: p.name,
+        image: p.images, // array of strings
+        price: p.price,
+        originalPrice: p.originalPrice || p.price,
+        brand: p.technicalSpecification?.performance?.brand || "",
+        details: p.description,
+        badge: p.badge || "",
+        BadgeColor: p.badgeColor || "",
+        // category: p.category || p.categoryID?.name || "",
+        // category:
+        //   typeof p.categoryID === "object" && p.categoryID !== null
+        //     ? p.categoryID.name
+        //     : p.categoryID?.toString() || "",
+        produtInStock: (p.quantity || 0) > 0,
+        stockAlert: p.stockAlert || 0,
+        specifications: p.specifications || {},
+      }));
+    } catch (error) {
+      console.error("Failed to get products:", error);
+      throw new Error("Failed to get products");
     }
   }
 
@@ -158,6 +228,9 @@ class ProductRepository {
     } catch (error) {
       throw new Error(`Error deleting product: ${error}`);
     }
+  }
+  async getAll(): Promise<IProductModel[]> {
+    return this.productModel.find().populate("categoryID");
   }
 }
 

@@ -96,8 +96,6 @@ export const loginUser: AppRouteMutationImplementation<
         firstName: user.userName.firstName,
         lastName: user.userName.lastName,
         role: user.role as "admin" | "customer",
-        accessToken,
-        refreshToken,
       },
     };
   } catch (error) {

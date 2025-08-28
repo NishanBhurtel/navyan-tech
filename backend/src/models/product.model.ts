@@ -13,6 +13,7 @@ export interface IProductModel extends Document {
   stockAlert: number;
   images: string[];
   specifications: {};
+  category: string;
   categoryID: string;
   technicalSpecification: {
     performance: {
@@ -31,7 +32,7 @@ export interface IProductModel extends Document {
       audio: string;
       battery: string;
       weight: string;
-      warrenty: string;
+      warranty: string;
     };
   };
   createdAt: Date;
@@ -55,6 +56,10 @@ const ProductSchema: Schema = new Schema(
     description: {
       type: String,
       required: true,
+    },
+    category: {
+      type: String,
+      required: false,
     },
     stockAlert: {
       type: Number,
@@ -112,7 +117,7 @@ const ProductSchema: Schema = new Schema(
         weight: {
           type: String,
         },
-        warrenty: {
+        warranty: {
           type: String,
         },
       },
@@ -122,7 +127,7 @@ const ProductSchema: Schema = new Schema(
     },
     categoryID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "subCategory",
+      ref: "SubCategory",
     },
   },
   { timestamps: true }
