@@ -168,52 +168,25 @@ class ProductRepository {
     }
   };
 
-  // // ✅ Update product
-  // async update(
-  //   id: string,
-  //   data: Pick<
-  //     IProductModel,
-  //     | "name"
-  //     | "price"
-  //     | "quantity"
-  //     | "description"
-  //     | "images"
-  //     | "technicalSpecification"
-  //     | "specifications"
-  //     | "categoryID"
-  //   >
-  // ) {
-  //   try {
-  //     return await this.productModel.findByIdAndUpdate(id, data, { new: true });
-  //   } catch (error) {
-  //     throw new Error(`Error updating product: ${error}`);
-  //   }
-  // }
-
   async getAllProducts(): Promise<any[]> {
     try {
-      // Fetch all products from DB
       const products = await Product.find().populate("categoryID").exec();
 
-      // Map to match getAllProductSchema
-      return products.map((p: IProductModel) => ({
-        _id: p._id.toString(),
-        name: p.name,
-        image: p.images, // array of strings
-        price: p.price,
-        originalPrice: p.originalPrice || p.price,
-        brand: p.technicalSpecification?.performance?.brand || "",
-        details: p.description,
-        badge: p.badge || "",
-        BadgeColor: p.badgeColor || "",
-        // category: p.category || p.categoryID?.name || "",
-        // category:
-        //   typeof p.categoryID === "object" && p.categoryID !== null
-        //     ? p.categoryID.name
-        //     : p.categoryID?.toString() || "",
-        produtInStock: (p.quantity || 0) > 0,
-        stockAlert: p.stockAlert || 0,
-        specifications: p.specifications || {},
+      return products.map((product) => ({
+        _id: product._id.toString(),
+        name: product.name,
+        image: product.images ?? [],
+        price: product.price,
+        originalPrice: product.originalPrice,
+        brand: product.technicalSpecification?.performance?.brand ?? "",
+        details: product.description ?? "",
+        badge: product.badge ?? "",
+        badgeColor: product.badgeColor ?? "",
+        categoryID: product.categoryID?.toString() ?? "",
+        productInStock: product.quantity > 0,
+        stockAlert: product.stockAlert ?? 0,
+        technicalSpecification: product.technicalSpecification ?? undefined,
+        specifications: product.specifications ?? undefined,
       }));
     } catch (error) {
       console.error("Failed to get products:", error);

@@ -41,40 +41,86 @@ export const createProductSchema = z.object({
 
 export const getAllProductSchema = z.array(
   z.object({
-    success: z.boolean(),
-    message: z.string(),
     _id: z.string(),
     name: z.string(),
-    image: z.string().array(),
+    image: z.array(z.string()),
     price: z.number(),
     originalPrice: z.number(),
     brand: z.string(),
     details: z.string(),
-    badge: z.string(),
-    BadgeColor: z.string(),
-    category: z.string(),
-    produtInStock: z.boolean(),
+    badge: z.string().optional(),
+    badgeColor: z.string().optional(),
+    categoryID: z.string(),
+    productInStock: z.boolean(),
     stockAlert: z.number(),
-    specifications: z.object({}).optional(),
+
+    technicalSpecification: z
+      .object({
+        performance: z.object({
+          brand: z.string(),
+          series: z.string(),
+          cpu: z.string(),
+          graphics: z.string(),
+          display: z.string(),
+          operatingSystem: z.string(),
+        }),
+        memoryAndStorage: z.object({
+          mainMemory: z.string(),
+          storage: z.string(),
+          connectivity: z.string(),
+          camera: z.string(),
+          audio: z.string(),
+          battery: z.string(),
+          weight: z.string(),
+          warranty: z.string(),
+        }),
+      })
+      .optional(),
+
+    specifications: z.record(z.any()).optional(),
   })
 );
 
 export const getProductDetailsByID = z.object({
   success: z.boolean(),
 
-  _id: z.string(),
-  name: z.string(),
-  image: z.string().array(),
-  price: z.number(),
-  originalPrice: z.number(),
-  brand: z.string(),
-  details: z.string(),
-  badge: z.string().optional(),
-  BadgeColor: z.string().optional(),
-  category: z.string(),
-  produtInStock: z.boolean(),
-  stockAlert: z.number(),
-  specifications: z.object({}).optional(),
+  data: z.object({
+    _id: z.string(),
+    name: z.string(),
+    image: z.array(z.string()),
+    price: z.number(),
+    originalPrice: z.number(),
+    brand: z.string(),
+    details: z.string(),
+    badge: z.string().optional(),
+    badgeColor: z.string().optional(),
+    categoryID: z.string(),
+    productInStock: z.boolean(),
+    stockAlert: z.number(),
+    technicalSpecification: z
+      .object({
+        performance: z.object({
+          brand: z.string(),
+          series: z.string(),
+          cpu: z.string(),
+          graphics: z.string(),
+          display: z.string(),
+          operatingSystem: z.string(),
+        }),
+        memoryAndStorage: z.object({
+          mainMemory: z.string(),
+          storage: z.string(),
+          connectivity: z.string(),
+          camera: z.string(),
+          audio: z.string(),
+          battery: z.string(),
+          weight: z.string(),
+          warranty: z.string(),
+        }),
+      })
+      .optional(),
+    specifications: z.record(z.any()).optional(),
+  }),
 });
 
 export const updateProductDetailsSchema = z.object({

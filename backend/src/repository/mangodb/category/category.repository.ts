@@ -1,34 +1,3 @@
-// import CategoryModel from "../../../models/category.model";
-
-// interface CreateCategoryInput {
-//   name: string;
-//   description: string;
-// }
-// interface UpdateCategoryInput {
-//   _id: string;
-//   name: string;
-//   description: string;
-// }
-// export const CategoryRepository = {
-//   async createCategory(data: CreateCategoryInput) {
-//     try {
-//       const category = new CategoryModel(data);
-//       const savedCategory = await category.save();
-//       return savedCategory;
-//     } catch (error) {
-//       throw new Error("Failed to create category: " + (error as Error).message);
-//     }
-//   },
-//   async updateCategoryByID({ _id, name, description }: UpdateCategoryInput) {
-//     const updatedCategory = await CategoryModel.findByIdAndUpdate(
-//       _id,
-//       { name, description },
-//       { new: true } // returns the updated document
-//     );
-//     return updatedCategory;
-//   },
-// };
-
 import CategoryModel from "../../../models/category.model";
 
 // Input interfaces
