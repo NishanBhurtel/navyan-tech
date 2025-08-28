@@ -55,7 +55,7 @@ export const categoryContract = c.router({
   removeCategoryByID: {
     method: "DELETE",
     path: "/categories/:categoryID",
-    // body: removeCategorySchema,
+    body: removeCategorySchema,
     summary: "Delete a category",
     responses: {
       200: successSchema,
