@@ -30,25 +30,30 @@ class ProductRepository {
         description: productData.description,
         images: productData.images,
         technicalSpecification: {
-            performance:{
-                brand:productData.technicalSpecification.performance.brand,
-                series:productData.technicalSpecification.performance.series,
-                cpu:productData.technicalSpecification.performance.cpu,
-                graphics:productData.technicalSpecification.performance.graphics,
-                display:productData.technicalSpecification.performance.display,
-                operatingSystem:productData.technicalSpecification.performance.operatingSystem,
-
-            },
-            memoryAndStorage:{
-                audio:productData.technicalSpecification.memoryAndStorage.audio,
-                mainMemory:productData.technicalSpecification.memoryAndStorage.mainMemory,
-                storage:productData.technicalSpecification.memoryAndStorage.storage,
-                connectivity:productData.technicalSpecification.memoryAndStorage.connectivity,
-                camera:productData.technicalSpecification.memoryAndStorage.camera,
-                battery:productData.technicalSpecification.memoryAndStorage.battery,
-                weight:productData.technicalSpecification.memoryAndStorage.weight,
-                warrenty:productData.technicalSpecification.memoryAndStorage.warrenty
-            }
+          performance: {
+            brand: productData.technicalSpecification.performance.brand,
+            series: productData.technicalSpecification.performance.series,
+            cpu: productData.technicalSpecification.performance.cpu,
+            graphics: productData.technicalSpecification.performance.graphics,
+            display: productData.technicalSpecification.performance.display,
+            operatingSystem:
+              productData.technicalSpecification.performance.operatingSystem,
+          },
+          memoryAndStorage: {
+            audio: productData.technicalSpecification.memoryAndStorage.audio,
+            mainMemory:
+              productData.technicalSpecification.memoryAndStorage.mainMemory,
+            storage:
+              productData.technicalSpecification.memoryAndStorage.storage,
+            connectivity:
+              productData.technicalSpecification.memoryAndStorage.connectivity,
+            camera: productData.technicalSpecification.memoryAndStorage.camera,
+            battery:
+              productData.technicalSpecification.memoryAndStorage.battery,
+            weight: productData.technicalSpecification.memoryAndStorage.weight,
+            warrenty:
+              productData.technicalSpecification.memoryAndStorage.warrenty,
+          },
         },
         specifications: productData.specifications,
         categoryID: productData.categoryID,

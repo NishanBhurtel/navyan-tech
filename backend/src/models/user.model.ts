@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
 export interface IUser extends Document {
+  userId: string;
+  _id: string;
   userName: {
     firstName: string;
     lastName: string;

@@ -1,10 +1,16 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IProductModel extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
+  productId: string;
   name: string;
   price: number;
   quantity: number;
   description: string;
+  originalPrice: number;
+  badge: string;
+  badgeColor: string;
+  stockAlert: number;
   images: string[];
   specifications: {};
   categoryID: string;
@@ -50,9 +56,18 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    stockAlert: {
+      type: Number,
+    },
+    originalPrice: {
+      type: Number,
+    },
     images: {
       type: [String],
       required: true,
+    },
+    badge: {
+      type: String,
     },
     technicalSpecification: {
       performance: {

@@ -5,7 +5,8 @@ export const registerSchema = z.object({
   lastName: z.string().min(1),
   role: z.enum(["admin", "customer"]),
   email: z.string().email(),
-  uid: z.string().min(1),
+  phoneNumber: z.number(),
+  // uid: z.string().min(1),
   password: z.string(),
 });
 

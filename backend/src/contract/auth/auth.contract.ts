@@ -14,17 +14,17 @@ import { errorSchema, successSchema } from "../common.schema";
 const c = initContract();
 
 export const authContract = c.router({
-  getProfile: {
-    method: "GET",
-    path: "/auth/me",
-    summary: "get user profile",
-    responses: {
-      200: getProfileSchema,
-      400: errorSchema,
-      404: errorSchema,
-      500: errorSchema,
-    },
-  },
+  // getProfile: {
+  //   method: "GET",
+  //   path: "/auth/me",
+  //   summary: "get user profile",
+  //   responses: {
+  //     200: getProfileSchema,
+  //     400: errorSchema,
+  //     404: errorSchema,
+  //     500: errorSchema,
+  //   },
+  // },
   register: {
     method: "POST",
     path: "/auth/register",
@@ -52,17 +52,17 @@ export const authContract = c.router({
       500: errorSchema,
     },
   },
-  updateUserDetails: {
-    method: "PUT",
-    path: "/auth/updateUserDetails",
-    body: updateUserDetailsSchema,
-    summary: "Update user personal details",
-    responses: {
-      200: successSchema,
-      400: errorSchema,
-      401: errorSchema,
-      404: errorSchema,
-      500: errorSchema,
-    },
-  },
+  // updateUserDetails: {
+  //   method: "PUT",
+  //   path: "/auth/updateUserDetails",
+  //   body: updateUserDetailsSchema,
+  //   summary: "Update user personal details",
+  //   responses: {
+  //     200: successSchema,
+  //     400: errorSchema,
+  //     401: errorSchema,
+  //     404: errorSchema,
+  //     500: errorSchema,
+  //   },
+  // },
 });
