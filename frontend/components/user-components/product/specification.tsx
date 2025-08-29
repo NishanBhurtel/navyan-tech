@@ -1,0 +1,116 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Button } from "../ui/button";
+import { Star } from "lucide-react";
+
+export default function Specification({ product }: { product: any }) {
+  return (
+    <div className="container mx-auto px-4 mt-16">
+      <Tabs defaultValue="specifications" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsTrigger value="specifications" className="font-semibold">
+            Specifications
+          </TabsTrigger>
+          <TabsTrigger value="description" className="font-semibold">
+            Description
+          </TabsTrigger>
+          <TabsTrigger value="reviews" className="font-semibold">
+            Reviews
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Specifications */}
+        <TabsContent value="specifications" className="space-y-6">
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h3 className="text-2xl font-bold font-serif text-foreground mb-6">
+              Technical Specifications
+            </h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-foreground">Performance</h4>
+                {[
+                  { label: "Brand", value: product.brand },
+                  { label: "Series", value: product.series },
+                  { label: "CPU", value: product.cpu },
+                  { label: "Graphics", value: product.graphics },
+                  { label: "Display", value: product.display },
+                  { label: "Operating System", value: product.os },
+                ].map((spec, i) => (
+                  <div key={i} className="flex justify-between py-3 border-b border-border/50">
+                    <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
+                    <span className="text-sm text-foreground max-w-md text-right">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-foreground">Memory & Storage</h4>
+                {[
+                  { label: "Main memory", value: product.memory },
+                  { label: "Storage", value: product.storage },
+                  { label: "Connectivity", value: product.connectivity },
+                  { label: "Camera", value: product.camera },
+                  { label: "Audio", value: product.audio },
+                  { label: "Battery", value: product.battery },
+                  { label: "Weight", value: product.weight },
+                  { label: "Warranty", value: product.warranty },
+                ].map((spec, i) => (
+                  <div key={i} className="flex justify-between py-3 border-b border-border/50">
+                    <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
+                    <span className="text-sm text-foreground max-w-md text-right">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Description */}
+        <TabsContent value="description" className="space-y-6">
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h3 className="text-2xl font-bold font-serif text-foreground mb-6">
+              Product Description
+            </h3>
+            <div className="prose prose-gray max-w-none">
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                {product.description}
+              </p>
+              <h4 className="text-lg font-semibold text-foreground mt-6 mb-3">
+                Key Features:
+              </h4>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                {product.features.map((f: string, i: number) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Reviews */}
+        <TabsContent value="reviews" className="space-y-6">
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h3 className="text-2xl font-bold font-serif text-foreground mb-6">
+              Customer Reviews
+            </h3>
+            <div className="text-center py-12">
+              <div className="flex items-center justify-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-8 h-8 text-gray-300" />
+                ))}
+              </div>
+              <h4 className="text-xl font-semibold text-foreground mb-2">
+                No reviews yet
+              </h4>
+              <p className="text-muted-foreground mb-6">
+                Be the first to review this product and help others make informed decisions.
+              </p>
+              <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Write a Review
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
