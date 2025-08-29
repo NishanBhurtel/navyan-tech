@@ -1,22 +1,19 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+
 import {
   Search,
   User,
   Heart,
-  Star,
   Cpu,
   Monitor,
-  ChevronRight,
   Laptop,
   Gamepad2,
   Headphones,
   ChevronDown,
   Phone,
 } from "lucide-react";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 const Navbar = () => {
   return (
@@ -28,10 +25,6 @@ const Navbar = () => {
               {/* <span className="text-white font-bold text-sm"></span> */}
               <img src="/NavYantra-Logo.png" alt="" />
             </div>
-
-            <span className="text-xl font-bold text-foreground">
-              Navyan Tech
-            </span>
           </Link>
 
           <div className="flex-1 max-w-2xl mx-8">

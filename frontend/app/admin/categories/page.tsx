@@ -1,17 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, FolderTree, Edit, Trash2, MoreHorizontal, ChevronRight, ChevronDown } from "lucide-react"
+import { Plus, FolderTree } from "lucide-react"
+import { Button } from "@/components/user-components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/user-components/ui/card"
+import { Category, FormData } from "@/components/admin-components/category/types"
+import CategoryCard from "@/components/admin-components/category/categoryCard"
+import CategoryDialog from "@/components/admin-components/category/categoryDialog"
 
-// Mock category data with hierarchical structure
+// Mock categories
 const mockCategories = [
   {
     id: 1,
@@ -73,51 +70,47 @@ const mockCategories = [
 ]
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(mockCategories)
+  const [categories, setCategories] = useState<Category[]>(mockCategories)
   const [expandedCategories, setExpandedCategories] = useState(new Set([1, 2, 3, 4]))
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingItem, setEditingItem] = useState(null)
-  const [formData, setFormData] = useState({
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<any>(null)
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     description: "",
-    parentCategory: "0", // Updated default value to be a non-empty string
+    parentCategory: "0",
     isActive: true,
   })
 
-  const toggleCategory = (categoryId) => {
+  const toggleCategory = (id: number) => {
     const newExpanded = new Set(expandedCategories)
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId)
-    } else {
-      newExpanded.add(categoryId)
-    }
+    newExpanded.has(id) ? newExpanded.delete(id) : newExpanded.add(id)
     setExpandedCategories(newExpanded)
   }
 
   const handleAddCategory = () => {
     setEditingItem(null)
-    setFormData({ name: "", description: "", parentCategory: "0", isActive: true }) // Updated default value to be a non-empty string
-    setIsAddDialogOpen(true)
+    setFormData({ name: "", description: "", parentCategory: "0", isActive: true })
+    setIsDialogOpen(true)
   }
 
-  const handleAddSubcategory = (parentId) => {
+  const handleAddSubcategory = (parentId: number) => {
     setEditingItem({ type: "subcategory", parentId })
     setFormData({ name: "", description: "", parentCategory: parentId.toString(), isActive: true })
-    setIsAddDialogOpen(true)
+    setIsDialogOpen(true)
   }
 
-  const handleEditCategory = (category) => {
+  const handleEditCategory = (category: Category) => {
     setEditingItem({ type: "category", id: category.id })
     setFormData({
       name: category.name,
       description: category.description || "",
-      parentCategory: "0", // Updated default value to be a non-empty string
+      parentCategory: "0",
       isActive: category.isActive,
     })
-    setIsAddDialogOpen(true)
+    setIsDialogOpen(true)
   }
 
-  const handleEditSubcategory = (subcategory, parentId) => {
+  const handleEditSubcategory = (subcategory: any, parentId: number) => {
     setEditingItem({ type: "subcategory", id: subcategory.id, parentId })
     setFormData({
       name: subcategory.name,
@@ -125,21 +118,19 @@ export default function CategoriesPage() {
       parentCategory: parentId.toString(),
       isActive: subcategory.isActive,
     })
-    setIsAddDialogOpen(true)
+    setIsDialogOpen(true)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form data:", formData, "Editing:", editingItem)
-    setIsAddDialogOpen(false)
-  }
-
-  const handleDelete = (type, id, parentId = null) => {
+  const handleDelete = (type: "category" | "subcategory", id: number, parentId?: number) => {
     if (confirm(`Are you sure you want to delete this ${type}?`)) {
-      // Handle delete logic here
       console.log(`Delete ${type}:`, id, parentId)
     }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Form data:", formData, "Editing:", editingItem)
+    setIsDialogOpen(false)
   }
 
   return (
@@ -166,184 +157,33 @@ export default function CategoriesPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {categories.map((category) => (
-              <div key={category.id} className="border border-gray-200 rounded-lg">
-                {/* Main Category */}
-                <div className="flex items-center justify-between p-4 hover:bg-gray-50">
-                  <div className="flex items-center space-x-3">
-                    <button onClick={() => toggleCategory(category.id)} className="text-gray-400 hover:text-gray-600">
-                      {expandedCategories.has(category.id) ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </button>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-semibold text-gray-900">{category.name}</h3>
-                        <Badge variant={category.isActive ? "default" : "secondary"}>
-                          {category.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-500">{category.description}</p>
-                      <p className="text-xs text-gray-400">{category.productCount} products</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => handleAddSubcategory(category.id)}>
-                      <Plus className="h-3 w-3 mr-1" />
-                      Add Sub
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEditCategory(category)}>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDelete("category", category.id)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-
-                {/* Subcategories */}
-                {expandedCategories.has(category.id) && category.subcategories && (
-                  <div className="border-t border-gray-200 bg-gray-50">
-                    {category.subcategories.map((subcategory) => (
-                      <div
-                        key={subcategory.id}
-                        className="flex items-center justify-between p-4 pl-12 border-b border-gray-100 last:border-b-0 hover:bg-gray-100"
-                      >
-                        <div>
-                          <div className="flex items-center space-x-2">
-                            <h4 className="font-medium text-gray-800">{subcategory.name}</h4>
-                            <Badge variant={subcategory.isActive ? "default" : "secondary"} className="text-xs">
-                              {subcategory.isActive ? "Active" : "Inactive"}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-gray-500">{subcategory.productCount} products</p>
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditSubcategory(subcategory, category.id)}>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete("subcategory", subcategory.id, category.id)}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            {categories.map((cat) => (
+              <CategoryCard
+                key={cat.id}
+                category={cat}
+                expanded={expandedCategories.has(cat.id)}
+                onToggle={toggleCategory}
+                onAddSub={handleAddSubcategory}
+                onEdit={handleEditCategory}
+                onEditSub={handleEditSubcategory}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </CardContent>
       </Card>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {editingItem
-                ? `Edit ${editingItem.type === "category" ? "Category" : "Subcategory"}`
-                : formData.parentCategory
-                  ? "Add Subcategory"
-                  : "Add Category"}
-            </DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                placeholder="Enter category name"
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                placeholder="Enter description (optional)"
-              />
-            </div>
-
-            {!editingItem && (
-              <div>
-                <Label htmlFor="parentCategory">Parent Category</Label>
-                <Select
-                  value={formData.parentCategory}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, parentCategory: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select parent category (optional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">None (Main Category)</SelectItem>{" "}
-                    {/* Updated value prop to be a non-empty string */}
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id.toString()}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between pt-4">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="isActive"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
-                  className="rounded border-gray-300"
-                />
-                <Label htmlFor="isActive">Active</Label>
-              </div>
-              <div className="flex space-x-2">
-                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-green-600 hover:bg-green-700">
-                  {editingItem ? "Update" : "Create"}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <CategoryDialog
+        open={isDialogOpen}
+        onClose={setIsDialogOpen}
+        formData={formData}
+        categories={categories}
+        editingItem={editingItem}
+        onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
+        onSubmit={handleSubmit}
+      />
     </div>
   )
 }
+

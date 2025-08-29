@@ -13,7 +13,7 @@ const Footer = () => {
                   <Cpu className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <span className="text-2xl font-bold font-serif text-foreground">
-                  TechStore
+                  NavyanTech
                 </span>
               </Link>
               <p className="text-muted-foreground">
@@ -117,7 +117,7 @@ const Footer = () => {
           </div>
           <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
             <p>
-              &copy; 2025 TechStore. All rights reserved. Built with precision
+              &copy; 2025 NavyanTech. All rights reserved. Built with precision
               and passion.
             </p>
           </div>
