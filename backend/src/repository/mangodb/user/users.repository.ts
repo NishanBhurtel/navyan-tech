@@ -8,10 +8,7 @@ class UserRepository {
   }
 
   async save(
-    userData: Pick<
-      IUser,
-      "userName" | "email" | "password" | "phoneNumber" | "role"
-    >
+    userData: Pick<IUser, "userName" | "email" | "password" | "phoneNumber">
   ) {
     try {
       const user = new this.userModel({
@@ -23,6 +20,7 @@ class UserRepository {
         password: userData.password,
         phoneNumber: userData.phoneNumber,
       });
+
       return await user.save();
     } catch (error) {
       throw new Error(`Error saving user: ${error}`);

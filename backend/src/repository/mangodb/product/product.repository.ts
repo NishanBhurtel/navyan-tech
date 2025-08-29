@@ -13,8 +13,10 @@ class ProductRepository {
     productData: Pick<
       IProductModel,
       | "name"
-      | "price"
-      | "quantity"
+      | "originalPrice"
+      | "discountedPrice"
+      | "stock"
+      | "brand"
       | "description"
       | "images"
       | "technicalSpecification"
@@ -25,13 +27,14 @@ class ProductRepository {
     try {
       const product = new this.productModel({
         name: productData.name || "",
-        price: productData.price || 0,
-        quantity: productData.quantity || 0,
+        price: productData.discountedPrice || 0,
+        originalPrice: productData.originalPrice || 0,
+        stock: productData.stock || 0,
         description: productData.description || "",
+        brand: productData.brand || "",
         images: productData.images || [],
         technicalSpecification: {
           performance: {
-            brand: productData.technicalSpecification?.performance?.brand || "",
             series:
               productData.technicalSpecification?.performance?.series || "",
             cpu: productData.technicalSpecification?.performance?.cpu || "",
@@ -91,7 +94,10 @@ class ProductRepository {
   // ✅ Get products with optional filters
   async get(
     searchQuery?: Partial<
-      Pick<IProductModel, "name" | "price" | "categoryID" | "description">
+      Pick<
+        IProductModel,
+        "name" | "discountedPrice" | "categoryID" | "description"
+      >
     >,
     filterQuery?: {
       brand?: string;
@@ -110,8 +116,8 @@ class ProductRepository {
       if (searchQuery?.description) {
         query.description = { $regex: searchQuery.description, $options: "i" };
       }
-      if (searchQuery?.price) {
-        query.price = searchQuery.price;
+      if (searchQuery?.discountedPrice) {
+        query.price = searchQuery.discountedPrice;
       }
       if (searchQuery?.categoryID) {
         query.categoryID = searchQuery.categoryID;
@@ -176,15 +182,12 @@ class ProductRepository {
         _id: product._id.toString(),
         name: product.name,
         image: product.images ?? [],
-        price: product.price,
+        price: product.discountedPrice,
         originalPrice: product.originalPrice,
-        brand: product.technicalSpecification?.performance?.brand ?? "",
+        brand: product.brand ?? "",
         details: product.description ?? "",
-        badge: product.badge ?? "",
-        badgeColor: product.badgeColor ?? "",
         categoryID: product.categoryID?.toString() ?? "",
-        productInStock: product.quantity > 0,
-        stockAlert: product.stockAlert ?? 0,
+        stock: product.stock ?? 0,
         technicalSpecification: product.technicalSpecification ?? undefined,
         specifications: product.specifications ?? undefined,
       }));

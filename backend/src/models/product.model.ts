@@ -4,20 +4,20 @@ export interface IProductModel extends Document {
   _id: mongoose.Schema.Types.ObjectId;
   productId: string;
   name: string;
-  price: number;
+  discountedPrice: number;
   quantity: number;
   description: string;
   originalPrice: number;
+  brand: string;
   badge: string;
   badgeColor: string;
-  stockAlert: number;
+  stock: number;
   images: string[];
   specifications: {};
   category: string;
   categoryID: string;
   technicalSpecification: {
     performance: {
-      brand: string;
       series: string;
       cpu: string;
       graphics: string;

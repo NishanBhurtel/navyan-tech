@@ -15,6 +15,7 @@ export const getAllCategoryMutation: AppRouteQueryImplementation<
       status: 200,
       body: categories.map((category) => ({
         _id: category._id.toString(),
+
         name: category.name,
         description: category.description,
       })),

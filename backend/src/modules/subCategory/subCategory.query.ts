@@ -13,10 +13,11 @@ const getAllSubCategory: AppRouteQueryImplementation<
 
     return {
       status: 200,
-      body: subCategories.map((sub) => ({
-        _id: sub._id.toString(),
-        name: sub.name,
-        description: sub.description,
+      body: subCategories.map((i) => ({
+        _id: i._id.toString(),
+        parentCategoryId: i.parentCategoryId.toString(),
+        name: i.name,
+        description: i.description,
       })),
     };
   } catch (error) {

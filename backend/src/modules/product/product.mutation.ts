@@ -11,15 +11,12 @@ export const createProduct: AppRouteMutationImplementation<
     const {
       name,
       image,
-      price,
+      discountedPrice,
       originalPrice,
-
+      brand,
       details,
-      badge,
-      badgeColor,
       categoryID,
-      productInStock,
-      stockAlert,
+      stock,
       specifications,
       technicalSpecification,
     } = req.body;
@@ -27,7 +24,6 @@ export const createProduct: AppRouteMutationImplementation<
     // Destructure nested values with defaults
     const {
       performance: {
-        brand = "",
         series = "",
         cpu = "",
         graphics = "",
@@ -48,13 +44,14 @@ export const createProduct: AppRouteMutationImplementation<
 
     const newProduct = await productRepository.save({
       name,
-      price,
-      quantity: productInStock ? 1 : 0, // map productInStock to quantity
+      originalPrice,
+      discountedPrice,
+      stock,
       description: details,
+      brand: brand,
       images: image,
       technicalSpecification: {
         performance: {
-          brand: brand || "",
           series,
           cpu,
           graphics,
@@ -106,15 +103,12 @@ export const updateProductDetails: AppRouteMutationImplementation<
     const {
       name,
       image,
-      price,
+      discountedPrice,
       originalPrice,
       brand,
+      stock,
       details,
-      badge,
-      badgeColor,
       categoryID,
-      productInStock,
-      stockAlert,
       specifications,
       technicalSpecification, // ✅ expect nested object
     } = req.body;
@@ -142,13 +136,13 @@ export const updateProductDetails: AppRouteMutationImplementation<
 
     const updatedProduct = await productRepository.updateProduct(productID, {
       name,
-      price,
-      quantity: productInStock ? 1 : 0,
+      originalPrice,
+      discountedPrice,
+      stock,
       description: details,
       images: image,
       technicalSpecification: {
         performance: {
-          brand,
           series,
           cpu,
           graphics,

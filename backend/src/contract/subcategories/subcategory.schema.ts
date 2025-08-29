@@ -9,6 +9,7 @@ export const createSubCategorySchema = z.object({
 export const getAllSubCategorySchema = z.array(
   z.object({
     _id: z.string(),
+    parentCategoryId: z.string(),
     name: z.string(),
     description: z.string(),
   })

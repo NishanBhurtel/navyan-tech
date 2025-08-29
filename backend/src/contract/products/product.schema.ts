@@ -3,20 +3,16 @@ import z from "zod";
 export const createProductSchema = z.object({
   name: z.string(),
   image: z.array(z.string()),
-  price: z.number(),
+  discountedPrice: z.number(),
   originalPrice: z.number(),
   brand: z.string(),
   details: z.string(),
-  badge: z.string().optional(),
-  badgeColor: z.string().optional(),
   categoryID: z.string(),
-  productInStock: z.boolean(),
-  stockAlert: z.number(),
+  stock: z.number(),
 
   technicalSpecification: z
     .object({
       performance: z.object({
-        brand: z.string(),
         series: z.string(),
         cpu: z.string(),
         graphics: z.string(),
@@ -88,19 +84,15 @@ export const getProductDetailsByID = z.object({
     _id: z.string(),
     name: z.string(),
     image: z.array(z.string()),
-    price: z.number(),
+    discountedPrice: z.number(),
     originalPrice: z.number(),
     brand: z.string(),
     details: z.string(),
-    badge: z.string().optional(),
-    badgeColor: z.string().optional(),
     categoryID: z.string(),
-    productInStock: z.boolean(),
-    stockAlert: z.number(),
+    stock: z.number(),
     technicalSpecification: z
       .object({
         performance: z.object({
-          brand: z.string(),
           series: z.string(),
           cpu: z.string(),
           graphics: z.string(),
@@ -126,15 +118,12 @@ export const getProductDetailsByID = z.object({
 export const updateProductDetailsSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   image: z.array(z.string()), // array of image URLs
-  price: z.number().positive("Price must be greater than 0"),
+  discountedPrice: z.number().positive("Price must be greater than 0"),
   originalPrice: z.number().positive("Original price must be greater than 0"),
   brand: z.string().min(1, "Brand is required"),
   details: z.string().optional(),
-  badge: z.string().optional(),
-  badgeColor: z.string().optional(),
   categoryID: z.string().min(1, "Category is required"),
-  productInStock: z.boolean(),
-  stockAlert: z.number().min(0),
+  stock: z.number().min(0),
 
   technicalSpecification: z.object({
     performance: z.object({

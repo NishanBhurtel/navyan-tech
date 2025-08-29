@@ -8,8 +8,7 @@ export const registerUser: AppRouteMutationImplementation<
   typeof authContract.register
 > = async ({ req }) => {
   try {
-    const { firstName, lastName, role, email, password, phoneNumber } =
-      req.body;
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
 
     const existingUsers = await userRepository.get({
       email: email.toLowerCase(),
@@ -28,7 +27,6 @@ export const registerUser: AppRouteMutationImplementation<
       userName: { firstName, lastName },
       email: email.toLowerCase(),
       password: passwordHash,
-      role,
       phoneNumber,
     });
 
@@ -90,12 +88,10 @@ export const loginUser: AppRouteMutationImplementation<
       body: {
         success: true,
         message: "User logged in successfully",
-        uid: userId,
         _id: userId,
         email: user.email,
         firstName: user.userName.firstName,
         lastName: user.userName.lastName,
-        role: user.role as "admin" | "customer",
       },
     };
   } catch (error) {

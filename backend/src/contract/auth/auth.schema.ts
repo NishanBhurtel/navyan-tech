@@ -16,12 +16,10 @@ export const loginSchema = z.object({
 });
 
 export const loginResponseSchema = z.object({
-  uid: z.string(),
   _id: z.string(),
   email: z.string().email(),
   firstName: z.string(),
   lastName: z.string(),
-  role: z.enum(["admin", "customer"]),
 });
 
 export const logout = z.object({});
