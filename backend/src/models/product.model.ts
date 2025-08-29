@@ -1,15 +1,20 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface IProductModel extends Document {
+export interface IProductModel extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
+  productId: string;
   name: string;
-  price: number;
-  quantity: number;
+  discountedPrice: number;
   description: string;
+  originalPrice: number;
+  brand: string;
+  stock: number;
   images: string[];
   specifications: {};
+  category: string;
+  categoryID: string;
   technicalSpecification: {
     performance: {
-      brand: string;
       series: string;
       cpu: string;
       graphics: string;
@@ -24,7 +29,7 @@ interface IProductModel extends Document {
       audio: string;
       battery: string;
       weight: string;
-      warrenty: string;
+      warranty: string;
     };
   };
   createdAt: Date;
@@ -49,9 +54,22 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    category: {
+      type: String,
+      required: false,
+    },
+    stockAlert: {
+      type: Number,
+    },
+    originalPrice: {
+      type: Number,
+    },
     images: {
       type: [String],
       required: true,
+    },
+    badge: {
+      type: String,
     },
     technicalSpecification: {
       performance: {
@@ -96,13 +114,17 @@ const ProductSchema: Schema = new Schema(
         weight: {
           type: String,
         },
-        warrenty: {
+        warranty: {
           type: String,
         },
       },
     },
     specifications: {
       type: Object,
+    },
+    categoryID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
     },
   },
   { timestamps: true }
