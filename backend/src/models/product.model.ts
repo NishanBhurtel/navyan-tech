@@ -5,12 +5,9 @@ export interface IProductModel extends Document {
   productId: string;
   name: string;
   discountedPrice: number;
-  quantity: number;
   description: string;
   originalPrice: number;
   brand: string;
-  badge: string;
-  badgeColor: string;
   stock: number;
   images: string[];
   specifications: {};
