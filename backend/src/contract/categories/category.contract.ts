@@ -39,10 +39,7 @@ export const categoryContract = c.router({
   updateCategoryDetailsByID: {
     method: "PUT",
     path: "/categories/updatecategoryDetails/:categoryID",
-    body: z.object({
-      name: z.string(),
-      description: z.string(),
-    }),
+    body: updateCategoryDetailsSchema,
     summary: "Update category details",
     responses: {
       200: successSchema,

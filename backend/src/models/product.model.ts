@@ -10,7 +10,7 @@ export interface IProductModel extends Document {
   brand: string;
   stock: number;
   images: string[];
-  specifications: {};
+  specifications: [];
   category: string;
   categoryID: string;
   technicalSpecification: {
@@ -120,7 +120,7 @@ const ProductSchema: Schema = new Schema(
       },
     },
     specifications: {
-      type: Object,
+      type: Array,
     },
     categoryID: {
       type: mongoose.Schema.Types.ObjectId,

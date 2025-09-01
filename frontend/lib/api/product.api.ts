@@ -30,9 +30,9 @@ const getAllProductsApi = async (filters?: Partial<TGetAllProductSchema>) => {
 
 // GET /products/:id - Get product details by ID
 const getProductByIdApi = async (
-  productId: TGetProductByIDSchema["productId"]
+  productId: TGetProductByIDSchema["_id"]
 ) => {
-  const response = await apiClient.get(`/products/${productId}`);
+  const response = await apiClient.get(`/products/details/${productId}`);
   return response.data;
 };
 
@@ -40,7 +40,7 @@ const getProductByIdApi = async (
 const deleteProductApi = async (
   productId: TDeleteProductSchema["productId"]
 ) => {
-  const response = await apiClient.delete(`/products/${productId}`);
+  const response = await apiClient.delete(`/product/${productId}`);
   return response.data;
 };
 

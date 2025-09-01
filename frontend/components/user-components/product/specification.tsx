@@ -1,20 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Button } from "../ui/button";
-import { Star } from "lucide-react";
 
 export default function Specification({ product }: { product: any }) {
   return (
     <div className="container mx-auto px-4 mt-16">
       <Tabs defaultValue="specifications" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
+        <TabsList className="grid w-full grid-cols-2 mb-8">
           <TabsTrigger value="specifications" className="font-semibold">
             Specifications
           </TabsTrigger>
           <TabsTrigger value="description" className="font-semibold">
             Description
-          </TabsTrigger>
-          <TabsTrigger value="reviews" className="font-semibold">
-            Reviews
           </TabsTrigger>
         </TabsList>
 
@@ -82,31 +77,6 @@ export default function Specification({ product }: { product: any }) {
                   <li key={i}>{f}</li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </TabsContent>
-
-        {/* Reviews */}
-        <TabsContent value="reviews" className="space-y-6">
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="text-2xl font-bold font-serif text-foreground mb-6">
-              Customer Reviews
-            </h3>
-            <div className="text-center py-12">
-              <div className="flex items-center justify-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-8 h-8 text-gray-300" />
-                ))}
-              </div>
-              <h4 className="text-xl font-semibold text-foreground mb-2">
-                No reviews yet
-              </h4>
-              <p className="text-muted-foreground mb-6">
-                Be the first to review this product and help others make informed decisions.
-              </p>
-              <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                Write a Review
-              </Button>
             </div>
           </div>
         </TabsContent>

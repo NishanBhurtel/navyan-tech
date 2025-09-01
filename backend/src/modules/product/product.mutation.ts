@@ -69,7 +69,7 @@ export const createProduct: AppRouteMutationImplementation<
           warranty,
         },
       },
-      specifications: specifications ?? {},
+      specifications: [],
       categoryID,
     });
 
@@ -160,7 +160,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
           warranty,
         },
       },
-      specifications: specifications ?? {},
+      specifications: [],
       categoryID,
     });
 

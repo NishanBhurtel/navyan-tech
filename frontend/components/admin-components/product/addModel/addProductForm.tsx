@@ -56,37 +56,36 @@ export default function AddProductPage() {
     formState: { errors },
   } = useForm<TCreateProductSchema>({
     resolver: zodResolver(createProductSchema),
-   defaultValues: {
-  name: "",
-  stock: 0,
-  description: "",
-  originalPrice: 0,
-  discountPrice: 0,
-  images: [],
-  specifications: {},       // optional
-  categoryID: "",
-  brand: "",
-  technicalSpecification: {
-    performance: {
-      series: "",
-      cpu: "",
-      graphics: "",
-      display: "",
-      operatingSystem: "",
+    defaultValues: {
+      name: "",
+      stock: 0,
+      description: "",
+      originalPrice: 0,
+      discountPrice: 0,
+      images: [""],
+      specifications: [], // optional
+      categoryID: "",
+      brand: "",
+      technicalSpecification: {
+        performance: {
+          series: "",
+          cpu: "",
+          graphics: "",
+          display: "",
+          operatingSystem: "",
+        },
+        memoryAndStorage: {
+          mainMemory: "",
+          storage: "",
+          connectivity: "",
+          camera: "",
+          audio: "",
+          battery: "",
+          weight: "",
+          warrenty: "",
+        },
+      },
     },
-    memoryAndStorage: {
-      mainMemory: "",
-      storage: "",
-      connectivity: "",
-      camera: "",
-      audio: "",
-      battery: "",
-      weight: "",
-      warrenty: "",
-    },
-  },
-}
-
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -145,6 +144,7 @@ export default function AddProductPage() {
                 <Textarea
                   {...register("description")}
                   placeholder="Enter product description"
+                  className="my-2"
                   rows={4}
                 />
                 {errors.description && (
@@ -196,15 +196,26 @@ export default function AddProductPage() {
               <Label htmlFor="addImages">
                 <Upload className="h-6 w-6 cursor-pointer mx-auto text-gray-400 mb-2" />
               </Label>
-              <Input
-                hidden
-                id="addImages"
-                type="file"
-                multiple
-                accept="image/*"
-                className="my-2"
-                {...register("images")}
+              <Controller
+                control={control}
+                name="images"
+                render={({ field }) => (
+                  <input
+                  id="addImages"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      const urls = files.map((file) =>
+                        URL.createObjectURL(file)
+                      );
+                      field.onChange(urls);
+                    }}
+                  />
+                )}
               />
+
               {errors.images && (
                 <p className="text-red-500 text-sm">{errors.images.message}</p>
               )}
@@ -510,7 +521,7 @@ export default function AddProductPage() {
                 ))}
                 {errors.specifications && (
                   <p className="text-red-500 text-sm">
-                    Please fix specification errors.
+                    {errors.specifications.message}
                   </p>
                 )}
               </div>
@@ -609,9 +620,7 @@ export default function AddProductPage() {
                 placeholder="0"
               />
               {errors.stock && (
-                <p className="text-red-500 text-sm">
-                  {errors.stock.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.stock.message}</p>
               )}
             </CardContent>
           </Card>

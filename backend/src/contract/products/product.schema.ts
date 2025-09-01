@@ -32,7 +32,7 @@ export const createProductSchema = z.object({
     })
     .optional(),
 
-  specifications: z.record(z.any()).optional(),
+  specifications: z.array(z.object({key:z.string(), value: z.string()}))
 });
 
 export const getAllProductSchema = z.array(
@@ -40,15 +40,12 @@ export const getAllProductSchema = z.array(
     _id: z.string(),
     name: z.string(),
     image: z.array(z.string()),
-    price: z.number(),
+    discountedPrice: z.number(),
     originalPrice: z.number(),
     brand: z.string(),
     details: z.string(),
-    badge: z.string().optional(),
-    badgeColor: z.string().optional(),
     categoryID: z.string(),
-    productInStock: z.boolean(),
-    stockAlert: z.number(),
+    stock: z.number(),
 
     technicalSpecification: z
       .object({
@@ -73,7 +70,7 @@ export const getAllProductSchema = z.array(
       })
       .optional(),
 
-    specifications: z.record(z.any()).optional(),
+    specifications:z.array(z.object({key:z.string(), value: z.string()}))
   })
 );
 
@@ -111,7 +108,7 @@ export const getProductDetailsByID = z.object({
         }),
       })
       .optional(),
-    specifications: z.record(z.any()).optional(),
+    specifications: z.array(z.object({key:z.string(), value: z.string()}))
   }),
 });
 
@@ -145,7 +142,7 @@ export const updateProductDetailsSchema = z.object({
       warranty: z.string().optional(),
     }),
   }),
-  specifications: z.record(z.string(), z.any()).optional(),
+  specifications: z.array(z.object({key:z.string(), value: z.string()}))
 });
 
 export const removeProductSchema = z.object({

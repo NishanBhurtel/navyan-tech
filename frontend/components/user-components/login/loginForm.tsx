@@ -37,8 +37,8 @@ export default function LoginForm() {
         password: data.password,
       }),
     onSuccess: () => {
+      router.push("/");
       showToast("Login successful!", "bg-green-600");
-            router.push("/admin/products");
     },
     onError: (error: any) => {
       showToast("Login failed: " + (error?.message || "Unknown error"), "bg-red-600");

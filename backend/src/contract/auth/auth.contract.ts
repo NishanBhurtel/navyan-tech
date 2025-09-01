@@ -4,7 +4,6 @@ import {
   loginSchema,
   registerSchema,
   loginResponseSchema,
-  updateUserDetailsSchema,
 } from "./auth.schema";
 
 import z from "zod";

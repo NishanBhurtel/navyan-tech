@@ -117,9 +117,3 @@ export const orderFormSchema = z.object({
 export const deleteOrderByID = z.object({
   orderID: z.string().min(1, "Order ID is required"),
 });
-
-export type TCreateOrderSchema = z.infer<typeof createOrderSchema>;
-export type TUpdateOrderSchema = z.infer<typeof updateOrderSchema>;
-export type TGetAllOrderSchema = z.infer<typeof getAllOrderSchema>;
-export type TGetOrderByIDSchema = z.infer<typeof getOrderByIDSchema>;
-export type TDeleteOrderSchema = z.infer<typeof deleteOrderByID>;
