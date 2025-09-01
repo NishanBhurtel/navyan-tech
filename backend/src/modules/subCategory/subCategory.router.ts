@@ -11,5 +11,6 @@ export const subCategoryRouter = s.router(subCategoryContract, {
   updateSubCategoryDetailsByID:
     subCategoryMutationHandler.updateSubCategoryDetailsByID,
   removeSubCategoryByID: subCategoryMutationHandler.removeSubCategoryByID,
-  getSubCategoriesByCategoryID: SubCategoryQueryHandler.getAllSubCategory,
+  getSubCategoriesByCategoryID:
+    SubCategoryQueryHandler.getSubCategoriesByCategoryID,
 });

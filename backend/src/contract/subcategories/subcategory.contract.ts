@@ -27,8 +27,8 @@ export const subCategoryContract = c.router({
   },
   getSubCategoriesByCategoryID: {
     method: "GET",
-    path: "/subcategories/details",
-    summary: "get subcategory details",
+    path: "/subcategories/:categoryID",
+    summary: "get subcategories from categoryID ",
     responses: {
       200: getAllSubCategorySchema,
       400: errorSchema,

@@ -3,6 +3,8 @@ import { AppRouteQueryImplementation } from "@ts-rest/express";
 import { categoryContract } from "../../contract/categories/category.contract";
 
 import { getAllCategories } from "../../repository/mangodb/category/category.repository";
+import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+import { promise } from "zod";
 
 // Get all categories
 export const getAllCategoryMutation: AppRouteQueryImplementation<
@@ -13,14 +15,28 @@ export const getAllCategoryMutation: AppRouteQueryImplementation<
 
     return {
       status: 200,
-      body: categories.map((category) => ({
-        _id: category._id.toString(),
-
-        name: category.name,
-        description: category.description,
-      })),
+      body: await Promise.all(
+        categories.map(async (category) => {
+          const subCategories =
+            await subCategoryRepository.getSubCategoriesByParentCategoryID(
+              category._id.toString()
+            );
+          return {
+            _id: category._id.toString(),
+            name: category.name,
+            description: category.description,
+            subCategories: subCategories.map((i) => ({
+              _id: i._id.toString(),
+              name: i.name,
+              description: i.description,
+              parentCategoryId: i.parentCategoryId.toString(),
+            })),
+          };
+        })
+      ),
     };
   } catch (error) {
+    console.log(error);
     return {
       status: 500,
       body: {
