@@ -3,7 +3,7 @@ import SubCategoryModel, {
 } from "../../../models/subCategory.model";
 import mongoose from "mongoose";
 
-export const createSubCategoryDB = async (data: {
+const createSubCategoryDB = async (data: {
   name: string;
   description: string;
   parentCategoryId: string;
@@ -18,7 +18,7 @@ export const createSubCategoryDB = async (data: {
   return subCategory;
 };
 
-export const updateSubCategoryByIDDB = async (
+const updateSubCategoryByIDDB = async (
   subcategoryID: string,
   data: { name: string; description: string }
 ): Promise<ICategoryModel | null> => {
@@ -33,12 +33,21 @@ export const updateSubCategoryByIDDB = async (
   return updatedSubCategory;
 };
 
-export const getAllSubCategoriesDB = async (): Promise<ICategoryModel[]> => {
+const getAllSubCategoriesDB = async (): Promise<ICategoryModel[]> => {
   const subCategories = await SubCategoryModel.find({});
   return subCategories;
 };
 
-export const removeSubCategoryByIDDB = async (
+const getSubCategoriesByParentCategoryID = async (
+  subcategoryID: string
+): Promise<ICategoryModel[]> => {
+  const subCategories = await SubCategoryModel.find({
+    parentCategoryId: new mongoose.Types.ObjectId(subcategoryID),
+  });
+  return subCategories;
+};
+
+const removeSubCategoryByIDDB = async (
   subcategoryID: string
 ): Promise<ICategoryModel | null> => {
   const objectId = new mongoose.Types.ObjectId(subcategoryID);
@@ -47,3 +56,13 @@ export const removeSubCategoryByIDDB = async (
 
   return deletedSubCategory;
 };
+
+const subCategoryRepository = {
+  getSubCategoriesByParentCategoryID,
+  createSubCategoryDB,
+  updateSubCategoryByIDDB,
+  getAllSubCategoriesDB,
+  removeSubCategoryByIDDB,
+};
+
+export default subCategoryRepository;

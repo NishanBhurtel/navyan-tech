@@ -8,10 +8,24 @@ import Hero from "@/components/user-components/page/hero";
 import PcComponents from "@/components/user-components/page/pcComponents";
 import ShopByCategory from "@/components/user-components/page/shopByCategory";
 import TrustedBrand from "@/components/user-components/page/trustedBrand";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Annoucement />
       <Navbar />
       <Hero />

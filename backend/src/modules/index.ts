@@ -4,6 +4,7 @@ import { authRouter } from "./auth/auth.router";
 import { productRouter } from "./product/product.router";
 import { subCategoryRouter } from "../modules/subCategory/subCategory.router";
 import { categoryRouter } from "./category/category.router";
+import { emailRouter } from "./email/email.router";
 
 const s = initServer();
 
@@ -12,4 +13,5 @@ export const router = s.router(contract, {
   product: productRouter,
   subCategory: subCategoryRouter,
   category: categoryRouter,
+  email: emailRouter,
 });
