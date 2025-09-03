@@ -4,12 +4,10 @@ import EmailTab from "@/components/admin-components/email/emailTab";
 import EmailHeader from "@/components/admin-components/email/header";
 import StatsCard from "@/components/admin-components/email/statsCard";
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { useState } from "react"
-
+import { useState } from "react";
 
 export default function EmailMarketingPage() {
-
-    const [activeTab, setActiveTab] = useState("compose");
+  const [activeTab, setActiveTab] = useState("compose");
 
   return (
     <div className="space-y-6">

@@ -9,6 +9,7 @@ import {
 
 import z from "zod";
 import { errorSchema, successSchema } from "../common.schema";
+import { METHODS } from "http";
 
 const c = initContract();
 
@@ -37,6 +38,16 @@ export const authContract = c.router({
       404: errorSchema,
       401: errorSchema,
       400: errorSchema,
+      500: errorSchema,
+    },
+  },
+  getTotalNumberOfUsers: {
+    method: "GET",
+    path: "/users/all",
+    summary: "Get total number of  users",
+    responses: {
+      200: successSchema,
+      404: errorSchema,
       500: errorSchema,
     },
   },
