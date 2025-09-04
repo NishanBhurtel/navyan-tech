@@ -10,11 +10,11 @@ export const createProduct: AppRouteMutationImplementation<
   try {
     const {
       name,
-      image,
+      images,
       discountedPrice,
       originalPrice,
       brand,
-      details,
+      description,
       categoryID,
       stock,
       specifications,
@@ -47,9 +47,9 @@ export const createProduct: AppRouteMutationImplementation<
       originalPrice,
       discountedPrice,
       stock,
-      description: details,
+      description: description,
       brand: brand,
-      images: image,
+      images: images,
       technicalSpecification: {
         performance: {
           series,

@@ -1,16 +1,22 @@
-"use client"
-import { Card, CardContent } from "@/components/user-components/ui/card"
-import { Input } from "@/components/user-components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/user-components/ui/select"
-import { Search } from "lucide-react"
+"use client";
+import { Card, CardContent } from "@/components/user-components/ui/card";
+import { Input } from "@/components/user-components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/user-components/ui/select";
+import { Search } from "lucide-react";
 
 interface FiltersBarProps {
-  searchTerm: string
-  onSearch: (v: string) => void
-  statusFilter: string
-  onStatusChange: (v: string) => void
-  priorityFilter: string
-  onPriorityChange: (v: string) => void
+  searchTerm: string;
+  onSearch: (v: string) => void;
+  statusFilter: string;
+  onStatusChange: (v: string) => void;
+  priorityFilter: string;
+  onPriorityChange: (v: string) => void;
 }
 
 export default function FiltersBar({
@@ -63,5 +69,5 @@ export default function FiltersBar({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

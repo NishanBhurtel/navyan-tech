@@ -2,11 +2,11 @@ import z from "zod";
 
 export const createProductSchema = z.object({
   name: z.string(),
-  image: z.array(z.string()),
+  images: z.array(z.string()),
   discountedPrice: z.number(),
   originalPrice: z.number(),
   brand: z.string(),
-  details: z.string(),
+  description: z.string(),
   categoryID: z.string(),
   stock: z.number(),
 

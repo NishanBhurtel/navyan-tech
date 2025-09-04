@@ -46,6 +46,9 @@ const ProductSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
+    discountedPrice: {
+      type: Number,
+    },
     quantity: {
       type: Number,
     },
@@ -58,7 +61,7 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: false,
     },
-    stockAlert: {
+    stock: {
       type: Number,
     },
     originalPrice: {

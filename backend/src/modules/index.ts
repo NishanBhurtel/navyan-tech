@@ -5,6 +5,7 @@ import { productRouter } from "./product/product.router";
 import { subCategoryRouter } from "../modules/subCategory/subCategory.router";
 import { categoryRouter } from "./category/category.router";
 import { emailRouter } from "./email/email.router";
+import { orderRouter } from "./order/order.router";
 
 const s = initServer();
 
@@ -14,4 +15,5 @@ export const router = s.router(contract, {
   subCategory: subCategoryRouter,
   category: categoryRouter,
   email: emailRouter,
+  order: orderRouter,
 });
