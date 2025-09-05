@@ -5,7 +5,7 @@ import { Button } from "@/components/user-components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/user-components/ui/dropdown-menu"
 import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react"
 
-export default function ProductActions({ productId, onDelete }: { productId: number; onDelete: (id: number) => void }) {
+export default function ProductActions({ productId, onDelete }: { productId: string; onDelete: (id: string) => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

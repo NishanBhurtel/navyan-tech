@@ -12,6 +12,7 @@ import TrustedBrand from "@/components/user-components/page/trustedBrand";
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
+  
       <Annoucement />
       <Navbar />
       <Hero />

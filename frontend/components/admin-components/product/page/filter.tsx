@@ -48,16 +48,16 @@ const mockProducts = [
 export default function Filters(){
       const [searchTerm, setSearchTerm] = useState("")
       const [categoryFilter, setCategoryFilter] = useState("all")
-      const [statusFilter, setStatusFilter] = useState("all")
+      const [subCategoryFilter, setSubCategoryFilter] = useState("all");
     
       const filteredProducts = mockProducts.filter((product) => {
         const matchesSearch =
           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.sku.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesCategory = categoryFilter === "all" || product.category === categoryFilter
-        const matchesStatus = statusFilter === "all" || product.status === statusFilter
+        const matchesSUbCategory = subCategoryFilter === "all" || product.subcategory === subCategoryFilter
     
-        return matchesSearch && matchesCategory && matchesStatus
+        return matchesSearch && matchesCategory && matchesSUbCategory
       })
     return(
            <Card>
@@ -85,13 +85,16 @@ export default function Filters(){
                 <SelectItem value="Components">Components</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={subCategoryFilter} onValueChange={setSubCategoryFilter}>
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="all">All Category</SelectItem>
                 <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>

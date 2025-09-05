@@ -3,13 +3,15 @@ import { AppRouteQueryImplementation } from "@ts-rest/express";
 
 import { subCategoryContract } from "../../contract/subcategories/subcategory.contract";
 
-import { getAllSubCategoriesDB } from "../../repository/mangodb/subCategory/subCategory.repository";
-
-const getAllSubCategory: AppRouteQueryImplementation<
+import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+const getSubCategoriesByCategoryID: AppRouteQueryImplementation<
   typeof subCategoryContract.getSubCategoriesByCategoryID
-> = async () => {
+> = async ({ params }) => {
   try {
-    const subCategories = await getAllSubCategoriesDB();
+    const subCategories =
+      await subCategoryRepository.getSubCategoriesByParentCategoryID(
+        params.categoryID
+      );
 
     return {
       status: 200,
@@ -33,5 +35,5 @@ const getAllSubCategory: AppRouteQueryImplementation<
 };
 
 export const SubCategoryQueryHandler = {
-  getAllSubCategory,
+  getSubCategoriesByCategoryID,
 };

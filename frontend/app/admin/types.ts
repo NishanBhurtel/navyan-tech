@@ -1,17 +1,15 @@
 // src/types.ts
 
 export interface User {
-  id: number
-  name: string
-  email: string
-  phone: string
-  role: "customer" | "admin"
-  status: "active" | "inactive" | "banned"
-  registeredAt: string
-  lastLogin: string
-  totalOrders: number
-  totalSpent: number
-  avatar?: string
+  _id: string;
+    firstName: string;
+    lastName: string;
+  email: string;
+  phoneNumber: string;
+  role: "customer" | "admin";
+  registeredAt: string;
+  createdAt: string;
+  totalOrders: number;
 }
 
 export interface UserStatus {
@@ -24,8 +22,4 @@ export interface UserStatus {
 
 export interface UsersTableProps {
   users: User[]
-  handleUserAction: (user: User, action: string) => void
-  handleStatusChange: (userId: number, newStatus: User["status"]) => void
-  getRoleColor: (role: User["role"]) => string
-  getStatusColor: (status: User["status"]) => string
 }

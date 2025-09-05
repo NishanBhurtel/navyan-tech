@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -30,20 +29,38 @@ import {
   TCreateProductSchema,
 } from "@/lib/form-validation/product-validation";
 
-const categories = {
-  Laptops: ["Gaming Laptops", "MacBook", "Ultrabooks", "Business Laptops"],
-  Computers: ["Gaming Desktop", "Mini PC", "All-in-One", "Workstations"],
-  Components: [
-    "Processors",
-    "Graphics Cards",
-    "Motherboards",
-    "RAM",
-    "Storage",
-  ],
-  Accessories: ["Keyboards", "Mice", "Monitors", "Speakers"],
-};
+import { useEffect, useState } from "react";
+import { categoriesApi } from "@/lib/api/category";
+
+interface Subcategory {
+  _id: string;
+  name: string;
+}
+
+interface Category {
+  _id: string;
+  name: string;
+  subCategories?: Subcategory[];
+}
 
 export default function AddProductPage() {
+  const [categories, setCategories] = useState<Category[]>([]); // <-- empty array instead of undefined
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoriesApi.getAll(); // fetch categories with subcategories
+        setCategories(data);
+      } catch (err: any) {
+        console.log(err.message || "Failed to load categories");
+      } finally {
+        console.log("Categories are fetched");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const router = useRouter();
   const { showToast } = useToast();
 
@@ -56,36 +73,6 @@ export default function AddProductPage() {
     formState: { errors },
   } = useForm<TCreateProductSchema>({
     resolver: zodResolver(createProductSchema),
-    defaultValues: {
-      name: "",
-      stock: 0,
-      description: "",
-      originalPrice: 0,
-      discountPrice: 0,
-      images: [""],
-      specifications: [], // optional
-      categoryID: "",
-      brand: "",
-      technicalSpecification: {
-        performance: {
-          series: "",
-          cpu: "",
-          graphics: "",
-          display: "",
-          operatingSystem: "",
-        },
-        memoryAndStorage: {
-          mainMemory: "",
-          storage: "",
-          connectivity: "",
-          camera: "",
-          audio: "",
-          battery: "",
-          weight: "",
-          warrenty: "",
-        },
-      },
-    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -102,7 +89,20 @@ export default function AddProductPage() {
 
   const mutation = useMutation({
     mutationFn: (data: TCreateProductSchema) =>
-      productApi.createProductApi(data),
+      productApi.createProductApi({
+        brand: data.brand,
+        categoryID: data.categoryID,
+        subCategoryID: data.subCategoryID,
+        discountedPrice: data.discountedPrice,
+        images: data.images,
+        description: data.description,
+        name: data.name,
+        originalPrice: data.originalPrice,
+        specifications: data.specifications,
+        stock: data.stock,
+        technicalSpecification: data.technicalSpecification,
+      }),
+
     onSuccess: () => {
       showToast("Product added successfully", "bg-green-600");
       router.push("/admin/products");
@@ -115,8 +115,18 @@ export default function AddProductPage() {
     },
   });
 
-  const onSubmit = (data: TCreateProductSchema) => mutation.mutate(data);
+  const onSubmit = (data: TCreateProductSchema) => {
+    console.log("submitting", data);
+    mutation.mutate(data);
+  };
 
+  console.log(errors);
+  console.log(watch("series"));
+
+  const selectedCategoryID = watch("categoryID");
+  const subCategories = selectedCategoryID
+    ? categories.find((c) => c._id === selectedCategoryID)?.subCategories
+    : [];
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -156,7 +166,7 @@ export default function AddProductPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Original Price (Rs)</Label>
+                  <Label>Original Price (Rs) *</Label>
                   <Input
                     className="my-2"
                     type="number"
@@ -174,12 +184,12 @@ export default function AddProductPage() {
                   <Input
                     className="my-2"
                     type="number"
-                    {...register("discountPrice", { valueAsNumber: true })}
+                    {...register("discountedPrice")}
                     placeholder="0"
                   />
-                  {errors.discountPrice && (
+                  {errors.discountedPrice && (
                     <p className="text-red-500 text-sm">
-                      {errors.discountPrice.message}
+                      {errors.discountedPrice.message}
                     </p>
                   )}
                 </div>
@@ -190,7 +200,7 @@ export default function AddProductPage() {
           {/* Images */}
           <Card>
             <CardHeader>
-              <CardTitle>Upload Images</CardTitle>
+              <CardTitle>Upload Images *</CardTitle>
             </CardHeader>
             <CardContent>
               <Label htmlFor="addImages">
@@ -201,7 +211,7 @@ export default function AddProductPage() {
                 name="images"
                 render={({ field }) => (
                   <input
-                  id="addImages"
+                    id="addImages"
                     type="file"
                     multiple
                     accept="image/*"
@@ -460,16 +470,16 @@ export default function AddProductPage() {
                     <Input
                       className="my-2"
                       {...register(
-                        "technicalSpecification.memoryAndStorage.warrenty"
+                        "technicalSpecification.memoryAndStorage.warranty"
                       )}
                       placeholder="Warranty"
                     />
                     {errors.technicalSpecification?.memoryAndStorage
-                      ?.warrenty && (
+                      ?.warranty && (
                       <p className="text-red-500 text-sm">
                         {
                           errors.technicalSpecification.memoryAndStorage
-                            .warrenty.message
+                            .warranty.message
                         }
                       </p>
                     )}
@@ -537,60 +547,45 @@ export default function AddProductPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="mb-2">Category *</Label>
-                <Controller
-                  control={control}
-                  name="category"
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.keys(categories).map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.category && (
-                  <p className="text-red-500 text-sm">
-                    {errors.category.message}
-                  </p>
-                )}
+                <label className="block mb-2 font-medium">Category</label>
+                <Select onValueChange={(val) => setValue("categoryID", val)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="-- Select a category --" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                    {categories.map((cat) => (
+                      <div key={cat._id}>
+                        {/* Main category */}
+                        <SelectItem value={cat._id} className="font-semibold">
+                          {cat.name}
+                        </SelectItem>
+                      </div>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <Label className="mb-2">Subcategory *</Label>
-                <Controller
-                  control={control}
-                  name="subcategory"
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select subcategory" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {selectedCategory &&
-                          categories[
-                            selectedCategory as keyof typeof categories
-                          ]?.map((subcat) => (
-                            <SelectItem key={subcat} value={subcat}>
-                              {subcat}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.subcategory && (
-                  <p className="text-red-500 text-sm">
-                    {errors.subcategory.message}
-                  </p>
-                )}
+                <label className="block mb-2 font-medium">Sub Category</label>
+                <Select onValueChange={(val) => setValue("subCategoryID", val)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="-- Select a subcategory --" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                    <div>
+                      {/* Subcategories */}
+                      {subCategories?.map((sub) => (
+                        <SelectItem
+                          key={sub._id}
+                          value={sub._id}
+                          className="pl-4 text-sm"
+                        >
+                          {sub.name}
+                        </SelectItem>
+                      ))}
+                    </div>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>

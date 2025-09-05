@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 import {
@@ -14,15 +15,20 @@ import {
 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useCategories } from "@/hooks/categories/getCategories";
 
 const Navbar = () => {
+
+  const { data: categories, isLoading, error } = useCategories();
+   if (isLoading) return <p>Loading categories...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-4">
             <div className="w-18 h-15  rounded-lg flex items-center justify-center">
-              {/* <span className="text-white font-bold text-sm"></span> */}
               <img src="/NavYantra-Logo.png" alt="" />
             </div>
           </Link>
@@ -269,6 +275,42 @@ const Navbar = () => {
                   </div>
                 </div>
               </div>
+            </nav>
+
+            <nav className="flex items-center justify-center space-x-8 py-3">
+              {categories?.map((cat) => (
+                <div key={cat._id} className="relative group">
+                  <Link
+                    href={`/category/${cat.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
+                    className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors font-medium group"
+                  >
+                    {/* You can map icons if needed — or skip this if not present */}
+                    {/* <Monitor className="w-4 h-4 group-hover:scale-110 transition-transform" /> */}
+                    <span>{cat.name}</span>
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Link>
+
+                  {cat.subCategories && cat.subCategories.length > 0 && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="py-2">
+                        {cat.subCategories.map((sub) => (
+                          <Link
+                            key={sub._id}
+                            href={`/category/${sub.name
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </nav>
           </div>
         </div>

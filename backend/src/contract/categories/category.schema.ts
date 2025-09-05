@@ -10,6 +10,14 @@ export const getAllCategorySchema = z.array(
     _id: z.string(),
     name: z.string(),
     description: z.string(),
+    subCategories: z.array(
+      z.object({
+        _id: z.string(),
+        name: z.string(),
+        description: z.string(),
+        parentCategoryId: z.string(),
+      })
+    ),
   })
 );
 export const updateCategoryDetailsSchema = z.object({
@@ -18,6 +26,4 @@ export const updateCategoryDetailsSchema = z.object({
   description: z.string().min(1, "Description is required!"),
 });
 
-export const removeCategorySchema = z.object({
-  categoryID: z.string(),
-});
+export const removeCategorySchema = z.object({});

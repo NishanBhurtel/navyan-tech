@@ -1,6 +1,7 @@
+import { IProduct } from "@/lib/utils/types/product.type";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
-export default function Specification({ product }: { product: any }) {
+export default function Specification({ product }: { product: IProduct }) {
   return (
     <div className="container mx-auto px-4 mt-16">
       <Tabs defaultValue="specifications" className="w-full">
@@ -24,11 +25,11 @@ export default function Specification({ product }: { product: any }) {
                 <h4 className="text-lg font-semibold text-foreground">Performance</h4>
                 {[
                   { label: "Brand", value: product.brand },
-                  { label: "Series", value: product.series },
-                  { label: "CPU", value: product.cpu },
-                  { label: "Graphics", value: product.graphics },
-                  { label: "Display", value: product.display },
-                  { label: "Operating System", value: product.os },
+                  { label: "Series", value: product.technicalSpecification?.performance.series },
+                  { label: "CPU", value: product.technicalSpecification?.performance.cpu },
+                  { label: "Graphics", value: product.technicalSpecification?.performance.graphics },
+                  { label: "Display", value: product.technicalSpecification?.performance.display },
+                  { label: "Operating System", value: product.technicalSpecification?.performance.operatingSystem },
                 ].map((spec, i) => (
                   <div key={i} className="flex justify-between py-3 border-b border-border/50">
                     <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
@@ -40,14 +41,14 @@ export default function Specification({ product }: { product: any }) {
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-foreground">Memory & Storage</h4>
                 {[
-                  { label: "Main memory", value: product.memory },
-                  { label: "Storage", value: product.storage },
-                  { label: "Connectivity", value: product.connectivity },
-                  { label: "Camera", value: product.camera },
-                  { label: "Audio", value: product.audio },
-                  { label: "Battery", value: product.battery },
-                  { label: "Weight", value: product.weight },
-                  { label: "Warranty", value: product.warranty },
+                  { label: "Main memory", value: product.technicalSpecification?.memoryAndStorage.mainMemory },
+                  { label: "Storage", value: product.technicalSpecification?.memoryAndStorage.storage },
+                  { label: "Connectivity", value: product.technicalSpecification?.memoryAndStorage.connectivity },
+                  { label: "Camera", value: product.technicalSpecification?.memoryAndStorage.camera },
+                  { label: "Audio", value: product.technicalSpecification?.memoryAndStorage.audio },
+                  { label: "Battery", value: product.technicalSpecification?.memoryAndStorage.battery },
+                  { label: "Weight", value: product.technicalSpecification?.memoryAndStorage.weight },
+                  { label: "Warranty", value: product.technicalSpecification?.memoryAndStorage.warranty },
                 ].map((spec, i) => (
                   <div key={i} className="flex justify-between py-3 border-b border-border/50">
                     <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
@@ -73,9 +74,9 @@ export default function Specification({ product }: { product: any }) {
                 Key Features:
               </h4>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                {product.features.map((f: string, i: number) => (
+                {/* {product.features.map((f: string, i: number) => (
                   <li key={i}>{f}</li>
-                ))}
+                ))} */}
               </ul>
             </div>
           </div>

@@ -37,10 +37,11 @@ const getProductByIdApi = async (
 };
 
 // DELETE /products/:id - Delete product
-const deleteProductApi = async (
-  productId: TDeleteProductSchema["productId"]
-) => {
-  const response = await apiClient.delete(`/product/${productId}`);
+export const deleteProductApi = async (productId: string) => {
+  // If your backend expects the body as well, send it
+  const response = await apiClient.delete(`/product/${productId}`, {
+    data: { productId }, // include body if backend expects it
+  });
   return response.data;
 };
 
