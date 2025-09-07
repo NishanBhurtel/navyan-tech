@@ -19,7 +19,6 @@ const subCategorySchema = new Schema<ICategoryModel>({
   },
 });
 
-// Mongoose model
 const SubCategoryModel = mongoose.model<ICategoryModel>(
   "SubCategory",
   subCategorySchema
