@@ -5,10 +5,6 @@ export interface WishlistItem {
   image: string;
   price: string;
   originalPrice?: string;
-  rating: number;
-  reviews: number;
-  badge: string;
-  badgeColor: string;
   category: string;
   inStock: boolean;
 }

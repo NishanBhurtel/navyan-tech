@@ -1,10 +1,6 @@
 import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { subCategoryContract } from "../../contract/subcategories/subcategory.contract";
-import {
-  createSubCategoryDB,
-  updateSubCategoryByIDDB,
-  removeSubCategoryByIDDB,
-} from "../../repository/mangodb/subCategory/subCategory.repository";
+import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
 
 export const createSubCategory: AppRouteMutationImplementation<
   typeof subCategoryContract.createCategory
@@ -12,7 +8,7 @@ export const createSubCategory: AppRouteMutationImplementation<
   try {
     const { name, description, parentCategoryId } = req.body;
 
-    const subCategory = await createSubCategoryDB({
+    const subCategory = await subCategoryRepository.createSubCategoryDB({
       name,
       description,
       parentCategoryId,
@@ -44,7 +40,7 @@ export const updateSubCategoryDetailsByID: AppRouteMutationImplementation<
     const { subcategoryID } = req.params;
     const { name, description } = req.body;
 
-    const updatedSubCategory = await updateSubCategoryByIDDB(subcategoryID, {
+    const updatedSubCategory = await subCategoryRepository.updateSubCategoryByIDDB(subcategoryID, {
       name,
       description,
     });
@@ -82,9 +78,9 @@ export const removeSubCategoryByID: AppRouteMutationImplementation<
   typeof subCategoryContract.removeSubCategoryByID
 > = async ({ req }) => {
   try {
-    const { subcategoryID } = req.body; // because your schema has it in body
+    const { subcategoryID } = req.params; // because your schema has it in body
 
-    const deletedSubCategory = await removeSubCategoryByIDDB(subcategoryID);
+    const deletedSubCategory = await subCategoryRepository.removeSubCategoryByIDDB(subcategoryID);
 
     if (!deletedSubCategory) {
       return {

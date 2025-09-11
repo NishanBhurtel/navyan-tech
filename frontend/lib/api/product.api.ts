@@ -1,8 +1,7 @@
+import { IProductQueryParams } from "@/hooks/product/getAllProducts";
 import apiClient from "../api";
 import {
   TCreateProductSchema,
-  TDeleteProductSchema,
-  TGetAllProductSchema,
   TGetProductByIDSchema,
   TUpdateProductSchema,
 } from "../form-validation/product-validation";
@@ -23,8 +22,14 @@ const updateProductApi = async (
 };
 
 // GET /products - Get all products (with filters/sorting)
-const getAllProductsApi = async (filters?: Partial<TGetAllProductSchema>) => {
-  const response = await apiClient.get("/products", { params: filters });
+const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
+  const response = await apiClient.get("/products", {
+    params: {
+      search,
+      ...(filter ?? {}), // spread filter fields into params
+    },
+  });
+
   return response.data;
 };
 

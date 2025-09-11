@@ -1,6 +1,12 @@
 import { IProduct } from "@/lib/utils/types/product.type";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
+interface Specification {
+  key: string;
+  value: string;
+  _id: string; // include this
+}
+
 export default function Specification({ product }: { product: IProduct }) {
   return (
     <div className="container mx-auto px-4 mt-16">
@@ -22,37 +28,106 @@ export default function Specification({ product }: { product: IProduct }) {
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-foreground">Performance</h4>
+                <h4 className="text-lg font-semibold text-foreground">
+                  Performance
+                </h4>
                 {[
                   { label: "Brand", value: product.brand },
-                  { label: "Series", value: product.technicalSpecification?.performance.series },
-                  { label: "CPU", value: product.technicalSpecification?.performance.cpu },
-                  { label: "Graphics", value: product.technicalSpecification?.performance.graphics },
-                  { label: "Display", value: product.technicalSpecification?.performance.display },
-                  { label: "Operating System", value: product.technicalSpecification?.performance.operatingSystem },
+                  {
+                    label: "Series",
+                    value: product.technicalSpecification?.performance.series,
+                  },
+                  {
+                    label: "CPU",
+                    value: product.technicalSpecification?.performance.cpu,
+                  },
+                  {
+                    label: "Graphics",
+                    value: product.technicalSpecification?.performance.graphics,
+                  },
+                  {
+                    label: "Display",
+                    value: product.technicalSpecification?.performance.display,
+                  },
+                  {
+                    label: "Operating System",
+                    value:
+                      product.technicalSpecification?.performance
+                        .operatingSystem,
+                  },
                 ].map((spec, i) => (
-                  <div key={i} className="flex justify-between py-3 border-b border-border/50">
-                    <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
-                    <span className="text-sm text-foreground max-w-md text-right">{spec.value}</span>
+                  <div
+                    key={i}
+                    className="flex justify-between py-3 border-b border-border/50"
+                  >
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {spec.label}:
+                    </span>
+                    <span className="text-sm text-foreground max-w-md text-right">
+                      {spec.value}
+                    </span>
                   </div>
                 ))}
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-foreground">Memory & Storage</h4>
+                <h4 className="text-lg font-semibold text-foreground">
+                  Memory & Storage
+                </h4>
                 {[
-                  { label: "Main memory", value: product.technicalSpecification?.memoryAndStorage.mainMemory },
-                  { label: "Storage", value: product.technicalSpecification?.memoryAndStorage.storage },
-                  { label: "Connectivity", value: product.technicalSpecification?.memoryAndStorage.connectivity },
-                  { label: "Camera", value: product.technicalSpecification?.memoryAndStorage.camera },
-                  { label: "Audio", value: product.technicalSpecification?.memoryAndStorage.audio },
-                  { label: "Battery", value: product.technicalSpecification?.memoryAndStorage.battery },
-                  { label: "Weight", value: product.technicalSpecification?.memoryAndStorage.weight },
-                  { label: "Warranty", value: product.technicalSpecification?.memoryAndStorage.warranty },
+                  {
+                    label: "Main memory",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage
+                        .mainMemory,
+                  },
+                  {
+                    label: "Storage",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.storage,
+                  },
+                  {
+                    label: "Connectivity",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage
+                        .connectivity,
+                  },
+                  {
+                    label: "Camera",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.camera,
+                  },
+                  {
+                    label: "Audio",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.audio,
+                  },
+                  {
+                    label: "Battery",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.battery,
+                  },
+                  {
+                    label: "Weight",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.weight,
+                  },
+                  {
+                    label: "Warranty",
+                    value:
+                      product.technicalSpecification?.memoryAndStorage.warranty,
+                  },
                 ].map((spec, i) => (
-                  <div key={i} className="flex justify-between py-3 border-b border-border/50">
-                    <span className="text-sm font-medium text-muted-foreground">{spec.label}:</span>
-                    <span className="text-sm text-foreground max-w-md text-right">{spec.value}</span>
+                  <div
+                    key={i}
+                    className="flex justify-between py-3 border-b border-border/50"
+                  >
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {spec.label}:
+                    </span>
+                    <span className="text-sm text-foreground max-w-md text-right">
+                      {spec.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -71,12 +146,17 @@ export default function Specification({ product }: { product: IProduct }) {
                 {product.description}
               </p>
               <h4 className="text-lg font-semibold text-foreground mt-6 mb-3">
-                Key Features:
+                Specifications:
               </h4>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                {/* {product.features.map((f: string, i: number) => (
-                  <li key={i}>{f}</li>
-                ))} */}
+                {product.specifications.map((spec, i) => (
+                  <li key={i}>
+                    <span className="font-semibold text-foreground">
+                      {spec.key}:
+                    </span>{" "}
+                    {spec.value}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

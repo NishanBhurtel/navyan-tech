@@ -11,7 +11,7 @@ import { useToast } from "@/lib/toast";
 export default function FeaturedProduct() {
   const { showToast } = useToast();
 
-  const { data: products, isLoading, isError } = useAllProducts();
+  const { data: products, isLoading, isError } = useAllProducts({});
   // const featuredProducts = products? products.filter((product) => product.featured === true)
   // : "";
 
@@ -27,10 +27,6 @@ export default function FeaturedProduct() {
       image: product.images?.[0] ?? "",
       price: product.originalPrice ?? "",
       originalPrice: product.discountedPrice ?? "",
-      rating: 0,
-      reviews: 0,
-      badge: "Wishlist",
-      badgeColor: "bg-pink-600",
       category: product.categoryID?.name ?? "",
       inStock: product.inStock ?? true,
     };
@@ -80,13 +76,13 @@ export default function FeaturedProduct() {
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold font-serif text-foreground">
-                        {product.originalPrice}
+                      <span className="text-lg font-bold text-foreground">
+                        Rs.{product.originalPrice}
                       </span>
                     </div>
                     {product.discountedPrice && (
                       <span className="text-xs text-muted-foreground line-through">
-                        {product.discountedPrice}
+                        Rs.{product.discountedPrice}
                       </span>
                     )}
                   </div>

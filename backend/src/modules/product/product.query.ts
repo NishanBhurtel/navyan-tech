@@ -37,16 +37,19 @@ const getProductDetailsByID: AppRouteQueryImplementation<
         data: {
           _id: product._id.toString(),
           name: product.name,
-          image: product.images ?? [],
+          images: product.images ?? [],
           price: product.discountedPrice,
           originalPrice: product.originalPrice,
           discountedPrice: product.discountedPrice,
           brand: product.brand ?? "",
-          details: product.description ?? "",
+          description: product.description ?? "",
           categoryID: product.categoryID ?? "",
+          subCategoryID: product.subCategoryID?? "",
           stock: product.stock ?? 0,
           technicalSpecification: product.technicalSpecification ?? undefined,
           specifications: product.specifications ?? undefined,
+          createdAt: product.createdAt,
+
         },
       },
     };
@@ -64,25 +67,32 @@ const getProductDetailsByID: AppRouteQueryImplementation<
 
 const getALLProduct: AppRouteQueryImplementation<
   typeof productContract.getAllProduct
-> = async ({ req, res }) => {
+> = async ({ query }) => {
   try {
-    const products = await productRepository.getAllProducts();
-
-    const formattedProducts = products.map((p) => ({
-      _id: p._id.toString(),
-      name: p.name,
-      image: p.images,
-      price: p.price,
-      originalPrice: p.originalPrice || 0,
-      brand: p.technicalSpecification?.performance?.brand || "",
-      details: p.description || "",
-      badge: p.badge || undefined,
-      badgeColor: p.badgeColor || undefined,
-      categoryID: p.category || "",
-      productInStock: p.quantity > 0,
-      stockAlert: p.stockAlert || 0,
-      specifications: p.specifications || {},
-      technicalSpecification: p.technicalSpecification || undefined,
+    const products = await productRepository.getAllProducts({
+      searchQuery:query.search,
+      filters:{
+        brand:query.filter?.brand,
+        categoryID:query.filter?.categoryID,
+        maxPrice:query.filter?.maxPrice,
+        minPrice:query.filter?.minPrice,
+        subCategoryID:query.filter?.subCategoryID
+      } 
+    });
+    const formattedProducts = products.map((product) => ({
+      _id: product._id.toString(),
+      name: product.name,
+      images: product.images ?? [],
+      discountedPrice: product.discountedPrice,
+      originalPrice: product.originalPrice,
+      brand: product.brand ?? "",
+      description: product.description ?? "",
+      categoryID: product.categoryID,
+      subCategoryID: product.subCategoryID,
+      stock: product.stock ?? 0,
+      specifications: product.specifications ?? [],
+      technicalSpecification: product.technicalSpecification ?? undefined,
+      createdAt: product.createdAt,
     }));
 
     return {

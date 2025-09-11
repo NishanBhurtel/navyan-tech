@@ -8,7 +8,7 @@ class UserRepository {
   }
 
   async save(
-    userData: Pick<IUser, "userName" | "email" | "password" | "phoneNumber">
+    userData: Pick<IUser, "userName" | "email" | "phoneNumber" | "password">
   ) {
     try {
       const user = new this.userModel({
@@ -17,7 +17,6 @@ class UserRepository {
           lastName: userData.userName.lastName,
         },
         email: userData.email,
-        password: userData.password,
         phoneNumber: userData.phoneNumber,
       });
 
@@ -27,7 +26,7 @@ class UserRepository {
     }
   }
 
-  async get(searchQuery?: Partial<IUser>) {
+  async getAllUsers(searchQuery?: Partial<IUser>) {
     try {
       const query: any = {};
 
@@ -56,7 +55,7 @@ class UserRepository {
     }
   }
 
-  async getByID(id: string) {
+  async getUserByID(id: string) {
     try {
       return await this.userModel.findById(id);
     } catch (error) {
@@ -64,7 +63,7 @@ class UserRepository {
     }
   }
 
-  async update(
+  async updateUser(
     id: string,
     data: Pick<IUser, "userName" | "email" | "password" | "phoneNumber">
   ) {
@@ -75,7 +74,7 @@ class UserRepository {
     }
   }
 
-  async delete(id: string) {
+  async deleteUser(id: string) {
     try {
       return await this.userModel.findByIdAndDelete(id);
     } catch (error) {

@@ -11,7 +11,7 @@ export interface ICategoryModel extends Document {
 // Mongoose schema
 const subCategorySchema = new Schema<ICategoryModel>({
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   parentCategoryId: {
     type: Schema.Types.ObjectId,
     ref: "Category",

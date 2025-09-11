@@ -10,24 +10,80 @@ import {
   CardTitle,
 } from "@/components/user-components/ui/card";
 import { Filter } from "lucide-react";
-import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useDeleteProduct } from "@/hooks/product/removeProduct";
+import { useState } from "react";
+import { IProduct } from "@/lib/utils/types/product.type";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function ProductsPage() {
-  const { data: product, isLoading, isError } = useAllProducts();
-
   const { mutate: deleteProduct } = useDeleteProduct();
-  
-
-  if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
-  if (isError || !product)
-    return <div className="p-12 text-center">Product Not Found</div>;
+  const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
 
   const removeProduct = (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
       deleteProduct(id);
     }
+  };
+
+  const handleExport = () => {
+    if (!filteredProducts.length) return;
+
+    const data = filteredProducts.map((product) => ({
+      Name: product.name,
+      Brand: product.brand,
+      Category: product.categoryID?.name || "",
+      SubCategory: product.subCategoryID?.name || "",
+      OriginalPrice: product.originalPrice,
+      DiscountedPrice: product.discountedPrice,
+      Stock: product.stock,
+      Description: product.description || "",
+
+      // Flatten technical specifications (performance)
+      Series: product.technicalSpecification?.performance?.series || "",
+      CPU: product.technicalSpecification?.performance?.cpu || "",
+      Graphics: product.technicalSpecification?.performance?.graphics || "",
+      Display: product.technicalSpecification?.performance?.display || "",
+      OperatingSystem:
+        product.technicalSpecification?.performance?.operatingSystem || "",
+
+      // Flatten technical specifications (memoryAndStorage)
+      MainMemory:
+        product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
+      Storage: product.technicalSpecification?.memoryAndStorage?.storage || "",
+      Connectivity:
+        product.technicalSpecification?.memoryAndStorage?.connectivity || "",
+      Camera: product.technicalSpecification?.memoryAndStorage?.camera || "",
+      Audio: product.technicalSpecification?.memoryAndStorage?.audio || "",
+      Battery: product.technicalSpecification?.memoryAndStorage?.battery || "",
+      Weight: product.technicalSpecification?.memoryAndStorage?.weight || "",
+      Warranty:
+        product.technicalSpecification?.memoryAndStorage?.warranty || "",
+
+      // Flatten specifications array into a single string
+      Specifications: product.specifications
+        .map((spec) => `${spec.key}: ${spec.value}`)
+        .join("; "),
+      CreatedAt: product.createdAt
+        ? new Date(product.createdAt).toLocaleString()
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+    saveAs(
+      blob,
+      `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`
+    );
   };
 
   return (
@@ -36,23 +92,20 @@ export default function ProductsPage() {
       <ProductHeader />
 
       {/* Filters */}
-      <Filters />
+      <Filters onFilter={setFilteredProducts} />
 
       {/* Products Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExport}>
               <Filter className="h-4 w-4 mr-2" />
               Export
             </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductTable
-            products={product}
-            onDelete={(id) => removeProduct(id)}
-          />{" "}
+          <ProductTable products={filteredProducts} onDelete={removeProduct} />
         </CardContent>
       </Card>
     </div>

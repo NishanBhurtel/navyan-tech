@@ -22,9 +22,15 @@ import {
 } from "@/lib/form-validation/order-validation";
 import { orderApi } from "@/lib/api/order.api";
 import { useToast } from "@/lib/toast";
-import { useRouter } from "next/navigation"; // <-- fixed import
+import { useRouter } from "next/navigation";
+import { IProduct } from "@/lib/utils/types/product.type";
 
-export default function OrderForm() {
+interface OrderFormProps {
+  product: IProduct;
+  quantity: number;
+}
+
+export default function OrderForm({ product, quantity }: OrderFormProps) {
   const {
     register,
     handleSubmit,
@@ -42,6 +48,8 @@ export default function OrderForm() {
       zip: "",
       notes: "",
       preferredContact: "",
+      productID: product._id,
+      quantity, // <-- include productId & quantity
     },
   });
 
@@ -62,7 +70,12 @@ export default function OrderForm() {
     },
   });
 
-  const onSubmit = (data: TCreateOrderSchema) => mutation.mutate(data);
+  const onSubmit = (data: TCreateOrderSchema) => {
+    // Attach productId and quantity from props (in case user did not modify)
+    data.productID = product._id;
+    data.quantity = quantity;
+    mutation.mutate(data);
+  };
 
   return (
     <div className="lg:col-span-2">
@@ -171,7 +184,24 @@ export default function OrderForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">State/Province *</Label>
-                  <Input id="state" {...register("state")} className="h-11" />
+                  {/* <Input id="state" {...register("state")} className="h-11" /> */}
+                  <select
+                    id="state"
+                    defaultValue=""
+                    {...register("state")}
+                    className="w-full h-11 px-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="" disabled>
+                      -- Choose Province --
+                    </option>
+                    <option value="koshi">Koshi Province</option>
+                    <option value="madhesh">Madhesh Province</option>
+                    <option value="bagmati">Bagmati Province</option>
+                    <option value="gandaki">Gandaki Province</option>
+                    <option value="lumbini">Lumbini Province</option>
+                    <option value="karnali">Karnali Province</option>
+                    <option value="sudurpaschim">Sudurpashchim Province</option>
+                  </select>
                   {errors.state && (
                     <p className="text-red-500 text-sm">
                       {errors.state.message}
@@ -213,12 +243,13 @@ export default function OrderForm() {
                   {...register("preferredContact")}
                   className="w-full h-11 px-3 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
-                  <option value="" disabled>-- Choose Contact Method --</option>
+                  <option value="" disabled>
+                    -- Choose Contact Method --
+                  </option>
                   <option value="phone">Phone Call</option>
                   <option value="whatsapp">WhatsApp</option>
                   <option value="email">Email</option>
                 </select>
-
                 {errors.preferredContact && (
                   <p className="text-red-500 text-sm">
                     {errors.preferredContact.message}
@@ -231,8 +262,7 @@ export default function OrderForm() {
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold text-lg"
             >
-              {" "}
-              Submit Order Inquiry{" "}
+              Submit Order Inquiry
             </Button>
           </form>
         </CardContent>

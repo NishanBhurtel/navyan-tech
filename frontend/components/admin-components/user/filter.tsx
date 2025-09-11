@@ -4,7 +4,6 @@ import { Search } from "lucide-react"
 interface UserFiltersProps {
   searchTerm: string
   setSearchTerm: (value: string) => void
-
 }
 
 export default function UserFilters({

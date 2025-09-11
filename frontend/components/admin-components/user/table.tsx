@@ -16,7 +16,7 @@ export default function UsersTable({
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Created At</TableHead>
-          <TableHead>Orders</TableHead>
+          {/* <TableHead>Orders</TableHead> */}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -45,7 +45,7 @@ export default function UsersTable({
                 <div className="text-sm text-gray-500">{moment(user.createdAt).format('llll')}</div>
               </div>
             </TableCell>
-            <TableCell className="font-medium">{user.totalOrders}</TableCell>
+            {/* <TableCell className="font-medium">{user.totalOrders}</TableCell> */}
 
           </TableRow>
         ))}

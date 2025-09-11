@@ -62,7 +62,7 @@ export default function (){
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+(977) 9812345678"
                         className="h-11"
                       />
                     </div>

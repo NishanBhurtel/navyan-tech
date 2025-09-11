@@ -1,149 +1,236 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Save, X, Upload, Trash2 } from "lucide-react"
-
-// Mock product data
-const getProductById = (id: string) => {
-  const products = [
-    {
-      id: "1",
-      name: "ASUS ROG Strix Gaming Laptop",
-      sku: "ASU-ROG-001",
-      category: "Laptops",
-      subcategory: "Gaming Laptops",
-      price: 125000,
-      originalPrice: 140000,
-      stock: 15,
-      status: "active",
-      description: "High-performance gaming laptop with RTX 4060 graphics card and Intel Core i7 processor.",
-      specifications: {
-        processor: "Intel Core i7-12700H",
-        graphics: "NVIDIA RTX 4060 8GB",
-        ram: "16GB DDR4",
-        storage: "512GB NVMe SSD",
-        display: '15.6" FHD 144Hz',
-        battery: "90Wh",
-        weight: "2.3kg",
-      },
-      images: [
-        "/placeholder.svg?height=400&width=400",
-        "/placeholder.svg?height=400&width=400",
-        "/placeholder.svg?height=400&width=400",
-      ],
-    },
-  ]
-
-  return products.find((p) => p.id === id) || products[0]
-}
-
-const categories = [
-  { id: "computers", name: "Computers", subcategories: ["Gaming Desktop", "Mini PC", "All-in-One", "Workstation"] },
-  { id: "laptops", name: "Laptops", subcategories: ["Gaming Laptops", "MacBook", "Ultrabooks", "Business Laptops"] },
-  {
-    id: "components",
-    name: "Components",
-    subcategories: ["Processors", "Graphics Cards", "Motherboards", "RAM", "Storage"],
-  },
-  { id: "accessories", name: "Accessories", subcategories: ["Keyboards", "Mice", "Monitors", "Speakers"] },
-]
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Save, X, Upload, Trash2 } from "lucide-react";
+import { useProductByID } from "@/hooks/product/getProductByID";
+import { Button } from "@/components/user-components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/user-components/ui/card";
+import { Label } from "@/components/user-components/ui/label";
+import { Input } from "@/components/user-components/ui/input";
+import { Textarea } from "@/components/user-components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/user-components/ui/select";
+import { useCategories } from "@/hooks/categories/getCategories";
+import { TUpdateProductSchema } from "@/lib/form-validation/product-validation";
+import { productApi } from "@/lib/api/product.api";
 
 export default function ProductEditPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [product, setProduct] = useState(null)
+  const params = useParams();
+  const router = useRouter();
+  const { data: categories, isLoading } = useCategories();
+  const productResponse = useProductByID(params.id as string);
+  const productData = productResponse.data?.data;
+
+
+
   const [formData, setFormData] = useState({
+    _id: "",
     name: "",
-    sku: "",
-    category: "",
-    subcategory: "",
-    price: "",
-    originalPrice: "",
-    stock: "",
-    status: "active",
+    categoryID: "",
+    subCategoryID: "",
+    discountedPrice: 0,
+    originalPrice: 0,
+    brand: "",
+    stock: 0,
     description: "",
-    specifications: {},
-    images: [],
-  })
-  const [selectedCategory, setSelectedCategory] = useState("")
+    specifications: [{
+      key:"",
+      value: "",
+    }],
+    images: [""],
+    technicalSpecification: {
+      performance: {
+        series: "",
+        cpu: "",
+        graphics: "",
+        display: "",
+        operatingSystem: "",
+      },
+      memoryAndStorage: {
+        mainMemory: "",
+        storage: "",
+        connectivity: "",
+        camera: "",
+        audio: "",
+        battery: "",
+        weight: "",
+        warranty: "",
+      },
+    },
+  });
 
+  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  
+
+  // Populate form when productData and categories load
   useEffect(() => {
-    if (params.id) {
-      const productData = getProductById(params.id as string)
-      setProduct(productData)
-      setFormData({
-        name: productData.name,
-        sku: productData.sku,
-        category: productData.category,
-        subcategory: productData.subcategory,
-        price: productData.price.toString(),
-        originalPrice: productData.originalPrice.toString(),
-        stock: productData.stock.toString(),
-        status: productData.status,
-        description: productData.description,
-        specifications: productData.specifications,
-        images: productData.images,
-      })
-      setSelectedCategory(productData.category)
-    }
-  }, [params.id])
+    if (productData && categories) {
+      const categoryObj = categories.find(
+        (c: any) => c._id === productData.categoryID?._id
+      );
+              console.log(productData?.categoryID);
+      console.log(productData?.subCategoryID);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+      setSelectedCategory(categoryObj || null);
+
+      setFormData({
+        _id: productData._id,
+        name: productData.name || "",
+        categoryID: productData.categoryID?._id?.toString() ?? "",
+        subCategoryID: productData.subCategoryID?._id?.toString() ?? "",
+        discountedPrice: productData.discountedPrice || 0,
+        originalPrice: productData.originalPrice || 0,
+        brand: productData.brand || "",
+        stock: productData.stock || 0,
+        description: productData.description || "",
+        specifications: productData.specifications || [],
+        images: productData.images?.length ? productData.images : [""],
+        technicalSpecification: productData.technicalSpecification || {
+          performance: {
+            series: "",
+            cpu: "",
+            graphics: "",
+            display: "",
+            operatingSystem: "",
+          },
+          memoryAndStorage: {
+            mainMemory: "",
+            storage: "",
+            connectivity: "",
+            camera: "",
+            audio: "",
+            battery: "",
+            weight: "",
+            warranty: "",
+          },
+        },
+      });
+    }
+  }, [productData, categories]);
+  
+
+  const handleInputChange = (field: string, value: string | number) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // For technicalSpecification fields
+  const handleTechnicalSpecChange = (
+    section: "performance" | "memoryAndStorage",
+    key: string,
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      technicalSpecification: {
+        ...prev.technicalSpecification,
+        [section]: {
+          ...prev.technicalSpecification[section],
+          [key]: value,
+        },
+      },
+    }));
+  };
 
   const handleSpecificationChange = (key: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       specifications: { ...prev.specifications, [key]: value },
-    }))
-  }
+    }));
+  };
 
-  const handleCategoryChange = (categoryName: string) => {
-    setSelectedCategory(categoryName)
-    setFormData((prev) => ({ ...prev, category: categoryName, subcategory: "" }))
-  }
+  const handleCategoryChange = (categoryID: string) => {
+    const categoryObj = categories?.find((c: any) => c._id === categoryID);
+    setSelectedCategory(categoryObj || null);
+    setFormData((prev) => ({
+      ...prev,
+      categoryID,
+      // select first subcategory of new category by default
+      subCategoryID: categoryObj?.subCategories?.[0]?._id || "",
+    }));
+  };
 
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving product:", formData)
-    alert("Product updated successfully!")
-    router.push(`/admin/products/${params.id}`)
-  }
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
     if (files) {
-      // Handle image upload logic here
-      console.log("Uploading images:", files)
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images.filter(Boolean), ...urls],
+      }));
     }
-  }
+  };
 
   const removeImage = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
-  if (!product) {
-    return <div>Loading...</div>
-  }
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Updated product data:", formData);
+    alert("Product updated successfully!");
+    router.push(`/admin/products/${params.id}`);
+  };
 
-  const selectedCategoryData = categories.find((cat) => cat.name === selectedCategory)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const payload: TUpdateProductSchema = {
+        _id: formData._id,
+        name: formData.name,
+        categoryID: formData.categoryID,
+        subCategoryID: formData.subCategoryID,
+        discountedPrice: Number(formData.discountedPrice),
+        originalPrice: Number(formData.originalPrice),
+        brand: formData.brand,
+        stock: Number(formData.stock),
+        description: formData.description || undefined,
+        specifications: formData.specifications,
+        images:
+          formData.images.filter(Boolean).length > 0
+            ? (formData.images.filter(Boolean) as [string, ...string[]])
+            : ["/placeholder.svg"],
+        technicalSpecification: formData.technicalSpecification,
+      };
+
+      const updatedProduct = await productApi.updateProductApi(
+        params.id as string,
+        payload
+      );
+
+      console.log("Product updated successfully:", updatedProduct);
+      alert("Product updated successfully!");
+      // router.push(`/products/${params.id}`);
+    } catch (error: any) {
+      console.error("Error updating product:", error);
+      alert(
+        error?.response?.data?.message ||
+          "Something went wrong while updating the product."
+      );
+    }
+  };
+
+  console.log(formData);
+
+  if (!productData || isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -154,8 +241,12 @@ export default function ProductEditPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-serif font-bold text-gray-900">Edit Product</h1>
-            <p className="text-gray-600 mt-1">Update product information and settings</p>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">
+              Edit Product
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Update product information and settings
+            </p>
           </div>
         </div>
         <div className="flex space-x-2">
@@ -165,7 +256,7 @@ export default function ProductEditPage() {
               Cancel
             </Link>
           </Button>
-          <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+          <Button type="submit" className="bg-green-600 hover:bg-green-700">
             <Save className="h-4 w-4 mr-2" />
             Save Changes
           </Button>
@@ -173,43 +264,47 @@ export default function ProductEditPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Form */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Basic Information */}
+          {/* Basic Info */}
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    placeholder="Enter product name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="sku">SKU *</Label>
-                  <Input
-                    id="sku"
-                    value={formData.sku}
-                    onChange={(e) => handleInputChange("sku", e.target.value)}
-                    placeholder="Enter SKU"
-                  />
-                </div>
-              </div>
-
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label className="my-2" htmlFor="name">
+                  Product Name *
+                </Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  placeholder="Enter product name"
+                />
+              </div>
+              <div>
+                <Label className="my-2" htmlFor="brand">
+                  Product Brand *
+                </Label>
+                <Input
+                  id="brand"
+                  value={formData.brand}
+                  onChange={(e) => handleInputChange("brand", e.target.value)}
+                  placeholder="Enter product brand"
+                />
+              </div>
+              <div>
+                <Label className="my-2" htmlFor="description">
+                  Description
+                </Label>
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                  placeholder="Enter product description"
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   rows={4}
+                  placeholder="Enter product description"
                 />
               </div>
             </CardContent>
@@ -222,35 +317,47 @@ export default function ProductEditPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
+                {/* Category */}
                 <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select value={formData.category} onValueChange={handleCategoryChange}>
+                  <Label className="my-2" htmlFor="category">
+                    Category *
+                  </Label>
+                  <Select
+                    value={formData.categoryID}
+                    onValueChange={handleCategoryChange}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.name}>
-                          {category.name}
+                      {categories?.map((c: any) => (
+                        <SelectItem key={c._id} value={c._id}>
+                          {c.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Subcategory */}
                 <div>
-                  <Label htmlFor="subcategory">Subcategory *</Label>
+                  <Label className="my-2" htmlFor="subcategory">
+                    Subcategory *
+                  </Label>
                   <Select
-                    value={formData.subcategory}
-                    onValueChange={(value) => handleInputChange("subcategory", value)}
-                    disabled={!selectedCategoryData}
+                    value={formData.subCategoryID}
+                    onValueChange={(val) =>
+                      handleInputChange("subCategoryID", val)
+                    }
+                    disabled={!selectedCategory}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select subcategory" />
                     </SelectTrigger>
                     <SelectContent>
-                      {selectedCategoryData?.subcategories.map((subcategory) => (
-                        <SelectItem key={subcategory} value={subcategory}>
-                          {subcategory}
+                      {selectedCategory?.subCategories?.map((sub: any) => (
+                        <SelectItem key={sub._id} value={sub._id}>
+                          {sub.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -260,33 +367,37 @@ export default function ProductEditPage() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="price">Price (₹) *</Label>
+                  <Label className="my-2" htmlFor="discountedPrice">
+                    Price (Rs.) *
+                  </Label>
                   <Input
-                    id="price"
                     type="number"
-                    value={formData.price}
-                    onChange={(e) => handleInputChange("price", e.target.value)}
-                    placeholder="0"
+                    value={formData.discountedPrice}
+                    onChange={(e) =>
+                      handleInputChange("discountedPrice", e.target.value)
+                    }
                   />
                 </div>
                 <div>
-                  <Label htmlFor="originalPrice">Original Price (₹)</Label>
+                  <Label className="my-2" htmlFor="originalPrice">
+                    Original Price (Rs.)
+                  </Label>
                   <Input
-                    id="originalPrice"
                     type="number"
                     value={formData.originalPrice}
-                    onChange={(e) => handleInputChange("originalPrice", e.target.value)}
-                    placeholder="0"
+                    onChange={(e) =>
+                      handleInputChange("originalPrice", e.target.value)
+                    }
                   />
                 </div>
                 <div>
-                  <Label htmlFor="stock">Stock Quantity *</Label>
+                  <Label className="my-2" htmlFor="stock">
+                    Stock Quantity *
+                  </Label>
                   <Input
-                    id="stock"
                     type="number"
                     value={formData.stock}
                     onChange={(e) => handleInputChange("stock", e.target.value)}
-                    placeholder="0"
                   />
                 </div>
               </div>
@@ -299,16 +410,18 @@ export default function ProductEditPage() {
               <CardTitle>Specifications</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(formData.specifications).map(([key, value]) => (
-                <div key={key} className="grid grid-cols-2 gap-4">
+              {(formData.specifications).map((specification) => (
+                <div key={specification.key} className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</Label>
+                    <Label className="capitalize my-2">{specification.key}</Label>
                   </div>
                   <div>
                     <Input
-                      value={value as string}
-                      onChange={(e) => handleSpecificationChange(key, e.target.value)}
-                      placeholder={`Enter ${key}`}
+                      value={String(specification.value)}
+                      onChange={(e) =>
+                        handleSpecificationChange(specification.key, e.target.value)
+                      }
+                      placeholder={`Enter ${specification.key}`}
                     />
                   </div>
                 </div>
@@ -323,18 +436,18 @@ export default function ProductEditPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
-                {formData.images.map((image, index) => (
-                  <div key={index} className="relative">
+                {formData.images.map((img, idx) => (
+                  <div key={idx} className="relative">
                     <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Product image ${index + 1}`}
+                      src={img || "/placeholder.svg"}
+                      alt={`Product ${idx + 1}`}
                       className="w-full h-32 object-cover rounded-lg bg-gray-100"
                     />
                     <Button
                       variant="destructive"
                       size="sm"
                       className="absolute top-2 right-2"
-                      onClick={() => removeImage(index)}
+                      onClick={() => removeImage(idx)}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -349,7 +462,7 @@ export default function ProductEditPage() {
                     className="hidden"
                     id="image-upload"
                   />
-                  <label htmlFor="image-upload" className="cursor-pointer">
+                  <label htmlFor="image-upload" className="cursor-pointer my-2">
                     <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                     <p className="text-sm text-gray-600">Upload Images</p>
                   </label>
@@ -357,49 +470,251 @@ export default function ProductEditPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Status */}
+          {/* Technical Specification */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Status</CardTitle>
+              <CardTitle>Technical Specification</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Performance */}
               <div>
-                <Label htmlFor="status">Status</Label>
-                <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="out_of_stock">Out of Stock</SelectItem>
-                  </SelectContent>
-                </Select>
+                <h4 className="font-semibold mb-2">Performance</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Series *</Label>
+                    <Input
+                      className="my-2"
+                      value={formData.technicalSpecification.performance.series}
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "performance",
+                          "series",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Series"
+                    />
+                  </div>
+                  <div>
+                    <Label>CPU *</Label>
+                    <Input
+                      className="my-2"
+                      value={formData.technicalSpecification.performance.cpu}
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "performance",
+                          "cpu",
+                          e.target.value
+                        )
+                      }
+                      placeholder="CPU"
+                    />
+                  </div>
+                  <div>
+                    <Label>Graphics *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.performance.graphics
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "performance",
+                          "graphics",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Graphics"
+                    />
+                  </div>
+                  <div>
+                    <Label>Display *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.performance.display
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "performance",
+                          "display",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Display"
+                    />
+                  </div>
+                  <div>
+                    <Label>Operating System *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.performance
+                          .operatingSystem
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "performance",
+                          "operatingSystem",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Operating System"
+                    />
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full bg-transparent" asChild>
-                <Link href={`/admin/products/${params.id}`}>View Product</Link>
-              </Button>
-              <Button variant="destructive" className="w-full">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Product
-              </Button>
+              {/* Memory & Storage */}
+              <div>
+                <h4 className="font-semibold mb-2">Memory & Storage</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Main Memory *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage
+                          .mainMemory
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "mainMemory",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Main Memory"
+                    />
+                  </div>
+                  <div>
+                    <Label>Storage *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage.storage
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "storage",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Storage"
+                    />
+                  </div>
+                  <div>
+                    <Label>Connectivity *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage
+                          .connectivity
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "connectivity",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Connectivity"
+                    />
+                  </div>
+                  <div>
+                    <Label>Camera *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage.camera
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "camera",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Camera"
+                    />
+                  </div>
+                  <div>
+                    <Label>Audio *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage.audio
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "audio",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Audio"
+                    />
+                  </div>
+                  <div>
+                    <Label>Battery *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage.battery
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "battery",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Battery"
+                    />
+                  </div>
+                  <div>
+                    <Label>Weight *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage.weight
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "weight",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Weight"
+                    />
+                  </div>
+                  <div>
+                    <Label>Warranty *</Label>
+                    <Input
+                      className="my-2"
+                      value={
+                        formData.technicalSpecification.memoryAndStorage
+                          .warranty
+                      }
+                      onChange={(e) =>
+                        handleTechnicalSpecChange(
+                          "memoryAndStorage",
+                          "warranty",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Warranty"
+                    />
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
-  )
+    </form>
+  );
 }

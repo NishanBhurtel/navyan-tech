@@ -4,15 +4,18 @@ export interface IProductModel extends Document {
   _id: mongoose.Schema.Types.ObjectId;
   productId: string;
   name: string;
+  originalPrice: number;
   discountedPrice: number;
   description: string;
-  originalPrice: number;
   brand: string;
   stock: number;
   images: string[];
-  specifications: [];
-  category: string;
+  specifications: {
+    key:string,
+    value:string,
+  }[];
   categoryID: string;
+  subCategoryID:string;
   technicalSpecification: {
     performance: {
       series: string;
@@ -42,14 +45,14 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    price: {
+    originalPrice: {
       type: Number,
       required: true,
     },
-    quantity: {
+    discountedPrice: {
       type: Number,
+      required: true,
     },
-
     description: {
       type: String,
       required: true,
@@ -58,24 +61,18 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: false,
     },
-    stockAlert: {
-      type: Number,
-    },
-    originalPrice: {
+    stock: {
       type: Number,
     },
     images: {
       type: [String],
       required: true,
     },
-    badge: {
-      type: String,
-    },
+    brand: {
+        type: String,
+      },
     technicalSpecification: {
       performance: {
-        brand: {
-          type: String,
-        },
         series: {
           type: String,
         },
@@ -120,12 +117,20 @@ const ProductSchema: Schema = new Schema(
       },
     },
     specifications: {
-      type: Array,
+      type: [{
+        key: String,
+        value: String,
+      }],
     },
     categoryID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SubCategory",
+      ref: "Category",
     },
+    subCategoryID:
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
+    }
   },
   { timestamps: true }
 );

@@ -37,8 +37,6 @@ export default function InquiriesTable({ inquiries, onAction, onMarkComplete }: 
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -61,17 +59,6 @@ export default function InquiriesTable({ inquiries, onAction, onMarkComplete }: 
                     </div>
                   </TableCell>
                   <TableCell className="font-medium">₹{inquiry.totalAmount.toLocaleString()}</TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(inquiry.status)}>
-                      <div className="flex items-center space-x-1">
-                        {getStatusIcon(inquiry.status)}
-                        <span>{inquiry.status.replace("-", " ")}</span>
-                      </div>
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getPriorityColor(inquiry.priority)}>{inquiry.priority}</Badge>
-                  </TableCell>
                   <TableCell className="text-sm text-gray-500">{inquiry.createdAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -85,18 +72,18 @@ export default function InquiriesTable({ inquiries, onAction, onMarkComplete }: 
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onAction(inquiry, "contact")}>
+                        {/* <DropdownMenuItem onClick={() => onAction(inquiry, "contact")}>
                           <Phone className="h-4 w-4 mr-2" />
                           Contact Customer
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem onClick={() => onAction(inquiry, "email")}>
                           <Mail className="h-4 w-4 mr-2" />
                           Send Email
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onAction(inquiry, "notes")}>
+                        {/* <DropdownMenuItem onClick={() => onAction(inquiry, "notes")}>
                           <MessageSquare className="h-4 w-4 mr-2" />
                           Add Notes
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         {inquiry.status !== "completed" && (
                           <DropdownMenuItem onClick={() => onMarkComplete(inquiry.id)}>
                             <CheckCircle className="h-4 w-4 mr-2" />

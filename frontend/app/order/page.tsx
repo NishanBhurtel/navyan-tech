@@ -1,42 +1,57 @@
-import Link from "next/link"
-import {
-  ArrowLeft,
-} from "lucide-react"
-import Annoucement from "@/components/user-components/layout/Annoucement"
-import Header from "@/components/user-components/product/header"
-import OrderForm from "@/components/user-components/order/orderForm"
-import OrderSummary from "@/components/user-components/order/orderSummary"
-import Footer from "@/components/user-components/layout/Footer"
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import Annoucement from "@/components/user-components/layout/Annoucement";
+import OrderForm from "@/components/user-components/order/orderForm";
+import OrderSummary from "@/components/user-components/order/orderSummary";
+import Footer from "@/components/user-components/layout/Footer";
+import { useProductByID } from "@/hooks/product/getProductByID";
+import Navbar from "@/components/user-components/layout/Navbar";
 
 export default function OrderPage() {
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("product");
+  const quantityParam = searchParams.get("order");
+
+  // Ensure quantity is at least 1
+  const quantity = Math.max(Number(quantityParam) || 1, 1);
+
+  const { data: responseData, isLoading, isError } = useProductByID(productId || "");
+
+  const product = responseData?.data;
+
+  if (!productId || isLoading) {
+    return <div className="p-12 text-center">Loading product...</div>;
+  }
+
+  if (isError || !product) {
+    return <div className="p-12 text-center">Product Not Found</div>;
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Announcement Bar */}
-     <Annoucement />
-      {/* Header */}
-      <Header />
+      <Annoucement />
+      <Navbar />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <Link
-            href="/product/1"
+          <a
+            href={`/product/${product._id}`}
             className="inline-flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Product</span>
-          </Link>
+            <span>← Back to Product</span>
+          </a>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Order Form */}
-          <OrderForm />
-          {/* Order Summary */}
-          <OrderSummary />
+          {/* Pass product and quantity to OrderForm */}
+          <OrderForm product={product} quantity={quantity} />
+          {/* Pass product and quantity to OrderSummary */}
+          <OrderSummary product={product} quantity={quantity} />
         </div>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
-  )
+  );
 }

@@ -6,9 +6,13 @@ import InquiryDialog, { DialogAction } from "@/components/admin-components/order
 import { inquiryStats, mockInquiries } from "@/components/admin-components/order/mock-inqueries"
 import { Inquiry } from "@/components/admin-components/order/order-inqueries"
 import StatsGrid from "@/components/admin-components/order/statusGrid"
+import { useAllOrders } from "@/hooks/order/getAllOrders"
 import { useMemo, useState } from "react"
 
 export default function OrderInquiriesPage() {
+
+  // const {data:orders, error, isLoading } = useAllOrders();
+
   const [inquiries, setInquiries] = useState<Inquiry[]>(mockInquiries)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -49,6 +53,13 @@ export default function OrderInquiriesPage() {
   }
 
   const handleMarkComplete = (inquiryId: string) => handleStatusChange(inquiryId, "completed")
+
+  // if(error){
+  //   return <div>Error while fetching orders.....</div>
+  // }
+  // if(isLoading){
+  //   return <div>Loading orders.....</div>
+  // }
 
   return (
     <div className="space-y-6">

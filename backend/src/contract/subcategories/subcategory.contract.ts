@@ -55,7 +55,7 @@ export const subCategoryContract = c.router({
   removeSubCategoryByID: {
     method: "DELETE",
     path: "/subcategories/:subcategoryID",
-    body: removeSubCategorySchema,
+    body: z.object({}),
     summary: "Delete a subcategory",
     responses: {
       200: successSchema,

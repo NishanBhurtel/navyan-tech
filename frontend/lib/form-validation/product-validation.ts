@@ -41,8 +41,9 @@ export const updateProductDetailsSchema = z.object({
   originalPrice: z.preprocess((val) => Number(val), z.number().min(0, "Price must be positive")),
   discountedPrice: z.preprocess((val) => Number(val), z.number().min(0, "Price must be positive")),
   images: z.array(z.string()).nonempty("At least one image is required"),
-  specifications: z.record(z.string(), z.string()).optional(),
+  specifications: z.array(z.object({key: z.string(), value: z.string()})),
   categoryID: z.string().min(1, "Category is required"),
+  subCategoryID: z.string().min(1, "Sub category is required"),
   brand: z.string().min(1, "Brand is required"),
   technicalSpecification: z.object({
     performance: z.object({
@@ -77,6 +78,7 @@ export const getAllProductDetailsSchema = z.object({
   specifications: z.record(z.string(), z.string()).optional(),
   categoryID: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
+  createdAt: z.string().min(1, "Date is required"),
   technicalSpecification: z.object({
     performance: z.object({
       series: z.string().min(1, "Series is required"),
@@ -109,7 +111,9 @@ export const getProductDetailsByID = z.object({
   images: z.array(z.string()).nonempty("At least one image is required"),
   specifications: z.record(z.string(), z.string()).optional(),
   categoryID: z.string().min(1, "Category is required"),
+  subCategoryID: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
+    createdAt: z.string().min(1, "Date is required"),
   technicalSpecification: z.object({
     performance: z.object({
       series: z.string().min(1, "Series is required"),

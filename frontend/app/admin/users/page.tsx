@@ -1,39 +1,60 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { User } from "../types";
+import { useState } from "react";
 import { Button } from "@/components/user-components/ui/button";
 import { Download, Mail } from "lucide-react";
-import UserFilters from "@/components/admin-components/user/filter";
 import UsersTable from "@/components/admin-components/user/table";
-import { userApi } from "@/lib/api/users.api";
-
+import { useAllUsers } from "@/hooks/users/getAllUser";
+import { User } from "../types";
+import UserFilters from "@/components/admin-components/user/filter";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  
-useEffect(() => {
-  const fetchUsers = async () => {
-    try {
-      const data = await userApi.getAllusersApi();
-      
-      const normalized = Array.isArray(data) ? data : data.users || [];
-      
-      setUsers(normalized);
-    } catch (err: any) {
-      console.error(err.message || "Failed to load users");
-    } finally {
-      console.log("Users fetched");
-    }
+  const { data: users = [], error, isLoading } = useAllUsers();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredUsers = users.filter((user: User) => {
+    const q = searchTerm.toLowerCase();
+    return (
+      user.firstName?.toLowerCase().includes(q) ||
+      user.lastName?.toLowerCase().includes(q) ||
+      user.email?.toLowerCase().includes(q) ||
+      user.phoneNumber?.toLowerCase().includes(q)
+    );
+  });
+
+  // ✅ Export function
+  const handleExport = () => {
+    if (filteredUsers.length === 0) return;
+
+    // Prepare worksheet data
+    const data = filteredUsers.map((user) => ({
+      ID: user._id,
+      FirstName: user.firstName,
+      LastName: user.lastName,
+      Email: user.email,
+      Phone: user.phoneNumber,
+      CreatedAt: user.createdAt
+        ? new Date(user.createdAt).toLocaleString()
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    // Generate buffer
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    // Save file
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, `Navyan Tech Web Users_${new Date().toISOString()}.xlsx`);
   };
-
-  fetchUsers();
-}, []);
-
-console.log(users);
-
-
 
   return (
     <div className="space-y-6">
@@ -45,27 +66,25 @@ console.log(users);
           </p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline">
-            <Mail className="h-4 w-4 mr-2" />
-            <Link href="/admin/email">Send Email</Link>
+          <Button variant="outline" asChild>
+            <Link href="/admin/email">
+              <Mail className="h-4 w-4 mr-2" />
+              Send Email
+            </Link>
           </Button>
         </div>
       </div>
 
-      <UserFilters
+      <UserFilters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-        searchTerm={""}
+      {isLoading && <p>Loading users...</p>}
+      {error && <p className="text-red-500">Failed to load users.</p>}
 
-        setSearchTerm={()=>{}}
-      />
-
-      <UsersTable
-        users={users}
-      />
+      {!isLoading && !error && <UsersTable users={filteredUsers} />}
     </div>
   );
 }

@@ -7,13 +7,15 @@ import {
   CardTitle,
 } from "@/components/user-components/ui/card";
 import { useCategories } from "@/hooks/categories/getCategories";
+import { useAllOrders } from "@/hooks/order/getAllOrders";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
 import { Package, Users, ShoppingCart, FolderTree } from "lucide-react";
 
 export default function StatsGrid() {
-  const { data: products } = useAllProducts();
+  const { data: products } = useAllProducts({});
   const { data: users } = useAllUsers();
+  const {data: orders } = useAllOrders();
   const { data: categories, isLoading, error } = useCategories();
 
   if (isLoading) return <p>Loading categories...</p>;
@@ -41,7 +43,7 @@ export default function StatsGrid() {
     },
     {
       title: "Order Inquiries",
-      value: "89",
+      value: orders? orders.length : "89",
       change: "+23%",
       changeType: "positive",
       icon: ShoppingCart,

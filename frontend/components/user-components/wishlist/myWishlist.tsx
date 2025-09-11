@@ -4,7 +4,15 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Heart, Star, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import {
+  Heart,
+  Star,
+  Trash2,
+  ShoppingBag,
+  ArrowRight,
+  Minus,
+  Plus,
+} from "lucide-react";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import {
   clearWishlist,
@@ -15,9 +23,7 @@ import Link from "next/link";
 import { useToast } from "@/lib/toast";
 
 export default function MyWishList() {
-
   const { showToast } = useToast();
-
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
@@ -30,7 +36,7 @@ export default function MyWishList() {
     );
     if (confirmRemove) {
       removeFromWishlist(id);
-      setWishlistItems(getWishlist())
+      setWishlistItems(getWishlist());
       showToast("Product removed from wishlist", "bg-green-600");
     }
   };
@@ -38,6 +44,35 @@ export default function MyWishList() {
   const handleClearAll = () => {
     clearWishlist();
     setWishlistItems([]);
+  };
+
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
+  // Initialize quantities when wishlist loads
+  useEffect(() => {
+    const items = getWishlist();
+    setWishlistItems(items);
+
+    // initialize each item with quantity = 1
+    const initialQuantities: { [key: number]: number } = {};
+    items.forEach((item) => {
+      initialQuantities[item.id] = 1;
+    });
+    setQuantities(initialQuantities);
+  }, []);
+
+  const incrementOrder = (id: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 1) + 1,
+    }));
+  };
+
+  const decrementOrder = (id: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+    }));
   };
 
   return (
@@ -84,11 +119,6 @@ export default function MyWishList() {
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
-                            <Badge
-                              className={`${item.badgeColor} text-white text-xs`}
-                            >
-                              {item.badge}
-                            </Badge>
                             <span className="text-xs text-primary font-medium">
                               {item.category}
                             </span>
@@ -109,6 +139,34 @@ export default function MyWishList() {
 
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
+                          {/* Quantity */}
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-sm text-muted-foreground">
+                              Qty:
+                            </span>
+                            <div className="flex items-center space-x-1">
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="w-8 h-8 bg-transparent"
+                                onClick={() => decrementOrder(item.id)}
+                              >
+                                <Minus className="w-4 h-4" />
+                              </Button>
+                              <span className="w-8 text-center">
+                                {quantities[item.id] || 1}
+                              </span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="w-8 h-8 bg-transparent"
+                                onClick={() => incrementOrder(item.id)}
+                              >
+                                <Plus className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+
                           <div className="flex items-center space-x-2">
                             <span className="text-xl font-bold font-serif text-foreground">
                               {item.price}
@@ -138,7 +196,12 @@ export default function MyWishList() {
                             className="bg-transparent hover:bg-primary hover:text-white"
                             disabled={!item.inStock}
                           >
-                            View Details
+                            <Link
+                              href={`/product/${item.id}`}
+                              className="flex-1"
+                            >
+                              View Details
+                            </Link>
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                           <Button
@@ -146,7 +209,12 @@ export default function MyWishList() {
                             disabled={!item.inStock}
                           >
                             <ShoppingBag className="w-4 h-4 mr-2" />
-                            Order Now
+                            <Link
+                              href={`/order?product=${item.id}&order=${quantities[item.id] || 1}`}
+                              className="flex-1"
+                            >
+                              Order Now
+                            </Link>
                           </Button>
                         </div>
                       </div>

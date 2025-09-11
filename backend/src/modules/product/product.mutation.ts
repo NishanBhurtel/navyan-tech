@@ -10,18 +10,18 @@ export const createProduct: AppRouteMutationImplementation<
   try {
     const {
       name,
-      image,
+      images,
       discountedPrice,
       originalPrice,
       brand,
-      details,
       categoryID,
+      subCategoryID,
+      description,
       stock,
       specifications,
       technicalSpecification,
     } = req.body;
 
-    // Destructure nested values with defaults
     const {
       performance: {
         series = "",
@@ -47,9 +47,11 @@ export const createProduct: AppRouteMutationImplementation<
       originalPrice,
       discountedPrice,
       stock,
-      description: details,
+      description: description,
+      categoryID: categoryID,
+      subCategoryID: subCategoryID,
       brand: brand,
-      images: image,
+      images: images,
       technicalSpecification: {
         performance: {
           series,
@@ -69,8 +71,7 @@ export const createProduct: AppRouteMutationImplementation<
           warranty,
         },
       },
-      specifications: [],
-      categoryID,
+      specifications:specifications
     });
 
     return {
@@ -102,12 +103,12 @@ export const updateProductDetails: AppRouteMutationImplementation<
 
     const {
       name,
-      image,
+      images,
       discountedPrice,
       originalPrice,
       brand,
       stock,
-      details,
+      description,
       categoryID,
       specifications,
       technicalSpecification, // ✅ expect nested object
@@ -139,8 +140,9 @@ export const updateProductDetails: AppRouteMutationImplementation<
       originalPrice,
       discountedPrice,
       stock,
-      description: details,
-      images: image,
+      description: description,
+      brand,
+      images: images,
       technicalSpecification: {
         performance: {
           series,
@@ -160,7 +162,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
           warranty,
         },
       },
-      specifications: [],
+      specifications: specifications,
       categoryID,
     });
 
