@@ -2,7 +2,6 @@ import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { authContract } from "../../contract/auth/auth.contract";
 import userRepository from "../../repository/mangodb/user/users.repository";
 import bcrypt from "bcryptjs";
-import { generateAccessAndRefreshToken } from "../../libs/token.utils";
 
 export const registerUser: AppRouteMutationImplementation<
   typeof authContract.register
@@ -69,19 +68,6 @@ export const loginUser: AppRouteMutationImplementation<
     }
 
     const userId = user._id.toString();
-    // const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-    //   userId
-    // );
-
-    // const cookieOptions = {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict" as const,
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    // };
-
-    // res.cookie("accessToken", accessToken, cookieOptions);
-    // res.cookie("refreshToken", refreshToken, cookieOptions);
 
     return {
       status: 200,

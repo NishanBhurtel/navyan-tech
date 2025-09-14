@@ -24,14 +24,9 @@ export interface IOrder {
     notes?: string;
   };
   preferredContactMethod: ContactMethod;
-
-  product: {
-    productId: mongoose.Schema.Types.ObjectId;
-    productName: string;
-    discountedPrice: number;
-  };
+  productID: mongoose.Schema.Types.ObjectId;
   quantity: number;
-
+  totalPrice: number;
   createdAt: Date;
   updatedAt: Date;
   _id?: string;
@@ -64,20 +59,14 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(ContactMethod),
       required: true,
     },
-    product: {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
-      productName: {
-        type: String,
-        required: true,
-      },
-      discountedPrice: {
-        type: Number,
-        required: true,
-      },
+    productID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
     },
     quantity: {
       type: Number,
@@ -88,7 +77,7 @@ const orderSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
 const Order = mongoose.model<IOrder>("Order", orderSchema);
 export default Order;

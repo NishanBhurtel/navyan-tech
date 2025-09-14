@@ -12,10 +12,10 @@ const createOrder: AppRouteImplementation<
       shippingAddress,
       additionalInformation,
       preferredContactMethod,
-      productId,
+      totalPrice,
+      productID,
       quantity,
     } = body;
-
     // Convert string to enum
     let contactMethod: ContactMethod;
     switch (preferredContactMethod) {
@@ -59,7 +59,8 @@ const createOrder: AppRouteImplementation<
       shippingAddress,
       additionalInformation,
       preferredContactMethod: contactMethod,
-      productId,
+      totalPrice,
+      productID,
       quantity: quantity ?? 1,
     });
 

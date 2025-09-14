@@ -14,6 +14,7 @@ export const createProduct: AppRouteMutationImplementation<
       discountedPrice,
       originalPrice,
       brand,
+      isFeatured,
       categoryID,
       subCategoryID,
       description,
@@ -51,6 +52,7 @@ export const createProduct: AppRouteMutationImplementation<
       categoryID: categoryID,
       subCategoryID: subCategoryID,
       brand: brand,
+      isFeatured: !!isFeatured,
       images: images,
       technicalSpecification: {
         performance: {
@@ -107,6 +109,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
       discountedPrice,
       originalPrice,
       brand,
+      isFeatured,
       stock,
       description,
       categoryID,
@@ -142,6 +145,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
       stock,
       description: description,
       brand,
+      isFeatured,
       images: images,
       technicalSpecification: {
         performance: {

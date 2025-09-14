@@ -6,16 +6,17 @@ export const updateUserDetails: AppRouteMutationImplementation<
   typeof usersContract.updateUserDetails
 > = async ({ req, res }) => {
   try {
+    const userID = req.params.userID;
     const {
       userName:{
         firstName,
         lastName,
       },
       email,
-      phoneNumber
+      phoneNumber,
     } = req.body;
 
-    const newProduct = await usersRepository.save({
+    const newUser = await usersRepository.updateUser(userID,{
       userName:{
         firstName: firstName,
         lastName: lastName,
@@ -29,7 +30,7 @@ export const updateUserDetails: AppRouteMutationImplementation<
       body: {
         success: true,
         message: "User updated successfully",
-        data: newProduct,
+        data: newUser,
       },
     };
   } catch (error) {

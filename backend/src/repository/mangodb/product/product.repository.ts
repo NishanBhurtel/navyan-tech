@@ -17,6 +17,7 @@ class ProductRepository {
       | "discountedPrice"
       | "stock"
       | "brand"
+      | "isFeatured"
       | "description"
       | "images"
       | "technicalSpecification"
@@ -34,6 +35,7 @@ class ProductRepository {
         stock: productData.stock || 0,
         description: productData.description || "",
         brand: productData.brand || "",
+        isFeatured: productData.isFeatured || false,
         images: productData.images || [],
         technicalSpecification: {
           performance: {
@@ -172,6 +174,7 @@ async getAllProducts({
 
     // Fetch products with populated category and subcategory
     const products = await Product.find(query)
+    .sort({ createdAt: -1 })
       .populate<{
         categoryID:{
           _id:string;
@@ -208,6 +211,7 @@ async getAllProducts({
       discountedPrice: product.discountedPrice,
       originalPrice: product.originalPrice,
       brand: product.brand ?? "",
+      isFeatured: product.isFeatured,
       description: product.description ?? "",
       categoryID: product.categoryID ?? {},
       subCategoryID: product.subCategoryID ?? {},

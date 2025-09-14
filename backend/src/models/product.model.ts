@@ -8,14 +8,15 @@ export interface IProductModel extends Document {
   discountedPrice: number;
   description: string;
   brand: string;
+  isFeatured: boolean;
   stock: number;
   images: string[];
   specifications: {
-    key:string,
-    value:string,
+    key: string;
+    value: string;
   }[];
   categoryID: string;
-  subCategoryID:string;
+  subCategoryID: string;
   technicalSpecification: {
     performance: {
       series: string;
@@ -52,10 +53,6 @@ const ProductSchema: Schema = new Schema(
     discountedPrice: {
       type: Number,
     },
-    quantity: {
-      type: Number,
-      required: true,
-    },
     description: {
       type: String,
       required: true,
@@ -72,8 +69,12 @@ const ProductSchema: Schema = new Schema(
       required: true,
     },
     brand: {
-        type: String,
-      },
+      type: String,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     technicalSpecification: {
       performance: {
         series: {
@@ -120,20 +121,21 @@ const ProductSchema: Schema = new Schema(
       },
     },
     specifications: {
-      type: [{
-        key: String,
-        value: String,
-      }],
+      type: [
+        {
+          key: String,
+          value: String,
+        },
+      ],
     },
     categoryID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
     },
-    subCategoryID:
-    {
+    subCategoryID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory",
-    }
+    },
   },
   { timestamps: true }
 );

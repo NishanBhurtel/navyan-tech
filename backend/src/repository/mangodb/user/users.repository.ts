@@ -18,6 +18,7 @@ class UserRepository {
         },
         email: userData.email,
         phoneNumber: userData.phoneNumber,
+        password: userData.password,
       });
 
       return await user.save();
@@ -28,7 +29,9 @@ class UserRepository {
 
   async getAllUsers(searchQuery?: Partial<IUser>) {
     try {
-      const query: any = {};
+      const query: any = {
+        role: "customer", // ✅ only customers
+      };
 
       if (searchQuery?.userName?.firstName) {
         query["userName.firstName"] = {
@@ -49,7 +52,7 @@ class UserRepository {
         query.phoneNumber = { $regex: searchQuery.phoneNumber, $options: "i" };
       }
 
-      return await this.userModel.find(query);
+      return await this.userModel.find(query).sort({ createdAt: -1 });
     } catch (error) {
       throw new Error(`Error fetching users: ${error}`);
     }
@@ -65,7 +68,7 @@ class UserRepository {
 
   async updateUser(
     id: string,
-    data: Pick<IUser, "userName" | "email" | "password" | "phoneNumber">
+    data: Pick<IUser, "userName" | "email" | "phoneNumber">
   ) {
     try {
       return await this.userModel.findByIdAndUpdate(id, data, { new: true });
