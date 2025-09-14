@@ -81,6 +81,15 @@ class UserRepository {
       throw new Error(`Error deleting user: ${error}`);
     }
   }
+
+  // get total number of userfrom database
+  async countUsers() {
+    try {
+      return await this.userModel.countDocuments();
+    } catch (error) {
+      throw new Error(`Error counting users: ${error}`);
+    }
+  }
 }
 
 export default new UserRepository();

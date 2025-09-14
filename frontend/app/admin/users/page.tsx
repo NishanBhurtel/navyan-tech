@@ -32,8 +32,8 @@ export default function UsersPage() {
     // Prepare worksheet data
     const data = filteredUsers.map((user) => ({
       ID: user._id,
-      FirstName: user.firstName,
-      LastName: user.lastName,
+      First_Name: user.firstName,
+      Last_Name: user.lastName,
       Email: user.email,
       Phone: user.phoneNumber,
       CreatedAt: user.createdAt
@@ -53,7 +53,7 @@ export default function UsersPage() {
 
     // Save file
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, `Navyan Tech Web Users_${new Date().toISOString()}.xlsx`);
+    saveAs(blob, `Navyan Tech Web User Records_${new Date().toISOString()}.xlsx`);
   };
 
   return (

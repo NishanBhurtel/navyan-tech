@@ -8,7 +8,7 @@ import Link from "next/link";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 export default function ProductInfo({ product }: { product: IProduct }) {
   const { showToast } = useToast();
@@ -38,6 +38,8 @@ export default function ProductInfo({ product }: { product: IProduct }) {
   const incrementOrder = () => setOrderNumber((prev) => prev + 1);
   const decrementOrder = () =>
     setOrderNumber((prev) => (prev > 1 ? prev - 1 : 1));
+  const isAvailable = product.stock > 0;
+
 
   return (
     <div className="space-y-6">
@@ -66,7 +68,10 @@ export default function ProductInfo({ product }: { product: IProduct }) {
               Rs.{product.originalPrice?.toLocaleString()}
             </span>
           </div>
-          <Badge className="bg-primary text-white">In Stock</Badge>
+          <Badge className={`bg-primary text-white
+            ${isAvailable
+            ? "bg-primary text-white"
+            : "bg-destructive text-white"}`}>In Stock</Badge>
         </div>
 
         {/* Quantity */}

@@ -15,47 +15,116 @@ import { Package, Users, ShoppingCart, FolderTree } from "lucide-react";
 export default function StatsGrid() {
   const { data: products } = useAllProducts({});
   const { data: users } = useAllUsers();
-  const {data: orders } = useAllOrders();
+  const { data: orders } = useAllOrders();
   const { data: categories, isLoading, error } = useCategories();
 
   if (isLoading) return <p>Loading categories...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const customerCount = users? users.filter((user) => user.role === "customer").length
-  : 5678;
+  // ---- Date helpers ----
+  const now = new Date();
+  const startLastMonth = new Date(now);
+  startLastMonth.setMonth(now.getMonth() - 1);
 
+  const startPrevMonth = new Date(now);
+  startPrevMonth.setMonth(now.getMonth() - 2);
+
+  const inRange = (date: Date | null, from: Date, to: Date) =>
+    !!date && date >= from && date <= to;
+
+  // ---- Generic helper for calculating counts and % change ----
+  const calcStats = <T,>(
+    items: T[] | undefined,
+    getDate: (item: T) => Date | null
+  ) => {
+    if (!items) return { total: 0, changePct: 0 };
+
+    const current = items.filter((i) =>
+      inRange(getDate(i), startLastMonth, now)
+    );
+    const previous = items.filter((i) =>
+      inRange(getDate(i), startPrevMonth, startLastMonth)
+    );
+
+    const total = items.length;
+    const changePct =
+      previous.length === 0
+        ? 100
+        : ((current.length - previous.length) / previous.length) * 100;
+
+    return { total, changePct };
+  };
+
+  // ---- Products ----
+  const productStats = calcStats(products, (p: any) =>
+    p.createdAt
+      ? p.createdAt.toDate
+        ? p.createdAt.toDate()
+        : new Date(p.createdAt)
+      : null
+  );
+
+  // ---- Users (customers only for total) ----
+  const customerUsers = users?.filter((u) => u.role === "customer") ?? [];
+  const userStats = calcStats(customerUsers, (u: any) =>
+    u.createdAt
+      ? u.createdAt.toDate
+        ? u.createdAt.toDate()
+        : new Date(u.createdAt)
+      : null
+  );
+
+  // ---- Orders ----
+  const orderStats = calcStats(orders?.data, (o: any) =>
+    o.createdAt
+      ? o.createdAt.toDate
+        ? o.createdAt.toDate()
+        : new Date(o.createdAt)
+      : null
+  );
+
+  // ---- Categories ----
+  const categoryStats = calcStats(categories, (c: any) =>
+    c.createdAt
+      ? c.createdAt.toDate
+        ? c.createdAt.toDate()
+        : new Date(c.createdAt)
+      : null
+  );
+
+  // ---- Build stats array ----
   const stats = [
     {
       title: "Total Products",
-      value: products ? products.length : "1234",
-      change: "+12%",
-      changeType: "positive",
+      value: productStats.total,
+      change: `${productStats.changePct.toFixed(1)}%`,
+      changeType: productStats.changePct >= 0 ? "positive" : "negative",
       icon: Package,
-      bg: "bg-[#3450c9]", // soft blue
+      bg: "bg-[#3450c9]",
     },
     {
       title: "Total Users",
-      value: customerCount,
-      change: "+8%",
-      changeType: "positive",
+      value: userStats.total,
+      change: `${userStats.changePct.toFixed(1)}%`,
+      changeType: userStats.changePct >= 0 ? "positive" : "negative",
       icon: Users,
-      bg: "bg-[#4dc934]", // soft green
+      bg: "bg-[#4dc934]",
     },
     {
       title: "Order Inquiries",
-      value: orders? orders.length : "89",
-      change: "+23%",
-      changeType: "positive",
+      value: orderStats.total,
+      change: `${orderStats.changePct.toFixed(1)}%`,
+      changeType: orderStats.changePct >= 0 ? "positive" : "negative",
       icon: ShoppingCart,
-      bg: "bg-[#c93e34]", // soft yellow
+      bg: "bg-[#c93e34]",
     },
     {
       title: "Categories",
-      value: categories ? categories.length : "24",
-      change: "+2",
-      changeType: "positive",
+      value: categoryStats.total,
+      change: `${categoryStats.changePct.toFixed(1)}%`,
+      changeType: categoryStats.changePct >= 0 ? "positive" : "negative",
       icon: FolderTree,
-      bg: "bg-[#c9b834]", // soft purple
+      bg: "bg-[#c9b834]",
     },
   ];
 
@@ -70,12 +139,14 @@ export default function StatsGrid() {
             <stat.icon className="h-5 w-5 text-gray-100" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-50">{stat.value}</div>
+            <div className="text-2xl font-bold text-gray-50">
+              {stat.value}
+            </div>
             <p
               className={`text-xs ${
                 stat.changeType === "positive"
                   ? "text-gray-200"
-                  : "text-red-600"
+                  : "text-red-200"
               }`}
             >
               {stat.change} from last month

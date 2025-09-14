@@ -2,8 +2,17 @@ import { z } from "zod";
 
 export const getAllUsersSchema = z.object({
   _id: z.string().min(1, "User ID is reequired"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  firstName: z
+    .string()
+    .min(1, "First name is required") // handles empty string
+    .min(3, "First name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "First name must contain only alphabets"),
+
+  lastName: z
+    .string()
+    .min(1, "Last name is required") // handles empty string
+    .min(3, "Last name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "Last name must contain only alphabets"),
   email: z
     .string()
     .min(1, "Email is required")
@@ -23,8 +32,17 @@ export type TGetAllUsersSchema = z.infer<typeof getAllUsersSchema>;
 
 export const getUserByIDSchema = z.object({
   _id: z.string().min(1, "User ID is reequired"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  firstName: z
+    .string()
+    .min(1, "First name is required") // handles empty string
+    .min(3, "First name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "First name must contain only alphabets"),
+
+  lastName: z
+    .string()
+    .min(1, "Last name is required") // handles empty string
+    .min(3, "Last name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "Last name must contain only alphabets"),
   email: z
     .string()
     .min(1, "Email is required")
@@ -42,8 +60,17 @@ export type TGetUserByIDSchema = z.infer<typeof getUserByIDSchema>;
 
 export const updateUserByIDSchema = z.object({
   _id: z.string().min(1, "User ID is reequired"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  firstName: z
+    .string()
+    .min(1, "First name is required") // handles empty string
+    .min(3, "First name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "First name must contain only alphabets"),
+
+  lastName: z
+    .string()
+    .min(1, "Last name is required") // handles empty string
+    .min(3, "Last name must be at least 3 characters")
+    .regex(/^[A-Za-z]+$/, "Last name must contain only alphabets"),
   email: z
     .string()
     .min(1, "Email is required")

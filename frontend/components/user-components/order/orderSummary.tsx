@@ -6,12 +6,14 @@ import { IProduct } from "@/lib/utils/types/product.type";
 interface OrderSummaryProps {
   product: IProduct;
   quantity: number;
+  paymentDetails:{
+    subTotal:number;
+    tax:number;
+    total:number;
+  }
 }
 
-export default function OrderSummary({ product, quantity }: OrderSummaryProps) {
-  const subtotal = (product.discountedPrice ?? 0) * quantity;
-  const tax = subtotal * 0.13; // 10% VAT example
-  const total = subtotal + tax;
+export default function OrderSummary({ product, quantity, paymentDetails }: OrderSummaryProps) {
 
   return (
     <div className="space-y-6">
@@ -47,7 +49,7 @@ export default function OrderSummary({ product, quantity }: OrderSummaryProps) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Subtotal:</span>
-              <span>Rs.{subtotal.toLocaleString()}</span>
+              <span>Rs.{paymentDetails.subTotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span>Shipping:</span>
@@ -55,12 +57,12 @@ export default function OrderSummary({ product, quantity }: OrderSummaryProps) {
             </div>
             <div className="flex justify-between text-sm">
               <span>Tax (13% VAT):</span>
-              <span>Rs.{tax.toLocaleString()}</span>
+              <span>Rs.{paymentDetails.tax.toLocaleString()}</span>
             </div>
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span>Rs.{total.toLocaleString()}</span>
+              <span>Rs.{paymentDetails.total.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>
@@ -73,21 +75,21 @@ export default function OrderSummary({ product, quantity }: OrderSummaryProps) {
               <Phone className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-semibold text-foreground">Need Help?</p>
-                <p className="text-sm text-muted-foreground">Call us at +1 (555) 123-4567</p>
+                <p className="text-sm text-muted-foreground">Call us at +(977) 9864400400</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <Mail className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-semibold text-foreground">Email Support</p>
-                <p className="text-sm text-muted-foreground">support@techhubpro.com</p>
+                <p className="text-sm text-muted-foreground">navyan2018@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <MapPin className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-semibold text-foreground">Visit Our Store</p>
-                <p className="text-sm text-muted-foreground">123 Tech Street, NY 10001</p>
+                <p className="text-sm text-muted-foreground">Paschimanchal Finance chowk, Butwal-8</p>
               </div>
             </div>
           </div>

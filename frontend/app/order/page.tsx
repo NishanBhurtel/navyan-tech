@@ -16,9 +16,24 @@ export default function OrderPage() {
   // Ensure quantity is at least 1
   const quantity = Math.max(Number(quantityParam) || 1, 1);
 
-  const { data: responseData, isLoading, isError } = useProductByID(productId || "");
+  const {
+    data: responseData,
+    isLoading,
+    isError,
+  } = useProductByID(productId || "");
 
   const product = responseData?.data;
+
+  const subTotal = (product?.discountedPrice ?? 0) * quantity;
+  const taxRate = 0.1; // 10% VAT
+  const tax = subTotal * taxRate;
+  const total = subTotal + tax;
+
+  const paymentDetails = {
+    subTotal,
+    tax,
+    total,
+  };
 
   if (!productId || isLoading) {
     return <div className="p-12 text-center">Loading product...</div>;
@@ -45,9 +60,17 @@ export default function OrderPage() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Pass product and quantity to OrderForm */}
-          <OrderForm product={product} quantity={quantity} />
+          <OrderForm
+            product={product}
+            quantity={quantity}
+            total={paymentDetails.total}
+          />
           {/* Pass product and quantity to OrderSummary */}
-          <OrderSummary product={product} quantity={quantity} />
+          <OrderSummary
+            product={product}
+            quantity={quantity}
+            paymentDetails={paymentDetails}
+          />
         </div>
       </div>
 

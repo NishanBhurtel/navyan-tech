@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const createProductSchema = z.object({
+<<<<<<< HEAD
   name: z.string().min(1, "Product name is required"),
   stock: z.preprocess((val) => Number(val), z.number().min(0, "Quantity must be positive")),
   description: z.string(),
@@ -30,6 +31,40 @@ export const createProductSchema = z.object({
       warranty: z.string().min(1, "Warranty is required"),
     }),
   })
+=======
+  name: z.string(),
+  images: z.array(z.string()),
+  discountedPrice: z.number(),
+  originalPrice: z.number(),
+  brand: z.string(),
+  description: z.string(),
+  categoryID: z.string(),
+  stock: z.number(),
+
+  technicalSpecification: z
+    .object({
+      performance: z.object({
+        series: z.string(),
+        cpu: z.string(),
+        graphics: z.string(),
+        display: z.string(),
+        operatingSystem: z.string(),
+      }),
+      memoryAndStorage: z.object({
+        mainMemory: z.string(),
+        storage: z.string(),
+        connectivity: z.string(),
+        camera: z.string(),
+        audio: z.string(),
+        battery: z.string(),
+        weight: z.string(),
+        warranty: z.string(),
+      }),
+    })
+    .optional(),
+
+  specifications: z.record(z.any()).optional(),
+>>>>>>> 4254fc7d5e8b925cfd1727e847eb293853d21b8d
 });
 
 export const getAllProductSchema = z.array(

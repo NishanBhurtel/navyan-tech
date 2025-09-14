@@ -33,9 +33,9 @@ export default function ProductsPage() {
       Name: product.name,
       Brand: product.brand,
       Category: product.categoryID?.name || "",
-      SubCategory: product.subCategoryID?.name || "",
-      OriginalPrice: product.originalPrice,
-      DiscountedPrice: product.discountedPrice,
+      Sub_Category: product.subCategoryID?.name || "",
+      Original_Price: product.originalPrice,
+      Discounted_Price: product.discountedPrice,
       Stock: product.stock,
       Description: product.description || "",
 
@@ -44,21 +44,17 @@ export default function ProductsPage() {
       CPU: product.technicalSpecification?.performance?.cpu || "",
       Graphics: product.technicalSpecification?.performance?.graphics || "",
       Display: product.technicalSpecification?.performance?.display || "",
-      OperatingSystem:
-        product.technicalSpecification?.performance?.operatingSystem || "",
+      OperatingSystem: product.technicalSpecification?.performance?.operatingSystem || "",
 
       // Flatten technical specifications (memoryAndStorage)
-      MainMemory:
-        product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
+      MainMemory: product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
       Storage: product.technicalSpecification?.memoryAndStorage?.storage || "",
-      Connectivity:
-        product.technicalSpecification?.memoryAndStorage?.connectivity || "",
+      Connectivity: product.technicalSpecification?.memoryAndStorage?.connectivity || "",
       Camera: product.technicalSpecification?.memoryAndStorage?.camera || "",
       Audio: product.technicalSpecification?.memoryAndStorage?.audio || "",
       Battery: product.technicalSpecification?.memoryAndStorage?.battery || "",
       Weight: product.technicalSpecification?.memoryAndStorage?.weight || "",
-      Warranty:
-        product.technicalSpecification?.memoryAndStorage?.warranty || "",
+      Warranty: product.technicalSpecification?.memoryAndStorage?.warranty || "",
 
       // Flatten specifications array into a single string
       Specifications: product.specifications

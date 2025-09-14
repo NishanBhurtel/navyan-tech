@@ -33,8 +33,6 @@ export default function ProductEditPage() {
   const productResponse = useProductByID(params.id as string);
   const productData = productResponse.data?.data;
 
-
-
   const [formData, setFormData] = useState({
     _id: "",
     name: "",

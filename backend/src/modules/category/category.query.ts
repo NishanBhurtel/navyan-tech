@@ -7,7 +7,7 @@ import subCategoryRepository from "../../repository/mangodb/subCategory/subCateg
 import { promise } from "zod";
 
 // Get all categories
-export const getAllCategoryMutation: AppRouteQueryImplementation<
+const getAllCategoryMutation: AppRouteQueryImplementation<
   typeof categoryContract.getAllCategory
 > = async () => {
   try {

@@ -1,6 +1,3 @@
-export type InquiryStatus = "new" | "contacted" | "in-progress" | "completed" | "cancelled"
-export type InquiryPriority = "high" | "medium" | "low"
-
 export interface Inquiry {
   id: string
   customerName: string
@@ -10,10 +7,7 @@ export interface Inquiry {
   productPrice: number
   quantity: number
   totalAmount: number
-  status: InquiryStatus
-  priority: InquiryPriority
   createdAt: string
-  lastContact: string | null
   notes: string
   address: string
   preferredContact: "phone" | "email" | "whatsapp"

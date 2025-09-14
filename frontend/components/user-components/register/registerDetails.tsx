@@ -1,3 +1,4 @@
+
 export default function RegisterDetails(){
     return(
           <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 via-green-700 to-green-800 relative overflow-hidden">

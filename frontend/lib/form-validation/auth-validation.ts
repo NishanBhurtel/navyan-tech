@@ -9,8 +9,17 @@ export type TLoginSchema = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    firstName: z
+      .string()
+      .min(1, "First name is required") // handles empty string
+      .min(3, "First name must be at least 3 characters")
+      .regex(/^[A-Za-z]+$/, "First name must contain only alphabets"),
+
+    lastName: z
+      .string()
+      .min(1, "Last name is required") // handles empty string
+      .min(3, "Last name must be at least 3 characters")
+      .regex(/^[A-Za-z]+$/, "Last name must contain only alphabets"),
     email: z
       .string()
       .min(1, "Email is required")
@@ -18,9 +27,10 @@ export const registerSchema = z
       .transform((val) => val.trim().toLowerCase()),
     phoneNumber: z
       .string()
-      .min(10, "Phone number must be exactly 10 digits")
-      .max(10, "Phone number must be exactly 10 digits")
-      .regex(/^(98|97)\d{8}$/, "Phone number must start with 98 or 97"),
+      .min(1, "Phone number is required") // checks empty
+      .regex(/^\d+$/, "Phone number must contain only digits") // only numbers
+      .length(10, "Phone number must be exactly 10 digits") // exact 10 digits
+      .regex(/^(97|98)\d{8}$/, "Phone number must start with 97 or 98"),
 
     password: z
       .string()

@@ -21,16 +21,16 @@ import {
 import { Upload, X, Plus } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
 import {
   createProductSchema,
   TCreateProductSchema,
 } from "@/lib/form-validation/product-validation";
-
 import { useEffect, useState } from "react";
 import { categoriesApi } from "@/lib/api/category";
+import { useUploadImages } from "@/hooks/images/imageUpload";
 
 interface Subcategory {
   _id: string;
@@ -44,25 +44,26 @@ interface Category {
 }
 
 export default function AddProductPage() {
-  const [categories, setCategories] = useState<Category[]>([]); // <-- empty array instead of undefined
+  const router = useRouter();
+  const { showToast } = useToast();
+  const { uploadImages } = useUploadImages();
 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [progress, setProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await categoriesApi.getAll(); // fetch categories with subcategories
+        const data = await categoriesApi.getAll();
         setCategories(data);
       } catch (err: any) {
-        console.log(err.message || "Failed to load categories");
-      } finally {
-        console.log("Categories are fetched");
+        showToast(err.message || "Failed to load categories", "bg-red-600");
       }
     };
-
     fetchCategories();
   }, []);
-
-  const router = useRouter();
-  const { showToast } = useToast();
 
   const {
     register,
@@ -80,58 +81,63 @@ export default function AddProductPage() {
     name: "specifications",
   });
 
-  const selectedCategory = watch("category");
-
-  // Reset subcategory if category changes
-  useEffect(() => {
-    setValue("subcategory", "");
-  }, [selectedCategory, setValue]);
-
-  const mutation = useMutation({
-    mutationFn: (data: TCreateProductSchema) =>
-      productApi.createProductApi({
-        brand: data.brand,
-        categoryID: data.categoryID,
-        subCategoryID: data.subCategoryID,
-        discountedPrice: data.discountedPrice,
-        images: data.images,
-        description: data.description,
-        name: data.name,
-        originalPrice: data.originalPrice,
-        specifications: data.specifications,
-        stock: data.stock,
-        technicalSpecification: data.technicalSpecification,
-      }),
-
-    onSuccess: () => {
-      showToast("Product added successfully", "bg-green-600");
-      router.push("/admin/products");
-    },
-    onError: (error: any) => {
-      showToast(
-        "Failed to add product! " + (error?.message || "Unknown error"),
-        "bg-red-600"
-      );
-    },
-  });
-
-  const onSubmit = (data: TCreateProductSchema) => {
-    console.log("submitting", data);
-    mutation.mutate(data);
-  };
-
   console.log(errors);
-  console.log(watch("series"));
 
   const selectedCategoryID = watch("categoryID");
+
+  useEffect(() => {
+    setValue("subCategoryID", "");
+  }, [selectedCategoryID, setValue]);
+
   const subCategories = selectedCategoryID
     ? categories.find((c) => c._id === selectedCategoryID)?.subCategories
     : [];
+
+  const mutation = useMutation({
+    mutationFn: (data: TCreateProductSchema) =>
+      productApi.createProductApi(data),
+    onSuccess: () => {
+      setFiles([]);
+      showToast("Product added successfully", "bg-green-600");
+      router.push("/admin/products");
+      setIsUploading(false);
+    },
+    onError: (err: any) => {
+      showToast(
+        "Failed to add product! " + (err?.message || "Unknown error"),
+        "bg-red-600"
+      );
+      setIsUploading(false);
+    },
+  });
+
+  const onSubmit = async (data: TCreateProductSchema) => {
+    if (files.length === 0) {
+      showToast("Please upload at least one image", "bg-red-600");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const { isCompleted, progress, urls } = await uploadImages(files);
+      console.log(progress);
+      setProgress(progress);
+      if (isCompleted) {
+        mutation.mutate({ ...data, images: urls });
+      }
+    } catch (err) {
+      setIsUploading(false);
+      console.error(err);
+      showToast("Image upload failed", "bg-red-600");
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Basic Info */}
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
@@ -140,22 +146,21 @@ export default function AddProductPage() {
               <div>
                 <Label>Product Name *</Label>
                 <Input
-                  className="my-2"
                   {...register("name")}
                   placeholder="Enter product name"
+                  className="my-2"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm">{errors.name.message}</p>
                 )}
               </div>
-
               <div>
                 <Label>Description</Label>
                 <Textarea
                   {...register("description")}
                   placeholder="Enter product description"
-                  className="my-2"
                   rows={4}
+                  className="my-2"
                 />
                 {errors.description && (
                   <p className="text-red-500 text-sm">
@@ -163,15 +168,14 @@ export default function AddProductPage() {
                   </p>
                 )}
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Original Price (Rs) *</Label>
                   <Input
-                    className="my-2"
                     type="number"
                     {...register("originalPrice", { valueAsNumber: true })}
                     placeholder="0"
+                    className="my-2"
                   />
                   {errors.originalPrice && (
                     <p className="text-red-500 text-sm">
@@ -182,10 +186,10 @@ export default function AddProductPage() {
                 <div>
                   <Label>Price After Discount (Rs) *</Label>
                   <Input
-                    className="my-2"
                     type="number"
-                    {...register("discountedPrice")}
+                    {...register("discountedPrice", { valueAsNumber: true })}
                     placeholder="0"
+                    className="my-2"
                   />
                   {errors.discountedPrice && (
                     <p className="text-red-500 text-sm">
@@ -206,24 +210,16 @@ export default function AddProductPage() {
               <Label htmlFor="addImages">
                 <Upload className="h-6 w-6 cursor-pointer mx-auto text-gray-400 mb-2" />
               </Label>
-              <Controller
-                control={control}
-                name="images"
-                render={({ field }) => (
-                  <input
-                    id="addImages"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      const urls = files.map((file) =>
-                        URL.createObjectURL(file)
-                      );
-                      field.onChange(urls);
-                    }}
-                  />
-                )}
+
+              <input
+                id="addImages"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => {
+                  const selectedFiles = Array.from(e.target.files || []);
+                  setFiles(selectedFiles);
+                }}
               />
 
               {errors.images && (
@@ -232,262 +228,273 @@ export default function AddProductPage() {
             </CardContent>
           </Card>
 
-          {/* Technical Specification */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Technical Specification</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Performance */}
-              <div>
-                <h4 className="font-semibold mb-2">Performance</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Series *</Label>
-                    <Input
-                      className="my-2"
-                      {...register("technicalSpecification.performance.series")}
-                      placeholder="Series"
-                    />
-                    {errors.technicalSpecification?.performance?.series && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.performance.series
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>CPU *</Label>
-                    <Input
-                      className="my-2"
-                      {...register("technicalSpecification.performance.cpu")}
-                      placeholder="CPU"
-                    />
-                    {errors.technicalSpecification?.performance?.cpu && (
-                      <p className="text-red-500 text-sm">
-                        {errors.technicalSpecification.performance.cpu.message}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Graphics *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.performance.graphics"
-                      )}
-                      placeholder="Graphics"
-                    />
-                    {errors.technicalSpecification?.performance?.graphics && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.performance.graphics
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Display *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.performance.display"
-                      )}
-                      placeholder="Display"
-                    />
-                    {errors.technicalSpecification?.performance?.display && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.performance.display
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Operating System *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.performance.operatingSystem"
-                      )}
-                      placeholder="Operating System"
-                    />
-                    {errors.technicalSpecification?.performance
-                      ?.operatingSystem && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.performance
-                            .operatingSystem.message
-                        }
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+          {/* Technical Specification & Specs (same as your code) */}
 
-              {/* Memory & Storage */}
-              <div>
-                <h4 className="font-semibold mb-2">Memory & Storage</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Main Memory *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.mainMemory"
+          {["Computer", "Computers", "Laptop", "Laptops"].includes(
+            categories.find((c) => c._id === selectedCategoryID)?.name || ""
+          ) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Technical Specification</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Performance */}
+                <div>
+                  <h4 className="font-semibold mb-2">Performance</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Series *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.series"
+                        )}
+                        placeholder="Series"
+                      />
+                      {errors.technicalSpecification?.performance?.series && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.series
+                              .message
+                          }
+                        </p>
                       )}
-                      placeholder="Main Memory"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.mainMemory && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage
-                            .mainMemory.message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Storage *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.storage"
+                    </div>
+                    <div>
+                      <Label>CPU *</Label>
+                      <Input
+                        className="my-2"
+                        {...register("technicalSpecification.performance.cpu")}
+                        placeholder="CPU"
+                      />
+                      {errors.technicalSpecification?.performance?.cpu && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.cpu
+                              .message
+                          }
+                        </p>
                       )}
-                      placeholder="Storage"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.storage && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage.storage
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Connectivity *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.connectivity"
+                    </div>
+                    <div>
+                      <Label>Graphics *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.graphics"
+                        )}
+                        placeholder="Graphics"
+                      />
+                      {errors.technicalSpecification?.performance?.graphics && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.graphics
+                              .message
+                          }
+                        </p>
                       )}
-                      placeholder="Connectivity"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.connectivity && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage
-                            .connectivity.message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Camera *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.camera"
+                    </div>
+                    <div>
+                      <Label>Display *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.display"
+                        )}
+                        placeholder="Display"
+                      />
+                      {errors.technicalSpecification?.performance?.display && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.display
+                              .message
+                          }
+                        </p>
                       )}
-                      placeholder="Camera"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.camera && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage.camera
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Audio *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.audio"
+                    </div>
+                    <div>
+                      <Label>Operating System *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.operatingSystem"
+                        )}
+                        placeholder="Operating System"
+                      />
+                      {errors.technicalSpecification?.performance
+                        ?.operatingSystem && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance
+                              .operatingSystem.message
+                          }
+                        </p>
                       )}
-                      placeholder="Audio"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage?.audio && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage.audio
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Battery *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.battery"
-                      )}
-                      placeholder="Battery"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.battery && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage.battery
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Weight *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.weight"
-                      )}
-                      placeholder="Weight"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.weight && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage.weight
-                            .message
-                        }
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Warranty *</Label>
-                    <Input
-                      className="my-2"
-                      {...register(
-                        "technicalSpecification.memoryAndStorage.warranty"
-                      )}
-                      placeholder="Warranty"
-                    />
-                    {errors.technicalSpecification?.memoryAndStorage
-                      ?.warranty && (
-                      <p className="text-red-500 text-sm">
-                        {
-                          errors.technicalSpecification.memoryAndStorage
-                            .warranty.message
-                        }
-                      </p>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+
+                {/* Memory & Storage */}
+                <div>
+                  <h4 className="font-semibold mb-2">Memory & Storage</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Main Memory *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.mainMemory"
+                        )}
+                        placeholder="Main Memory"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.mainMemory && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .mainMemory.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Storage *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.storage"
+                        )}
+                        placeholder="Storage"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.storage && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .storage.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Connectivity *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.connectivity"
+                        )}
+                        placeholder="Connectivity"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.connectivity && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .connectivity.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Camera *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.camera"
+                        )}
+                        placeholder="Camera"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.camera && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .camera.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Audio *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.audio"
+                        )}
+                        placeholder="Audio"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.audio && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage.audio
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Battery *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.battery"
+                        )}
+                        placeholder="Battery"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.battery && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .battery.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Weight *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.weight"
+                        )}
+                        placeholder="Weight"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.weight && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .weight.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Warranty *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.warranty"
+                        )}
+                        placeholder="Warranty"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.warranty && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .warranty.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Specifications */}
           <Card>
@@ -547,57 +554,61 @@ export default function AddProductPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block mb-2 font-medium">Category</label>
+                <Label className="my-2">Category</Label>
                 <Select onValueChange={(val) => setValue("categoryID", val)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="-- Select a category --" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-y-auto">
                     {categories.map((cat) => (
-                      <div key={cat._id}>
-                        {/* Main category */}
-                        <SelectItem value={cat._id} className="font-semibold">
-                          {cat.name}
-                        </SelectItem>
-                      </div>
+                      <SelectItem
+                        key={cat._id}
+                        value={cat._id}
+                        className="font-semibold"
+                      >
+                        {cat.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <label className="block mb-2 font-medium">Sub Category</label>
+                <Label className="my-2">Sub Category</Label>
                 <Select onValueChange={(val) => setValue("subCategoryID", val)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="-- Select a subcategory --" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-y-auto">
-                    <div>
-                      {/* Subcategories */}
-                      {subCategories?.map((sub) => (
-                        <SelectItem
-                          key={sub._id}
-                          value={sub._id}
-                          className="pl-4 text-sm"
-                        >
-                          {sub.name}
-                        </SelectItem>
-                      ))}
-                    </div>
+                    {subCategories?.map((sub) => (
+                      <SelectItem
+                        key={sub._id}
+                        value={sub._id}
+                        className="pl-4 text-sm"
+                      >
+                        {sub.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <Label>Brand</Label>
                 <Input
-                  className="my-2"
                   {...register("brand")}
                   placeholder="Enter brand name"
+                  className="my-2"
                 />
                 {errors.brand && (
                   <p className="text-red-500 text-sm">{errors.brand.message}</p>
                 )}
+              </div>
+              <div className="flex gap-2 items-center">
+                <Label>Check this to add in Featured Product</Label>
+                <Input
+                  type="checkbox"
+                  className="w-3"
+                  {...register("isFeatured")}
+                />
               </div>
             </CardContent>
           </Card>
@@ -609,10 +620,10 @@ export default function AddProductPage() {
             <CardContent>
               <Label>Stock Quantity</Label>
               <Input
-                className="my-2"
                 type="number"
                 {...register("stock", { valueAsNumber: true })}
                 placeholder="0"
+                className="my-2"
               />
               {errors.stock && (
                 <p className="text-red-500 text-sm">{errors.stock.message}</p>
@@ -627,8 +638,12 @@ export default function AddProductPage() {
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancel
         </Button>
-        <Button type="submit" className="bg-green-600 hover:bg-green-700">
-          Create Product
+        <Button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700"
+          disabled={isUploading}
+        >
+          {isUploading ? `Uploading ${progress}%` : "Create Product"}
         </Button>
       </div>
     </form>

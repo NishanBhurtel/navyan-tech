@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useCategories } from "@/hooks/categories/getCategories";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 
 // optional: map category IDs to icons/colors for better visuals

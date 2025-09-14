@@ -14,10 +14,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 export default function LoginForm() {
-    const router = useRouter();
+  const router = useRouter();
   
   const {
     register,

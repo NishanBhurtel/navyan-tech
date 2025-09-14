@@ -1,6 +1,7 @@
+"use client"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/user-components/ui/button"
-import { ArrowLeft, Upload, X, Plus } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 export default function AddProductHeader(){
       const router = useRouter()

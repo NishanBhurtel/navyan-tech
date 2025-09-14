@@ -51,6 +51,9 @@ const ProductSchema: Schema = new Schema(
     },
     discountedPrice: {
       type: Number,
+    },
+    quantity: {
+      type: Number,
       required: true,
     },
     description: {

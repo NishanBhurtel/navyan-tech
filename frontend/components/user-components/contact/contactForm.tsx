@@ -12,7 +12,7 @@ export default function (){
           <div className="lg:col-span-2">
             <Card className="shadow-xl border-0">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold font-serif text-foreground flex items-center space-x-2">
+                <CardTitle className="text-2xl font-bold text-foreground flex items-center space-x-2">
                   <Send className="w-6 h-6 text-primary" />
                   <span>Send us a Message</span>
                 </CardTitle>

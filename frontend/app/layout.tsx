@@ -2,8 +2,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
-import ToastProvider from "@/lib/toast";
 import InnerLayoutClient from "./innerLayout";
+import ClientProviders from "@/lib/clientProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,12 +19,15 @@ const sourceSans = Source_Sans_3({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {
-  title: "TechHub Pro - Premium Computers, Laptops & Components",
-  description:
-    "Discover cutting-edge computers, gaming laptops, and high-performance components. Build your dream PC with professional-grade hardware.",
-  generator: "v0.app",
-};
+// export const metadata: Metadata = {
+//   title: "TechHub Pro - Premium Computers, Laptops & Components",
+//   description:
+//     "Discover cutting-edge computers, gaming laptops, and high-performance components. Build your dream PC with professional-grade hardware.",
+//   generator: "v0.app",
+//   icons: {
+//     icon: "/NavYantra-Logo.png",
+//   },
+// };
 
 export default function RootLayout({
   children,
@@ -32,15 +35,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ToastProvider>
-      <html
-        lang="en"
-        className={`${playfair.variable} ${sourceSans.variable} antialiased`}
-      >
-        <body className="font-sans">
+    <html>
+      <body>
+        <ClientProviders>
           <InnerLayoutClient>{children}</InnerLayoutClient>
-        </body>
-      </html>
-    </ToastProvider>
+        </ClientProviders>
+      </body>
+    </html>
   );
 }

@@ -1,10 +1,15 @@
+"use client";
+import { useCategories } from "@/hooks/categories/getCategories";
 import Link from "next/link";
 
-type FooterProps = {
-  category?: any[];
-};
+const Footer = () => {
+  const { data: categories, isError, isLoading } = useCategories();
 
-const Footer = ({ category }: FooterProps) => {
+  if (isLoading)
+    return <div className="p-12 text-center">Loading categories...</div>;
+  if (isError || !categories)
+    return <div className="p-12 text-center">Categories Not Found</div>;
+
   return (
     <footer className="bg-card border-t border-border py-16 mt-4">
       <div className="container mx-auto px-4">
@@ -26,7 +31,7 @@ const Footer = ({ category }: FooterProps) => {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Products</h3>
             <ul className="space-y-2 text-muted-foreground">
-              {category?.map((cat) => (
+              {categories?.map((cat) => (
                 <li key={cat._id}>
                   <Link
                     href={`/search?categoryId=${cat._id}`}

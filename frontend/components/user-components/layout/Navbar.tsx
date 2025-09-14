@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
+import { WishlistItem } from "@/lib/utils/types/wishlist.type";
+import { getWishlist } from "@/lib/localStorage/wishlist.localStorage";
 
 interface FormValues {
   search: string;
@@ -31,7 +33,6 @@ const Navbar = () => {
   const searchValue = watch("search");
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +50,21 @@ const Navbar = () => {
     setToken(storedToken);
   }, []);
 
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
+  useEffect(() => {
+    const items = getWishlist();
+    setWishlistItems(items.slice().reverse());
+
+    const initialQuantities: { [key: number]: number } = {};
+    items.forEach((item) => {
+      initialQuantities[item.id] = 1;
+    });
+    setQuantities(initialQuantities);
+  }, []);
+
   if (isLoading) return <p>Loading categories...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -62,17 +78,17 @@ const Navbar = () => {
             </div>
           </Link>
 
-           <div className="flex-1 max-w-2xl mx-8">
-          <form onSubmit={handleSubmit} className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="search"
-              placeholder="Search for computers, laptops, components..."
-              className="pl-10 pr-4 py-2 w-full bg-muted/50 border-border focus:bg-background"
-              {...register("search")}
-            />
-          </form>
-        </div>
+          <div className="flex-1 max-w-2xl mx-8">
+            <form onSubmit={handleSubmit} className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="search"
+                placeholder="Search for computers, laptops, components..."
+                className="pl-10 pr-4 py-2 w-full bg-muted/50 border-border focus:bg-background"
+                {...register("search")}
+              />
+            </form>
+          </div>
 
           {token ? (
             <div className="flex items-center space-x-4">
@@ -81,7 +97,7 @@ const Navbar = () => {
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="w-6 h-6" />
                   <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full p-0 flex items-center justify-center">
-                    3
+                    {wishlistItems.length}
                   </Badge>
                 </Button>
                 <span className="hidden md:inline">Wishlist</span>
@@ -99,7 +115,7 @@ const Navbar = () => {
               </Link>
 
               {/* Logout */}
-              <Button variant="outline" className="flex items-center space-x-2">
+              <Button variant="outline" className="flex items-center space-x-2 cursor-pointer">
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
@@ -117,20 +133,20 @@ const Navbar = () => {
                 </Button>
               </Link>
               <Link href="/wishlist">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-2"
-                >
-                  <Heart className="w-4 h-4" />
-                  <span className="hidden md:inline">Wishlist</span>
+                {/* Wishlist */}
+                <Button variant="ghost" size="icon" className="relative">
+                  <Heart className="w-6 h-6" />
+                  <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full p-0 flex items-center justify-center">
+                    {wishlistItems.length}
+                  </Badge>
                 </Button>
+                <span className="hidden md:inline">Wishlist</span>
               </Link>
               <Link href="/login">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 cursor-pointer"
                 >
                   <User className="w-4 h-4" />
                   <span className="hidden md:inline">Login</span>
@@ -142,7 +158,6 @@ const Navbar = () => {
 
         <div className="border-t border-border bg-muted/30">
           <div className="container mx-auto px-4">
-          
             <nav className="flex items-center justify-center space-x-8 py-3">
               {categories?.map((cat) => (
                 <div key={cat._id} className="relative group">

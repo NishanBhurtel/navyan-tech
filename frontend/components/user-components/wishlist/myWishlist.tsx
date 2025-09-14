@@ -6,7 +6,6 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   Heart,
-  Star,
   Trash2,
   ShoppingBag,
   ArrowRight,
@@ -20,7 +19,7 @@ import {
   removeFromWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 export default function MyWishList() {
   const { showToast } = useToast();
@@ -36,7 +35,8 @@ export default function MyWishList() {
     );
     if (confirmRemove) {
       removeFromWishlist(id);
-      setWishlistItems(getWishlist());
+      const updated = getWishlist().slice().reverse();
+      setWishlistItems(updated);
       showToast("Product removed from wishlist", "bg-green-600");
     }
   };
@@ -51,7 +51,7 @@ export default function MyWishList() {
   // Initialize quantities when wishlist loads
   useEffect(() => {
     const items = getWishlist();
-    setWishlistItems(items);
+    setWishlistItems(items.slice().reverse()); // newest first
 
     // initialize each item with quantity = 1
     const initialQuantities: { [key: number]: number } = {};
@@ -78,7 +78,7 @@ export default function MyWishList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold font-serif text-foreground mb-2">
+        <h1 className="text-4xl font-bold text-foreground mb-2">
           My Wishlist
         </h1>
         <p className="text-muted-foreground">
@@ -123,7 +123,7 @@ export default function MyWishList() {
                               {item.category}
                             </span>
                           </div>
-                          <h3 className="text-lg font-bold font-serif text-foreground group-hover:text-primary transition-colors">
+                          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                             {item.name}
                           </h3>
                         </div>
@@ -168,7 +168,7 @@ export default function MyWishList() {
                           </div>
 
                           <div className="flex items-center space-x-2">
-                            <span className="text-xl font-bold font-serif text-foreground">
+                            <span className="text-xl font-bold text-foreground">
                               {item.price}
                             </span>
                             {item.originalPrice && (
@@ -210,7 +210,9 @@ export default function MyWishList() {
                           >
                             <ShoppingBag className="w-4 h-4 mr-2" />
                             <Link
-                              href={`/order?product=${item.id}&order=${quantities[item.id] || 1}`}
+                              href={`/order?product=${item.id}&order=${
+                                quantities[item.id] || 1
+                              }`}
                               className="flex-1"
                             >
                               Order Now
@@ -230,7 +232,7 @@ export default function MyWishList() {
           <div className="inline-flex items-center justify-center w-24 h-24 bg-muted rounded-full mb-6">
             <Heart className="w-12 h-12 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-bold font-serif text-foreground mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Your wishlist is empty
           </h2>
           <p className="text-muted-foreground mb-8">

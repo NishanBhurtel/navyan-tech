@@ -5,8 +5,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/user-components/ui/input"
 import { Label } from "@/components/user-components/ui/label"
 import { Textarea } from "@/components/user-components/ui/textarea"
-import { Mail, MessageSquare, Phone } from "lucide-react"
-import { getPriorityColor, getStatusColor } from "./status-utils"
 import { Inquiry } from "./order-inqueries"
 
 export type DialogAction = "view" | "contact" | "email" | "notes"
@@ -16,9 +14,6 @@ interface InquiryDialogProps {
   onOpenChange: (open: boolean) => void
   actionType: DialogAction | ""
   inquiry: Inquiry | null
-  notes: string
-  onNotesChange: (v: string) => void
-  onStatusChange: (inquiryId: string, newStatus: string) => void
 }
 
 export default function InquiryDialog({
@@ -26,9 +21,6 @@ export default function InquiryDialog({
   onOpenChange,
   actionType,
   inquiry,
-  notes,
-  onNotesChange,
-  onStatusChange,
 }: InquiryDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,9 +28,7 @@ export default function InquiryDialog({
         <DialogHeader>
           <DialogTitle>
             {actionType === "view" && `Inquiry Details - ${inquiry?.id}`}
-            {actionType === "contact" && "Contact Customer"}
             {actionType === "email" && "Send Email"}
-            {actionType === "notes" && "Add Notes"}
           </DialogTitle>
         </DialogHeader>
         {inquiry && (
@@ -92,14 +82,6 @@ export default function InquiryDialog({
                         <Label>Total Amount</Label>
                         <p className="text-sm font-semibold text-gray-900">₹{inquiry.totalAmount.toLocaleString()}</p>
                       </div>
-                      <div>
-                        <Label>Status</Label>
-                        <Badge className={getStatusColor(inquiry.status)}>{inquiry.status.replace("-", " ")}</Badge>
-                      </div>
-                      <div>
-                        <Label>Priority</Label>
-                        <Badge className={getPriorityColor(inquiry.priority)}>{inquiry.priority}</Badge>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -108,43 +90,6 @@ export default function InquiryDialog({
                     <Label>Notes</Label>
                     <p className="text-sm text-gray-900 mt-1">{inquiry.notes || "No notes available"}</p>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {actionType === "contact" && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button className="bg-green-600 hover:bg-green-700">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call {inquiry.customerPhone}
-                  </Button>
-                  <Button variant="outline">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    WhatsApp
-                  </Button>
-                  <Button variant="outline">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Email
-                  </Button>
-                </div>
-                <div>
-                  <Label htmlFor="contactNotes">Contact Notes</Label>
-                  <Textarea
-                    id="contactNotes"
-                    placeholder="Add notes about this contact..."
-                    value={notes}
-                    onChange={(e) => onNotesChange(e.target.value)}
-                    rows={4}
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => onOpenChange(false)}>
-                    Cancel
-                  </Button>
-                  <Button className="bg-green-600 hover:bg-green-700" onClick={() => onStatusChange(inquiry.id, "contacted")}>
-                    Mark as Contacted
-                  </Button>
                 </div>
               </div>
             )}
@@ -173,27 +118,6 @@ export default function InquiryDialog({
                     Cancel
                   </Button>
                   <Button className="bg-green-600 hover:bg-green-700">Send Email</Button>
-                </div>
-              </div>
-            )}
-
-            {actionType === "notes" && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="inquiryNotes">Notes</Label>
-                  <Textarea
-                    id="inquiryNotes"
-                    placeholder="Add notes about this inquiry..."
-                    value={notes}
-                    onChange={(e) => onNotesChange(e.target.value)}
-                    rows={6}
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => onOpenChange(false)}>
-                    Cancel
-                  </Button>
-                  <Button className="bg-green-600 hover:bg-green-700">Save Notes</Button>
                 </div>
               </div>
             )}

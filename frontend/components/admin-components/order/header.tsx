@@ -2,7 +2,12 @@ import { Button } from "@/components/user-components/ui/button"
 import {
   Download,
 } from "lucide-react"
-export default function OrderHeader(){
+
+interface OrderHeaderProps {
+  onExport?: () => void; // optional prop
+}
+
+export default function OrderHeader({ onExport }: OrderHeaderProps){
     return(
               <div className="flex items-center justify-between">
         <div>
@@ -10,7 +15,7 @@ export default function OrderHeader(){
           <p className="text-gray-600 mt-2">Manage customer product inquiries and follow-ups</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={onExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>

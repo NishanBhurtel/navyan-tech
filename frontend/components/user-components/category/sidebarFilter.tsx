@@ -18,10 +18,10 @@ export default function SidebarFilter({ products }: ProductGridProps) {
   const router = useRouter();
 
   const search = searchParams.get("search");
-  const categoryID = searchParams.get("categoryId");
+  const categoryID = searchParams.get("categoryID");
   const subCategoryID = searchParams.get("subCategoryID");
   const minPrice = searchParams.get("minPrice") || "0";
-  const maxPrice = searchParams.get("maxPrice") || "3000";
+  const maxPrice = searchParams.get("maxPrice") || "300000";
   const brand = searchParams.get("brand") || "";
 
   const updateQuery = (key: string, value: string | null) => {
@@ -109,7 +109,10 @@ export default function SidebarFilter({ products }: ProductGridProps) {
                           id={sub._id}
                           checked={isChecked}
                           onCheckedChange={(checked) =>
-                            updateQuery("subCategoryID", checked ? sub._id : null)
+                            updateQuery(
+                              "subCategoryID",
+                              checked ? sub._id : null
+                            )
                           }
                         />
                         <label
@@ -147,7 +150,10 @@ export default function SidebarFilter({ products }: ProductGridProps) {
                             id={sub._id}
                             checked={isChecked}
                             onCheckedChange={(checked) =>
-                              updateQuery("subCategoryID", checked ? sub._id : null)
+                              updateQuery(
+                                "subCategoryID",
+                                checked ? sub._id : null
+                              )
                             }
                           />
                           <label
@@ -224,9 +230,29 @@ export default function SidebarFilter({ products }: ProductGridProps) {
             <Button
               variant="outline"
               className="w-full mt-2 bg-transparent"
-              onClick={() => router.push("/search")}
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                const baseSearch = search;
+                const baseCategoryID = categoryID;
+                const baseSubCategoryID = subCategoryID;
+
+                // --- Remove filter-only params ---
+                params.delete("minPrice");
+                params.delete("maxPrice");
+                params.delete("brand");
+
+                params.set("subCategoryID", baseSubCategoryID || "");
+
+                // Make sure to keep search & category info
+                if (baseSearch) params.set("search", baseSearch);
+                if (baseCategoryID) params.set("categoryID", baseCategoryID);
+                if (baseSubCategoryID)
+                  params.set("subCategoryID", baseSubCategoryID);
+
+                router.push(`/search?${params.toString()}`);
+              }}
             >
-              Clear All
+              Clear Filters
             </Button>
           </CardContent>
         </Card>

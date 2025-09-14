@@ -17,26 +17,27 @@ import {
 import { Separator } from "../ui/separator";
 import { Package } from "lucide-react";
 import {
-  createOrderSchema,
-  TCreateOrderSchema,
+  createOrderFormSchema,
+  TCreateOrderFormSchema,
 } from "@/lib/form-validation/order-validation";
 import { orderApi } from "@/lib/api/order.api";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
 
 interface OrderFormProps {
   product: IProduct;
   quantity: number;
+  total:number;
 }
 
-export default function OrderForm({ product, quantity }: OrderFormProps) {
+export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TCreateOrderSchema>({
-    resolver: zodResolver(createOrderSchema),
+  } = useForm<TCreateOrderFormSchema>({
+    resolver: zodResolver(createOrderFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -49,7 +50,8 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
       notes: "",
       preferredContact: "",
       productID: product._id,
-      quantity, // <-- include productId & quantity
+      quantity,
+      totalPrice: total,
     },
   });
 
@@ -57,7 +59,27 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
   const { showToast } = useToast();
 
   const mutation = useMutation({
-    mutationFn: (data: TCreateOrderSchema) => orderApi.createOrderApi(data),
+    mutationFn: (data: TCreateOrderFormSchema) => orderApi.createOrderApi({
+      personalInformation:{
+        email:data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phone,
+      },
+      shippingAddress:{
+        city: data.city,
+        state: data.state,
+        streetAddress: data.address,
+        zip: +data.zip,
+      },
+      additionalInformation:{
+        notes: data.notes,
+      },
+      preferredContactMethod:data.preferredContact,
+      productID: data.productID,
+      quantity: data.quantity,
+      totalPrice: data.totalPrice,
+    }),
     onSuccess: () => {
       showToast("Order submitted successfully", "bg-green-600");
       router.push("/order/success");
@@ -70,10 +92,10 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
     },
   });
 
-  const onSubmit = (data: TCreateOrderSchema) => {
-    // Attach productId and quantity from props (in case user did not modify)
+  const onSubmit = (data: TCreateOrderFormSchema) => {
     data.productID = product._id;
     data.quantity = quantity;
+    data.totalPrice = total;
     mutation.mutate(data);
   };
 
@@ -98,7 +120,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
+                  <Label htmlFor="firstName">First Name <span className="text-red-600">*</span></Label>
                   <Input
                     id="firstName"
                     {...register("firstName")}
@@ -111,7 +133,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
+                  <Label htmlFor="lastName">Last Name <span className="text-red-600">*</span></Label>
                   <Input
                     id="lastName"
                     {...register("lastName")}
@@ -126,7 +148,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address *</Label>
+                  <Label htmlFor="email">Email Address <span className="text-red-600">*</span></Label>
                   <Input
                     id="email"
                     type="email"
@@ -140,7 +162,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone">Phone Number <span className="text-red-600">*</span></Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -164,7 +186,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
                 Shipping Address
               </h3>
               <div className="space-y-2">
-                <Label htmlFor="address">Street Address *</Label>
+                <Label htmlFor="address">Street Address <span className="text-red-600">*</span></Label>
                 <Input id="address" {...register("address")} className="h-11" />
                 {errors.address && (
                   <p className="text-red-500 text-sm">
@@ -174,7 +196,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city">City <span className="text-red-600">*</span></Label>
                   <Input id="city" {...register("city")} className="h-11" />
                   {errors.city && (
                     <p className="text-red-500 text-sm">
@@ -183,7 +205,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state">State/Province *</Label>
+                  <Label htmlFor="state">State/Province <span className="text-red-600">*</span></Label>
                   {/* <Input id="state" {...register("state")} className="h-11" /> */}
                   <select
                     id="state"
@@ -209,7 +231,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="zip">ZIP/Postal Code *</Label>
+                  <Label htmlFor="zip">ZIP/Postal Code <span className="text-red-600">*</span></Label>
                   <Input id="zip" {...register("zip")} className="h-11" />
                   {errors.zip && (
                     <p className="text-red-500 text-sm">{errors.zip.message}</p>
@@ -235,7 +257,7 @@ export default function OrderForm({ product, quantity }: OrderFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="preferredContact">
-                  Preferred Contact Method
+                  Preferred Contact Method <span className="text-red-600">*</span>
                 </Label>
                 <select
                   id="preferredContact"

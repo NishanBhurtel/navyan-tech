@@ -16,7 +16,7 @@ export function useToast() {
   return ctx;
 }
 
-export default function ToastProvider({ children }: { children: ReactNode }) {
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [bgColor, setBgColor] = useState("bg-green-600");

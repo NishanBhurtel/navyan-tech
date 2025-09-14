@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 interface RelatedProductsProps {
   currentProduct: any;
@@ -60,7 +60,7 @@ export default function RelatedProducts({
       <h3 className="text-3xl font-bold font-serif text-foreground mb-8">
         You may also like
       </h3>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {relatedProducts.map((p, i) => (
           <Card
             key={i}
@@ -77,7 +77,7 @@ export default function RelatedProducts({
                   <img
                     src={p.images ? p.images[0] : p.name}
                     alt={p.name}
-                    className="object-contain max-h-full"
+                    className="object-overflow max-h-full w-full rounded"
                   />
                 </div>
 

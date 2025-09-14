@@ -1,5 +1,3 @@
-"use client";
-
 import QuickAction from "@/components/admin-components/page/quickAction";
 import StatsGrid from "@/components/admin-components/page/statsGrid";
 
