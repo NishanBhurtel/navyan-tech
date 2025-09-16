@@ -20,15 +20,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 export default function RegisterForm() {
-    const router = useRouter();
-  
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<TRegisterSchema>({
     resolver: zodResolver(registerSchema),
@@ -43,15 +42,20 @@ export default function RegisterForm() {
         firstName: data.firstName,
         lastName: data.lastName,
         password: data.password,
+        confirmPassword: data.confirmPassword,
         phoneNumber: data.phoneNumber,
         termsAccepted: data.termsAccepted,
       }),
     onSuccess: () => {
-            router.push("/admin/products");
+      router.push("/login");
       showToast("Registration successful!", "bg-green-600");
     },
     onError: (error: any) => {
-      showToast("Registration failed: " + error?.message || "Unknown error", "bg-red-600");
+      showToast(
+        "Registration failed: " + error?.message || "Unknown error",
+        "bg-red-600"
+      );
+      console.log(error.message);
     },
   });
 

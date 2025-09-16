@@ -1,14 +1,14 @@
 export interface SubCategory {
   _id: string;
   name: string;
-  description: string;
+  description?: string;
   parentCategoryId: string;
 }
 
 export interface Category {
   _id: string;
   name: string;
-  description: string;
+  description?: string;
   subCategories?: SubCategory[];
   parentCategory?: string;
 }
@@ -28,7 +28,7 @@ export interface CreateCategoryRequest {
 
 export interface CreateSubcategoryRequest {
   name: string;
-  description: string;
+  description?: string;
   parentCategoryId: string;
 }
 
@@ -39,5 +39,5 @@ export interface UpdateCategoryRequest {
 
 export interface UpdateSubcategoryRequest {
   name: string;
-  description: string;
+  description?: string;
 }

@@ -8,7 +8,7 @@ import {
 
 // POST /auth/register - Register new user
 const registerApi = async (
-  registerPayload: Omit<TRegisterSchema,   "confirmPassword">
+  registerPayload: TRegisterSchema
 ) => {
   const response = await apiClient.post("/auth/register", registerPayload);
   return response.data;

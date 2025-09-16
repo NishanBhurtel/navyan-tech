@@ -5,9 +5,11 @@ import mongoose from "mongoose";
 
 const createSubCategoryDB = async (data: {
   name: string;
-  description: string;
+  description?: string;
   parentCategoryId: string;
 }): Promise<ICategoryModel> => {
+
+  console.log(data.description)
   const subCategory = new SubCategoryModel({
     name: data.name,
     description: data.description,

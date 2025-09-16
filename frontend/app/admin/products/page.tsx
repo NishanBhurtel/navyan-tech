@@ -1,73 +1,86 @@
-"use client"
-
-import Filters from "@/components/admin-components/product/page/filter"
-import ProductHeader from "@/components/admin-components/product/page/header"
-import ProductTable from "@/components/admin-components/product/page/productTable"
-import { Button } from "@/components/user-components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/user-components/ui/card"
-import { Filter } from "lucide-react"
-import { useState } from "react"
-
-// Mock product data
-const mockProducts = [
-  {
-    id: 1,
-    name: "ASUS ROG Strix Gaming Laptop",
-    sku: "ASUS-ROG-001",
-    category: "Laptops",
-    subcategory: "Gaming Laptops",
-    price: 89999,
-    stock: 15,
-    status: "active",
-    images: ["/placeholder.svg?height=60&width=60"],
-    createdAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "MSI Gaming Desktop RTX 4080",
-    sku: "MSI-DESK-002",
-    category: "Computers",
-    subcategory: "Gaming Desktop",
-    price: 125000,
-    stock: 8,
-    status: "active",
-    images: ["/placeholder.svg?height=60&width=60"],
-    createdAt: "2024-01-14",
-  },
-  {
-    id: 3,
-    name: "MacBook Pro M3 16-inch",
-    sku: "APPLE-MBP-003",
-    category: "Laptops",
-    subcategory: "MacBook",
-    price: 199999,
-    stock: 0,
-    status: "inactive",
-    images: ["/placeholder.svg?height=60&width=60"],
-    createdAt: "2024-01-13",
-  },
-]
+"use client";
+import Filters from "@/components/admin-components/product/page/filter";
+import ProductHeader from "@/components/admin-components/product/page/header";
+import ProductTable from "@/components/admin-components/product/page/productTable";
+import { Button } from "@/components/user-components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/user-components/ui/card";
+import { Filter } from "lucide-react";
+import { useDeleteProduct } from "@/hooks/product/removeProduct";
+import { useState } from "react";
+import { IProduct } from "@/lib/utils/types/product.type";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function ProductsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const { mutate: deleteProduct } = useDeleteProduct();
+  const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
 
-  const filteredProducts = mockProducts.filter((product) => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter
-    const matchesStatus = statusFilter === "all" || product.status === statusFilter
-
-    return matchesSearch && matchesCategory && matchesStatus
-  })
-
-  const handleDelete = (productId: number) => {
+  const removeProduct = (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      console.log("Deleting product:", productId)
+      deleteProduct(id);
     }
-  }
+  };
+
+  const handleExport = () => {
+    if (!filteredProducts.length) return;
+
+    const data = filteredProducts.map((product) => ({
+      Name: product.name,
+      Brand: product.brand,
+      Category: product.categoryID?.name || "",
+      Sub_Category: product.subCategoryID?.name || "",
+      Original_Price: product.originalPrice,
+      Discounted_Price: product.discountedPrice,
+      Stock: product.stock,
+      Description: product.description || "",
+
+      // Flatten technical specifications (performance)
+      Series: product.technicalSpecification?.performance?.series || "",
+      CPU: product.technicalSpecification?.performance?.cpu || "",
+      Graphics: product.technicalSpecification?.performance?.graphics || "",
+      Display: product.technicalSpecification?.performance?.display || "",
+      OperatingSystem: product.technicalSpecification?.performance?.operatingSystem || "",
+
+      // Flatten technical specifications (memoryAndStorage)
+      MainMemory: product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
+      Storage: product.technicalSpecification?.memoryAndStorage?.storage || "",
+      Connectivity: product.technicalSpecification?.memoryAndStorage?.connectivity || "",
+      Camera: product.technicalSpecification?.memoryAndStorage?.camera || "",
+      Audio: product.technicalSpecification?.memoryAndStorage?.audio || "",
+      Battery: product.technicalSpecification?.memoryAndStorage?.battery || "",
+      Weight: product.technicalSpecification?.memoryAndStorage?.weight || "",
+      Warranty: product.technicalSpecification?.memoryAndStorage?.warranty || "",
+
+      // Flatten specifications array into a single string
+      Specifications: product.specifications
+        .map((spec) => `${spec.key}: ${spec.value}`)
+        .join("; "),
+      CreatedAt: product.createdAt
+        ? new Date(product.createdAt).toLocaleString()
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+    saveAs(
+      blob,
+      `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -75,23 +88,22 @@ export default function ProductsPage() {
       <ProductHeader />
 
       {/* Filters */}
-      <Filters />
+      <Filters onFilter={setFilteredProducts} />
 
       {/* Products Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Products ({filteredProducts.length})</span>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExport}>
               <Filter className="h-4 w-4 mr-2" />
               Export
             </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductTable products={filteredProducts} onDelete={handleDelete} />
+          <ProductTable products={filteredProducts} onDelete={removeProduct} />
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

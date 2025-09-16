@@ -1,55 +1,84 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Heart, Star, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import {
+  Heart,
+  Trash2,
+  ShoppingBag,
+  ArrowRight,
+  Minus,
+  Plus,
+} from "lucide-react";
+import { WishlistItem } from "@/lib/utils/types/wishlist.type";
+import {
+  clearWishlist,
+  getWishlist,
+  removeFromWishlist,
+} from "@/lib/localStorage/wishlist.localStorage";
+import Link from "next/link";
+import { useToast } from "@/lib/Toast";
+
 export default function MyWishList() {
-  const wishlistItems = [
-    {
-      id: 1,
-      name: "ASUS ROG Strix RTX 4090",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToet3gJG5Dl_YypQhy5gXAKTAQFpL9HdO1gg&s",
-      price: "$1,599.99",
-      originalPrice: "$1,799.99",
-      rating: 4.9,
-      reviews: 234,
-      badge: "Best Seller",
-      badgeColor: "bg-primary",
-      category: "Graphics Card",
-      inStock: true,
-    },
-    {
-      id: 2,
-      name: "AMD Ryzen 9 7950X3D",
-      image: "https://m.media-amazon.com/images/I/51jNS8epPeL.jpg",
-      price: "$699.99",
-      originalPrice: "$799.99",
-      rating: 4.9,
-      reviews: 89,
-      badge: "Sale",
-      badgeColor: "bg-red-600",
-      category: "Processor",
-      inStock: true,
-    },
-    {
-      id: 3,
-      name: "ASUS ROG Zephyrus G14",
-      image:
-        "https://itti.com.np/_next/image?url=https%3A%2F%2Fadmin.itti.com.np%2Fstorage%2Fproduct%2Fasus-rog-zephyrus-g14-2024-price-nepal%2F34a4616e-850b-4797-a6a2-85b86fa51ff7.webp&w=3840&q=75",
-      price: "$1,299.99",
-      originalPrice: "$1,499.99",
-      rating: 4.7,
-      reviews: 312,
-      badge: "Hot",
-      badgeColor: "bg-orange-600",
-      category: "Gaming Laptop",
-      inStock: false,
-    },
-  ];
+  const { showToast } = useToast();
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+
+  useEffect(() => {
+    setWishlistItems(getWishlist());
+  }, []);
+
+  const handleRemove = (id: number) => {
+    const confirmRemove = confirm(
+      "Are you sure you want to remove this item from your watchlist?"
+    );
+    if (confirmRemove) {
+      removeFromWishlist(id);
+      const updated = getWishlist().slice().reverse();
+      setWishlistItems(updated);
+      showToast("Product removed from wishlist", "bg-green-600");
+    }
+  };
+
+  const handleClearAll = () => {
+    clearWishlist();
+    setWishlistItems([]);
+  };
+
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
+  // Initialize quantities when wishlist loads
+  useEffect(() => {
+    const items = getWishlist();
+    setWishlistItems(items.slice().reverse()); // newest first
+
+    // initialize each item with quantity = 1
+    const initialQuantities: { [key: number]: number } = {};
+    items.forEach((item) => {
+      initialQuantities[item.id] = 1;
+    });
+    setQuantities(initialQuantities);
+  }, []);
+
+  const incrementOrder = (id: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 1) + 1,
+    }));
+  };
+
+  const decrementOrder = (id: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+    }));
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold font-serif text-foreground mb-2">
+        <h1 className="text-4xl font-bold text-foreground mb-2">
           My Wishlist
         </h1>
         <p className="text-muted-foreground">
@@ -63,7 +92,11 @@ export default function MyWishList() {
             <p className="text-muted-foreground">
               {wishlistItems.length} items in your wishlist
             </p>
-            <Button variant="outline" className="bg-transparent">
+            <Button
+              variant="outline"
+              className="bg-transparent"
+              onClick={handleClearAll}
+            >
               Clear All
             </Button>
           </div>
@@ -76,26 +109,21 @@ export default function MyWishList() {
               >
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-6">
-                    {/* Product Image */}
+                    {/* Image */}
                     <div className="w-24 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
-                      <img src={item.image} alt="" />
+                      <img src={item.image} alt={item.name} />
                     </div>
 
-                    {/* Product Details */}
+                    {/* Details */}
                     <div className="flex-1 space-y-2">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
-                            <Badge
-                              className={`${item.badgeColor} text-white text-xs`}
-                            >
-                              {item.badge}
-                            </Badge>
                             <span className="text-xs text-primary font-medium">
                               {item.category}
                             </span>
                           </div>
-                          <h3 className="text-lg font-bold font-serif text-foreground group-hover:text-primary transition-colors">
+                          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                             {item.name}
                           </h3>
                         </div>
@@ -103,6 +131,7 @@ export default function MyWishList() {
                           size="icon"
                           variant="ghost"
                           className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={() => handleRemove(item.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -110,8 +139,36 @@ export default function MyWishList() {
 
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
+                          {/* Quantity */}
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-sm text-muted-foreground">
+                              Qty:
+                            </span>
+                            <div className="flex items-center space-x-1">
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="w-8 h-8 bg-transparent"
+                                onClick={() => decrementOrder(item.id)}
+                              >
+                                <Minus className="w-4 h-4" />
+                              </Button>
+                              <span className="w-8 text-center">
+                                {quantities[item.id] || 1}
+                              </span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="w-8 h-8 bg-transparent"
+                                onClick={() => incrementOrder(item.id)}
+                              >
+                                <Plus className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+
                           <div className="flex items-center space-x-2">
-                            <span className="text-xl font-bold font-serif text-foreground">
+                            <span className="text-xl font-bold text-foreground">
                               {item.price}
                             </span>
                             {item.originalPrice && (
@@ -139,7 +196,12 @@ export default function MyWishList() {
                             className="bg-transparent hover:bg-primary hover:text-white"
                             disabled={!item.inStock}
                           >
-                            View Details
+                            <Link
+                              href={`/product/${item.id}`}
+                              className="flex-1"
+                            >
+                              View Details
+                            </Link>
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
                           <Button
@@ -147,7 +209,14 @@ export default function MyWishList() {
                             disabled={!item.inStock}
                           >
                             <ShoppingBag className="w-4 h-4 mr-2" />
-                            Order Now
+                            <Link
+                              href={`/order?product=${item.id}&order=${
+                                quantities[item.id] || 1
+                              }`}
+                              className="flex-1"
+                            >
+                              Order Now
+                            </Link>
                           </Button>
                         </div>
                       </div>
@@ -163,16 +232,19 @@ export default function MyWishList() {
           <div className="inline-flex items-center justify-center w-24 h-24 bg-muted rounded-full mb-6">
             <Heart className="w-12 h-12 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-bold font-serif text-foreground mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Your wishlist is empty
           </h2>
           <p className="text-muted-foreground mb-8">
             Start adding products you love to your wishlist
           </p>
-          <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            Start Shopping
-          </Button>
+
+          <Link href="/">
+            <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+              <ShoppingBag className="w-4 h-4 mr-2" />
+              Start Shopping
+            </Button>
+          </Link>
         </div>
       )}
     </div>

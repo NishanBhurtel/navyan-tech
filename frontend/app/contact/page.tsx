@@ -1,5 +1,6 @@
 import ContactForm from "@/components/user-components/contact/contactForm";
 import ContactHero from "@/components/user-components/contact/hero";
+import NavyanMap from "@/components/user-components/contact/map";
 import Footer from "@/components/user-components/layout/Footer";
 import Navbar from "@/components/user-components/layout/Navbar";
 import ConctactInformation from "@/components/user-components/page/contactInformation";
@@ -12,12 +13,18 @@ export default function ContactPage() {
       <ContactHero />
 
       <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="flex flex-row gap-12">
           {/* Contact Form */}
-          <ContactForm />
+          <div className="grid grid-row-2">
+            <ContactForm />
+
+            <NavyanMap />
+          </div>
 
           {/* Contact Information */}
-          <ConctactInformation />
+         <div className="w-full">
+           <ConctactInformation  />
+         </div>
         </div>
 
         {/* FAQ Section */}

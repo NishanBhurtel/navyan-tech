@@ -3,7 +3,7 @@ export default function TrustedBrand() {
           <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold font-serif text-foreground mb-4">
+            <h2 className="text-4xl font-bold  text-foreground mb-4">
               Trusted Brands
             </h2>
             <p className="text-xl text-muted-foreground">

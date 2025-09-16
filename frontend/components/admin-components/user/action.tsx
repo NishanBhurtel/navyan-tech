@@ -6,12 +6,13 @@ import { Label } from "@/components/user-components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/user-components/ui/select"
 
 interface User {
-  id: number
-  name: string
+  _id: string
+    firstName: string,
+    lastName: string,
   email: string
   phone: string
   role: string
-  status: string
+  status?: string
   registeredAt: string
   totalOrders: number
 }
@@ -21,8 +22,6 @@ interface UserActionDialogProps {
   onOpenChange: (open: boolean) => void
   user: User | null
   actionType: string
-  getRoleColor: (role: string) => string
-  getStatusColor: (status: string) => string
 }
 
 export default function UserActionDialog({
@@ -30,8 +29,6 @@ export default function UserActionDialog({
   onOpenChange,
   user,
   actionType,
-  getRoleColor,
-  getStatusColor,
 }: UserActionDialogProps) {
   if (!user) return null
 
@@ -50,7 +47,11 @@ export default function UserActionDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Name</Label>
-              <p className="text-sm text-gray-900">{user.name}</p>
+              <p className="text-sm text-gray-900">{user.firstName}</p>
+            </div>
+             <div>
+              <Label>Name</Label>
+              <p className="text-sm text-gray-900">{user.lastName}</p>
             </div>
             <div>
               <Label>Email</Label>
@@ -59,14 +60,6 @@ export default function UserActionDialog({
             <div>
               <Label>Phone</Label>
               <p className="text-sm text-gray-900">{user.phone}</p>
-            </div>
-            <div>
-              <Label>Role</Label>
-              <span className={getRoleColor(user.role)}>{user.role}</span>
-            </div>
-            <div>
-              <Label>Status</Label>
-              <span className={getStatusColor(user.status)}>{user.status}</span>
             </div>
             <div>
               <Label>Registered</Label>
@@ -102,8 +95,12 @@ export default function UserActionDialog({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="editName">Name</Label>
-                <Input id="editName" defaultValue={user.name} />
+                <Label htmlFor="editName">First Name</Label>
+                <Input id="editName" defaultValue={user.firstName} />
+              </div>
+               <div>
+                <Label htmlFor="editName">Last Name</Label>
+                <Input id="editName" defaultValue={user.lastName} />
               </div>
               <div>
                 <Label htmlFor="editEmail">Email</Label>

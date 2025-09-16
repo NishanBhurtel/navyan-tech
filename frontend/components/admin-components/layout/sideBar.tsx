@@ -10,7 +10,6 @@ import {
   ShoppingCart,
   Mail,
   FolderTree,
-  Menu,
   X,
   LogOut,
 } from "lucide-react";
@@ -26,7 +25,7 @@ export default function SideBar() {
     { href: "/admin/categories", icon: FolderTree, label: "Categories" },
     { href: "/admin/users", icon: Users, label: "Users" },
     { href: "/admin/orders", icon: ShoppingCart, label: "Order Inquiries" },
-    { href: "/admin/email", icon: Mail, label: "Email Marketing" },
+    { href: "/admin/email", icon: Mail, label: "Email" },
   ];
   return (
     <div
@@ -36,12 +35,11 @@ export default function SideBar() {
     >
       <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">NT</span>
-          </div>
-          <span className="font-serif font-bold text-xl text-gray-900">
-            Navyan Tech
-          </span>
+          <Link href="/" className="flex items-center space-x-4">
+            <div className="w-24 h-15  rounded-lg flex items-center justify-center">
+              <img src="/NavYantra-Logo.png" alt="" />
+            </div>
+          </Link>
         </div>
         <Button
           variant="ghost"
@@ -82,7 +80,7 @@ export default function SideBar() {
       <div className="p-4 border-t border-gray-200">
         <Button
           variant="ghost"
-          className="w-full justify-start text-gray-600 hover:text-gray-900"
+          className="w-full justify-start text-gray-600 hover:text-white cursor-pointer"
         >
           <LogOut className="mr-3 h-5 w-5" />
           Sign Out

@@ -40,8 +40,18 @@ export const productContract = c.router({
   },
   getAllProduct: {
     method: "GET",
-    path: "/products/details",
+    path: "/products",
     summary: "get all product details",
+    query:z.object({
+      search:z.string().optional(),
+      filter:z.object({
+        brand:z.string().optional(),
+        minPrice: z.coerce.number().optional(),
+        maxPrice: z.coerce.number().optional(),
+        categoryID:z.string().optional(),
+        subCategoryID:z.string().optional()
+      }).optional()
+    }),
     responses: {
       200: getAllProductSchema,
       500: errorSchema,
@@ -50,7 +60,7 @@ export const productContract = c.router({
   },
   updateProductDetails: {
     method: "PUT",
-    path: "/products/updateProductDetails/:productID",
+    path: "/products/:productID",
     pathParams: z.object({
       productID: z.string().min(1, "Product ID is required"),
     }),
@@ -68,7 +78,7 @@ export const productContract = c.router({
   removeProduct: {
     method: "DELETE",
     path: "/product/:productID",
-    body: removeProductSchema,
+    body: z.object({}),
     summary: "Delete a product",
     responses: {
       200: successSchema,

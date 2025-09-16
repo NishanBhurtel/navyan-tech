@@ -1,8 +1,7 @@
+import { IProductQueryParams } from "@/hooks/product/getAllProducts";
 import apiClient from "../api";
 import {
   TCreateProductSchema,
-  TDeleteProductSchema,
-  TGetAllProductSchema,
   TGetProductByIDSchema,
   TUpdateProductSchema,
 } from "../form-validation/product-validation";
@@ -23,24 +22,31 @@ const updateProductApi = async (
 };
 
 // GET /products - Get all products (with filters/sorting)
-const getAllProductsApi = async (filters?: Partial<TGetAllProductSchema>) => {
-  const response = await apiClient.get("/products", { params: filters });
+const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
+  const response = await apiClient.get("/products", {
+    params: {
+      search,
+      ...(filter ?? {}), // spread filter fields into params
+    },
+  });
+
   return response.data;
 };
 
 // GET /products/:id - Get product details by ID
 const getProductByIdApi = async (
-  productId: TGetProductByIDSchema["productId"]
+  productId: TGetProductByIDSchema["_id"]
 ) => {
-  const response = await apiClient.get(`/products/${productId}`);
+  const response = await apiClient.get(`/products/details/${productId}`);
   return response.data;
 };
 
 // DELETE /products/:id - Delete product
-const deleteProductApi = async (
-  productId: TDeleteProductSchema["productId"]
-) => {
-  const response = await apiClient.delete(`/products/${productId}`);
+export const deleteProductApi = async (productId: string) => {
+  // If your backend expects the body as well, send it
+  const response = await apiClient.delete(`/product/${productId}`, {
+    data: { productId }, // include body if backend expects it
+  });
   return response.data;
 };
 

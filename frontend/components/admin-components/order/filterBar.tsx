@@ -1,25 +1,16 @@
-"use client"
-import { Card, CardContent } from "@/components/user-components/ui/card"
-import { Input } from "@/components/user-components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/user-components/ui/select"
-import { Search } from "lucide-react"
+"use client";
+import { Card, CardContent } from "@/components/user-components/ui/card";
+import { Input } from "@/components/user-components/ui/input";
+import { Search } from "lucide-react";
 
 interface FiltersBarProps {
-  searchTerm: string
-  onSearch: (v: string) => void
-  statusFilter: string
-  onStatusChange: (v: string) => void
-  priorityFilter: string
-  onPriorityChange: (v: string) => void
+  searchTerm: string;
+  onSearch: (v: string) => void;
 }
 
 export default function FiltersBar({
   searchTerm,
   onSearch,
-  statusFilter,
-  onStatusChange,
-  priorityFilter,
-  onPriorityChange,
 }: FiltersBarProps) {
   return (
     <Card>
@@ -36,32 +27,8 @@ export default function FiltersBar({
               />
             </div>
           </div>
-          <Select value={statusFilter} onValueChange={onStatusChange}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="new">New</SelectItem>
-              <SelectItem value="contacted">Contacted</SelectItem>
-              <SelectItem value="in-progress">In Progress</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={priorityFilter} onValueChange={onPriorityChange}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priority</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

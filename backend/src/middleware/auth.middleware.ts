@@ -33,7 +33,7 @@ export const authenticate = async (
     req.user = { id: decoded.userId };
 
     // optionally, you can verify user exists in DB
-    const user = await UserRepository.getByID(decoded.userId);
+    const user = await UserRepository.getUserByID(decoded.userId);
     if (!user) {
       return res.status(401).json({ message: "Unauthorized: User not found" });
     }

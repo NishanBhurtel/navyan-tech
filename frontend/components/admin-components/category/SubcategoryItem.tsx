@@ -1,6 +1,5 @@
 // components/admin-components/category/SubcategoryItem.tsx
 "use client";
-
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "@/components/user-components/ui/button";
 import {
@@ -14,7 +13,7 @@ interface SubcategoryItemProps {
   subcategory: {
     _id: string;
     name: string;
-    description: string;
+    description?: string;
   };
   parentId: string;
   onEdit: (subcategory: any, parentId: string) => void;

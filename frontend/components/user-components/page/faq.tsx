@@ -4,7 +4,7 @@ export default function FAQ() {
   return (
     <div className="mt-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold font-serif text-foreground mb-4">
+        <h2 className="text-3xl font-bold text-foreground mb-4">
           Frequently Asked Questions
         </h2>
         <p className="text-muted-foreground">

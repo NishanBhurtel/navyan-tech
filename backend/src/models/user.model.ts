@@ -9,7 +9,7 @@ export interface IUser extends Document {
   };
   email: string;
   password: string;
-  phoneNumber: Number;
+  phoneNumber: string;
   role: string;
   createdAt: Date;
   updatedAt: Date;
@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema(
       default: "customer",
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

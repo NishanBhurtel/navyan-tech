@@ -1,9 +1,5 @@
-"use client";
-
 import QuickAction from "@/components/admin-components/page/quickAction";
-import RecentActivity from "@/components/admin-components/page/recentActivity";
 import StatsGrid from "@/components/admin-components/page/statsGrid";
-import TopProduct from "@/components/admin-components/page/topProduct";
 
 export default function AdminDashboard() {
   return (

@@ -1,82 +1,67 @@
-"use client"
+"use client";
+import { use } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
+  Eye,
+  Package,
+  DollarSign,
+} from "lucide-react";
+import { Button } from "@/components/user-components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/user-components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsTrigger,
+} from "@/components/user-components/ui/tabs";
+import { TabsList } from "@radix-ui/react-tabs";
+import { Badge } from "@/components/user-components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@/components/user-components/ui/table";
+import { useProductByID } from "@/hooks/product/getProductByID";
+import { useDeleteProduct } from "@/hooks/product/removeProduct";
 
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
-import { ArrowLeft, Edit, Trash2, Eye, Package, DollarSign, BarChart3 } from "lucide-react"
+export default function ProductViewPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const { data: responseData, isLoading, isError } = useProductByID(id);
+  const { mutate: deleteProduct } = useDeleteProduct();
 
-// Mock product data
-const getProductById = (id: string) => {
-  const products = [
-    {
-      id: "1",
-      name: "ASUS ROG Strix Gaming Laptop",
-      sku: "ASU-ROG-001",
-      category: "Laptops",
-      subcategory: "Gaming Laptops",
-      price: 125000,
-      originalPrice: 140000,
-      stock: 15,
-      status: "active",
-      description: "High-performance gaming laptop with RTX 4060 graphics card and Intel Core i7 processor.",
-      specifications: {
-        processor: "Intel Core i7-12700H",
-        graphics: "NVIDIA RTX 4060 8GB",
-        ram: "16GB DDR4",
-        storage: "512GB NVMe SSD",
-        display: '15.6" FHD 144Hz',
-        battery: "90Wh",
-        weight: "2.3kg",
-      },
-      images: [
-        "/placeholder.svg?height=400&width=400",
-        "/placeholder.svg?height=400&width=400",
-        "/placeholder.svg?height=400&width=400",
-      ],
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-20",
-      totalSold: 45,
-      revenue: 5625000,
-    },
-  ]
+  const product = responseData?.data;
 
-  return products.find((p) => p.id === id) || products[0]
-}
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("overview");
 
-export default function ProductViewPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [product, setProduct] = useState(null)
-  const [activeTab, setActiveTab] = useState("overview")
-
-  useEffect(() => {
-    if (params.id) {
-      const productData = getProductById(params.id as string)
-      setProduct(productData)
+  const removeProduct = (id: string) => {
+    if (confirm("Are you sure you want to delete this product?")) {
+      deleteProduct(id);
     }
-  }, [params.id])
+  };
 
   if (!product) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800"
-      case "inactive":
-        return "bg-yellow-100 text-yellow-800"
-      case "out_of_stock":
-        return "bg-red-100 text-red-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
+  if (isLoading)
+    return <div className="p-12 text-center">Loading product...</div>;
+  if (isError || !responseData?.data)
+    return <div className="p-12 text-center">Product Not Found</div>;
 
   return (
     <div className="space-y-6">
@@ -90,22 +75,34 @@ export default function ProductViewPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-serif font-bold text-gray-900">{product.name}</h1>
-            <p className="text-gray-600 mt-1">SKU: {product.sku}</p>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">
+              {product.name}
+            </h1>
           </div>
         </div>
         <div className="flex space-x-2">
           <Button variant="outline" asChild>
-            <Link href={`/admin/products/${product.id}/edit`}>
+            <Link href={`/admin/products/${product._id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Product
             </Link>
           </Button>
-          <Button variant="outline">
-            <Eye className="h-4 w-4 mr-2" />
-            View on Site
+          <Button variant="outline" asChild>
+            <a
+              href={`/product/${product._id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              View on Site
+            </a>
           </Button>
-          <Button variant="destructive">
+
+          <Button
+            variant="destructive"
+            onClick={() => removeProduct(product._id)}
+          >
             <Trash2 className="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -120,7 +117,9 @@ export default function ProductViewPage() {
               <DollarSign className="h-4 w-4 text-green-600" />
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Price</p>
-                <p className="text-2xl font-bold text-gray-900">₹{product.price.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  ₹{product.discountedPrice.toLocaleString()}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -131,29 +130,9 @@ export default function ProductViewPage() {
               <Package className="h-4 w-4 text-blue-600" />
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Stock</p>
-                <p className="text-2xl font-bold text-gray-900">{product.stock}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <BarChart3 className="h-4 w-4 text-purple-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">Total Sold</p>
-                <p className="text-2xl font-bold text-gray-900">{product.totalSold}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <DollarSign className="h-4 w-4 text-orange-600" />
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-600">Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">₹{product.revenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {product.stock}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -162,11 +141,10 @@ export default function ProductViewPage() {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
+        <TabsList className="flex justify-around">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="specifications">Specifications</TabsTrigger>
           <TabsTrigger value="images">Images</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -178,24 +156,48 @@ export default function ProductViewPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Category</p>
-                    <p className="text-gray-900">{product.category}</p>
+                    <p className="text-sm font-medium text-gray-600">Name</p>
+                    <p className="text-gray-900">{product.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Subcategory</p>
-                    <p className="text-gray-900">{product.subcategory}</p>
+                    <p className="text-sm font-medium text-gray-600">Brand</p>
+                    <p className="text-gray-900">{product.brand}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Status</p>
-                    <Badge className={getStatusColor(product.status)}>{product.status}</Badge>
+                    <p className="text-sm font-medium text-gray-600">
+                      Category
+                    </p>
+                    <p className="text-gray-900">{product.categoryID?.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Original Price</p>
-                    <p className="text-gray-900">₹{product.originalPrice.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Subcategory
+                    </p>
+                    <p className="text-gray-900">
+                      {product.subCategoryID?.name}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Original Price
+                    </p>
+                    <p className="text-gray-900">
+                      Rs.{product.originalPrice.toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Price after Discount
+                    </p>
+                    <p className="text-gray-900">
+                      Rs.{product.discountedPrice.toLocaleString()}
+                    </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Description</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Description
+                  </p>
                   <p className="text-gray-900 mt-1">{product.description}</p>
                 </div>
               </CardContent>
@@ -224,10 +226,12 @@ export default function ProductViewPage() {
             <CardContent>
               <Table>
                 <TableBody>
-                  {Object.entries(product.specifications).map(([key, value]) => (
-                    <TableRow key={key}>
-                      <TableCell className="font-medium capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</TableCell>
-                      <TableCell>{value}</TableCell>
+                  {product.specifications.map((specification) => (
+                    <TableRow key={specification.key}>
+                      <TableCell className="font-medium capitalize">
+                        {specification.key.replace(/([A-Z])/g, " $1").trim()}
+                      </TableCell>
+                      <TableCell>{specification.value}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -256,51 +260,7 @@ export default function ProductViewPage() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="analytics">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sales Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Units Sold</span>
-                    <span className="font-medium">{product.totalSold}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Revenue</span>
-                    <span className="font-medium">₹{product.revenue.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Average Order Value</span>
-                    <span className="font-medium">₹{(product.revenue / product.totalSold).toLocaleString()}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Product Timeline</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Created</span>
-                    <span className="font-medium">{product.createdAt}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Last Updated</span>
-                    <span className="font-medium">{product.updatedAt}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

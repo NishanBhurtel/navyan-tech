@@ -1,23 +1,14 @@
 import { Input } from "@/components/user-components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/user-components/ui/select"
 import { Search } from "lucide-react"
 
 interface UserFiltersProps {
   searchTerm: string
   setSearchTerm: (value: string) => void
-  roleFilter: string
-  setRoleFilter: (value: string) => void
-  statusFilter: string
-  setStatusFilter: (value: string) => void
 }
 
 export default function UserFilters({
   searchTerm,
   setSearchTerm,
-  roleFilter,
-  setRoleFilter,
-  statusFilter,
-  setStatusFilter,
 }: UserFiltersProps) {
   return (
     <div className="flex flex-col md:flex-row gap-4">
@@ -30,29 +21,6 @@ export default function UserFilters({
           className="pl-10"
         />
       </div>
-
-      <Select value={roleFilter} onValueChange={setRoleFilter}>
-        <SelectTrigger className="w-full md:w-48">
-          <SelectValue placeholder="Role" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Roles</SelectItem>
-          <SelectItem value="customer">Customer</SelectItem>
-          <SelectItem value="admin">Admin</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-full md:w-48">
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Status</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="inactive">Inactive</SelectItem>
-          <SelectItem value="banned">Banned</SelectItem>
-        </SelectContent>
-      </Select>
     </div>
   )
 }

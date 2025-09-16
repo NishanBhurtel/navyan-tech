@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import EmailTab from "@/components/admin-components/email/emailTab";
 import EmailHeader from "@/components/admin-components/email/header";
 import StatsCard from "@/components/admin-components/email/statsCard";

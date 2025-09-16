@@ -14,10 +14,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/lib/toast";
+import { useToast } from "@/lib/Toast";
 
 export default function LoginForm() {
-    const router = useRouter();
+  const router = useRouter();
   
   const {
     register,
@@ -37,8 +37,8 @@ export default function LoginForm() {
         password: data.password,
       }),
     onSuccess: () => {
+      router.push("/");
       showToast("Login successful!", "bg-green-600");
-            router.push("/admin/products");
     },
     onError: (error: any) => {
       showToast("Login failed: " + (error?.message || "Unknown error"), "bg-red-600");

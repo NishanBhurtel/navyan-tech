@@ -34,7 +34,7 @@ export default function AdminLayout({
             </Button>
 
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">Admin Panel</span>
+              <span className="text-xl text-gray-800">Admin Panel</span>
             </div>
           </div>
         </div>
