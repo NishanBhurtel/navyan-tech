@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { ChevronRight, Heart } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
@@ -70,28 +70,43 @@ export default function FeaturedProduct() {
                   className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   {/* Product Image */}
-                  <div className="relative w-full h-40 overflow-hidden">
-                    <img
-                      src={product.images?.[0] ?? ""}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <span
-                      className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
-                        isAvailable
-                          ? "bg-green-600 text-white"
-                          : "bg-red-500 text-white"
-                      }`}
-                    >
-                      {isAvailable ? "In Stock" : "Out of Stock"}
-                    </span>
-                  </div>
+
+                  <Link href={`/product/${product._id}`} className="flex-1">
+                    <div className="relative w-full h-40 overflow-hidden">
+                      <img
+                        src={product.images?.[0] ?? ""}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <span
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                          isAvailable
+                            ? "bg-green-600 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        {isAvailable ? "In Stock" : "Out of Stock"}
+                      </span>
+                    </div>
+                  </Link>
 
                   {/* Content */}
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
-                    <p className="text-xs font-medium text-muted-foreground">
-                      {product.categoryID?.name}
+                    <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.categoryID._id}`}
+                      >
+                        {product.categoryID?.name}{" "}
+                      </Link>
+                      <ChevronRight className="w-3 h-3" />
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.subCategoryID._id}`}
+                      >
+                        {product.subCategoryID?.name}{" "}
+                      </Link>
                     </p>
 
                     {/* Name */}

@@ -42,66 +42,65 @@ export default function ProductGrid({ products }: ProductGridProps) {
         return (
           <Card
             key={product._id}
-            className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-border hover:border-primary/50 overflow-hidden bg-white hover:-translate-y-1"
+            className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
           >
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {/* Product Image */}
-                <div className="relative w-full h-32 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center">
-                  <img
-                    src={product.images?.[0] ?? ""}
-                    alt={product.name}
-                    className="w-full h-full object-cover rounded-lg border border-gray-200"
-                  />
-                  <span
-                    className={`absolute top-2 left-2 px-3 py-2 text-[10px] font-semibold rounded-[4px] ${
-                      isAvailable
-                        ? "bg-[#1d961d] text-white"
-                        : "bg-[#ba1f04] text-white"
-                    }`}
-                  >
-                    {isAvailable ? "In Stock" : "Not in Stock"}
+            {/* Product Image */}
+            <div className="relative w-full h-40 overflow-hidden">
+              <img
+                src={product.images?.[0] ?? ""}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+              <span
+                className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                  isAvailable
+                    ? "bg-green-600 text-white"
+                    : "bg-red-500 text-white"
+                }`}
+              >
+                {isAvailable ? "In Stock" : "Out of Stock"}
+              </span>
+            </div>
+
+            {/* Content */}
+            <CardContent className="p-3 space-y-2">
+              {/* Category */}
+              <p className="text-xs font-medium text-muted-foreground">
+                {product.categoryID?.name}
+              </p>
+
+              {/* Name */}
+              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+                {product.name}
+              </h3>
+
+              {/* Price */}
+              <div className="flex items-baseline space-x-2">
+                <span className="text-base font-bold text-primary">
+                  Rs.{product.originalPrice}
+                </span>
+                {product.discountedPrice && (
+                  <span className="text-xs line-through text-muted-foreground">
+                    Rs.{product.discountedPrice}
                   </span>
-                </div>
+                )}
+              </div>
 
-                <div className="space-y-2">
-                  <p className="text-xs text-primary font-medium">
-                    {product.brand}
-                  </p>
-                  <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {product.brand}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold text-foreground">
-                      Rs.{product.discountedPrice}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        Rs.{product.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button className="flex-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-2 text-sm">
-                    <Link href={`/product/${product._id}`}>View Details</Link>
+              {/* Buttons (always visible) */}
+              <div className="flex gap-2 pt-2">
+                <Link href={`/product/${product._id}`} className="flex-1">
+                  <Button className="w-full bg-primary text-white text-xs font-semibold hover:bg-primary/90">
+                    View Details
                   </Button>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    className="w-8 h-8 bg-transparent hover:bg-primary hover:text-white"
-                    onClick={() => handleAddToWishlist(product)}
-                  >
-                    <Heart className="w-3 h-3" />
-                  </Button>
-                </div>
+                </Link>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="w-8 h-8 hover:bg-primary hover:text-white"
+                  onClick={() => handleAddToWishlist(product)}
+                >
+                  <Heart className="w-3 h-3" />
+                </Button>
               </div>
             </CardContent>
           </Card>

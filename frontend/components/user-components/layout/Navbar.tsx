@@ -81,15 +81,18 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center space-x-4">
           {token ? (
             <>
-              <Link href="/wishlist">
+              <Link href="/wishlist" className="flex items-center space-x-2">
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="w-6 h-6" />
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
-                    {wishlistItems.length}
-                  </Badge>
+                  {wishlistItems.length > 0 && (
+                    <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
+                      {wishlistItems.length}
+                    </Badge>
+                  )}
                 </Button>
                 <span className="hidden md:inline">Wishlist</span>
               </Link>
+
               <Link href="/mycart">
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingCart className="w-6 h-6" />
@@ -112,15 +115,18 @@ const Navbar = () => {
                   <span className="hidden md:inline">Contact</span>
                 </Button>
               </Link>
-              <Link href="/wishlist">
+              <Link href="/wishlist" className="flex items-center space-x-2">
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="w-6 h-6" />
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
-                    {wishlistItems.length}
-                  </Badge>
+                  {wishlistItems.length > 0 && (
+                    <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
+                      {wishlistItems.length}
+                    </Badge>
+                  )}
                 </Button>
                 <span className="hidden md:inline">Wishlist</span>
               </Link>
+
               <Link href="/login">
                 <Button variant="ghost" size="sm" className="space-x-2">
                   <User className="w-4 h-4" />

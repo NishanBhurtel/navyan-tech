@@ -122,7 +122,7 @@ export default function ProductViewPage({
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Price</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ₹{product.discountedPrice.toLocaleString()}
+                  Rs.{product.discountedPrice.toLocaleString()}
                 </p>
               </div>
             </div>
