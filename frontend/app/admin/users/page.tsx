@@ -30,8 +30,8 @@ export default function UsersPage() {
     if (filteredUsers.length === 0) return;
 
     // Prepare worksheet data
-    const data = filteredUsers.map((user) => ({
-      ID: user._id,
+    const data = filteredUsers.map((user,i) => ({
+      "S.N.": String(i+1),
       First_Name: user.firstName,
       Last_Name: user.lastName,
       Email: user.email,

@@ -20,24 +20,28 @@ import {
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
 import { useToast } from "@/lib/Toast";
+import ConfirmDialog from "../../../lib/confirmModel";
 
 export default function MyWishList() {
   const { showToast } = useToast();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [itemToRemove, setItemToRemove] = useState<number | null>(null);
 
   useEffect(() => {
     setWishlistItems(getWishlist());
   }, []);
 
-  const handleRemove = (id: number) => {
-    const confirmRemove = confirm(
-      "Are you sure you want to remove this item from your watchlist?"
-    );
-    if (confirmRemove) {
-      removeFromWishlist(id);
+  const handleRemoveClick = (id: number) => {
+    setItemToRemove(id); // open modal
+  };
+
+  const confirmRemove = () => {
+    if (itemToRemove !== null) {
+      removeFromWishlist(itemToRemove);
       const updated = getWishlist().slice().reverse();
       setWishlistItems(updated);
-      showToast("Product removed from wishlist", "bg-green-600");
+      showToast("Product removed from wishlist", "bg-primary");
+      setItemToRemove(null); // close modal
     }
   };
 
@@ -78,9 +82,7 @@ export default function MyWishList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          My Wishlist
-        </h1>
+        <h1 className="text-4xl font-bold text-foreground mb-2">My Wishlist</h1>
         <p className="text-muted-foreground">
           Save your favorite products for later
         </p>
@@ -108,14 +110,18 @@ export default function MyWishList() {
                 className="group hover:shadow-lg transition-all duration-300 border-border hover:border-primary/50 overflow-hidden"
               >
                 <CardContent className="p-6">
-                  <div className="flex items-center space-x-6">
+                  <div className="md:flex items-center md:space-x-6 flex-row space-y-6">
                     {/* Image */}
-                    <div className="w-24 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
-                      <img src={item.image} alt={item.name} />
+                    <div className="h-36 w-60 rounded-[8px] bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
+                      <img
+                        src={item.image ? item.image : item.name}
+                        alt={item.name}
+                        className="rounded-[8px]"
+                      />
                     </div>
 
                     {/* Details */}
-                    <div className="flex-1 space-y-2">
+                    <div className="md:flex-1 md:space-y-2 flex-row">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
@@ -131,13 +137,13 @@ export default function MyWishList() {
                           size="icon"
                           variant="ghost"
                           className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemove(item.id)}
+                          onClick={() => handleRemoveClick(item.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="md:flex items-center justify-between flex-row space-y-4">
                         <div className="space-y-1">
                           {/* Quantity */}
                           <div className="flex items-center space-x-2 mb-2">
@@ -194,7 +200,6 @@ export default function MyWishList() {
                           <Button
                             variant="outline"
                             className="bg-transparent hover:bg-primary hover:text-white"
-                            disabled={!item.inStock}
                           >
                             <Link
                               href={`/product/${item.id}`}
@@ -246,6 +251,15 @@ export default function MyWishList() {
             </Button>
           </Link>
         </div>
+      )}
+      {wishlistItems.length > 0 && (
+        <ConfirmDialog
+          open={itemToRemove !== null}
+          title="Remove from Wishlist"
+          message="Are you sure you want to remove this item from your wishlist?"
+          onConfirm={confirmRemove}
+          onCancel={() => setItemToRemove(null)}
+        />
       )}
     </div>
   );

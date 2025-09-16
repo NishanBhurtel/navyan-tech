@@ -177,13 +177,6 @@ export default function ProductEditPage() {
     }));
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Updated product data:", formData);
-    alert("Product updated successfully!");
-    router.push(`/admin/products/${params.id}`);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -265,7 +258,7 @@ export default function ProductEditPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Info */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -310,7 +303,7 @@ export default function ProductEditPage() {
 
           {/* Category & Pricing */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Category & Pricing</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -366,7 +359,7 @@ export default function ProductEditPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label className="my-2" htmlFor="discountedPrice">
-                    Price (Rs.) *
+                    Price After Discount (Rs.) *
                   </Label>
                   <Input
                     type="number"
@@ -404,7 +397,7 @@ export default function ProductEditPage() {
 
           {/* Specifications */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Specifications</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -429,7 +422,7 @@ export default function ProductEditPage() {
 
           {/* Images */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Product Images</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -439,7 +432,7 @@ export default function ProductEditPage() {
                     <img
                       src={img || "/placeholder.svg"}
                       alt={`Product ${idx + 1}`}
-                      className="w-full h-32 object-cover rounded-lg bg-gray-100"
+                      className="w-full h-[200px] object-cover rounded-lg bg-gray-100"
                     />
                     <Button
                       variant="destructive"
@@ -471,7 +464,7 @@ export default function ProductEditPage() {
 
           {/* Technical Specification */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Technical Specification</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">

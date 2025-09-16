@@ -16,6 +16,7 @@ export default function ProductInfo({ product }: { product: IProduct }) {
   const [orderNumber, setOrderNumber] = useState(1);
 
   const handleAddToWishlist = (product: any) => {
+    const isAvailable = product.stock > 0;
     const item: WishlistItem = {
       id: product._id,
       name: product.name,
@@ -23,15 +24,15 @@ export default function ProductInfo({ product }: { product: IProduct }) {
       price: product.originalPrice ?? "",
       originalPrice: product.discountedPrice ?? "",
       category: product.categoryID?.name ?? "",
-      inStock: product.inStock ?? true,
+      inStock: isAvailable,
     };
 
     const result = addToWishlist(item);
 
     if (result.success) {
-      showToast(result.message, "bg-green-600");
+      showToast(result.message, "bg-primary");
     } else {
-      showToast(result.message, "bg-red-600");
+      showToast(result.message, "bg-destructive");
     }
   };
 
@@ -71,7 +72,9 @@ export default function ProductInfo({ product }: { product: IProduct }) {
           <Badge className={`bg-primary text-white
             ${isAvailable
             ? "bg-primary text-white"
-            : "bg-destructive text-white"}`}>In Stock</Badge>
+            : "bg-destructive text-white"}`}>
+              {isAvailable ? "In Stock": "Not in Stock"}
+            </Badge>
         </div>
 
         {/* Quantity */}

@@ -105,14 +105,6 @@ export const loginSuccessSchema = z.object({
   refreshToken: z.string(),
 });
 
-export const updateUserDetailsSchema = z.object({
-  userId: z.string(),
-  firstName: z.string().min(1).optional(),
-  lastName: z.string().min(1).optional(),
-  email: z.string().email().optional(),
-  phoneNumber: z.string().min(7).optional(),
-});
-
 export const getUserDetailSchema = z.object({
   success: z.literal(true),
   user: z.object({
