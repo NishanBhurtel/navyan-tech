@@ -39,7 +39,7 @@ export default function InquiriesTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between pt-4">
           <span>Inquiries ({inquiries.length})</span>
         </CardTitle>
       </CardHeader>
@@ -51,7 +51,7 @@ export default function InquiriesTable({
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>Created At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -81,7 +81,7 @@ export default function InquiriesTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">₹{inquiry.totalAmount.toLocaleString()}</TableCell>
+                  <TableCell className="font-medium">Rs.{inquiry.totalAmount.toLocaleString()}</TableCell>
                   <TableCell className="text-sm text-gray-500">{moment(inquiries[0].createdAt).format('llll')}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

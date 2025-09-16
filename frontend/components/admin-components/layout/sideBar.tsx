@@ -1,6 +1,5 @@
 "use client";
-import { useState } from "react";
-import type React from "react";
+import { Button } from "@/components/user-components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,10 +12,14 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import { Button } from "@/components/user-components/ui/button";
 
-export default function SideBar() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export default function SideBar({
+  sidebarOpen,
+  setSidebarOpen,
+}: {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}) {
   const pathname = usePathname();
 
   const sidebarItems = [
@@ -27,6 +30,7 @@ export default function SideBar() {
     { href: "/admin/orders", icon: ShoppingCart, label: "Order Inquiries" },
     { href: "/admin/email", icon: Mail, label: "Email" },
   ];
+
   return (
     <div
       className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex lg:flex-col ${
@@ -36,11 +40,13 @@ export default function SideBar() {
       <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
         <div className="flex items-center space-x-2">
           <Link href="/" className="flex items-center space-x-4">
-            <div className="w-24 h-15  rounded-lg flex items-center justify-center">
+            <div className="w-24 h-15 rounded-lg flex items-center justify-center">
               <img src="/NavYantra-Logo.png" alt="" />
             </div>
           </Link>
         </div>
+
+        {/* Close button for mobile */}
         <Button
           variant="ghost"
           size="sm"

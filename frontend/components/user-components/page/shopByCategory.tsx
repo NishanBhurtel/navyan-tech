@@ -2,22 +2,21 @@
 import Link from "next/link";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 
-// optional: map category IDs to icons/colors for better visuals
+// Icons for categories
 import { Cpu, Monitor, Laptop, Gamepad2, Headphones } from "lucide-react";
 
 type CategoryProps = {
   category?: any[];
 };
 
+// Map category names to icons
 const categoryIcons: Record<string, any> = {
-  "Gaming Laptops": Laptop,
-  "Desktop PCs": Monitor,
+  "Laptops": Laptop,
+  "Computers": Monitor,
   "Processors": Cpu,
-  "Graphics Cards": Gamepad2,
-  "Motherboards": Monitor,
-  "Memory & Storage": Cpu,
-  "Gaming Accessories": Headphones,
-  "Monitors": Monitor,
+  "Gaming": Gamepad2,
+  "Components": Cpu,
+  "Accessories": Headphones,
 };
 
 const categoryColors: string[] = [
@@ -31,7 +30,7 @@ const categoryColors: string[] = [
   "from-emerald-500 to-green-600",
 ];
 
-export default function ShopByCategory({category}: CategoryProps) {
+export default function ShopByCategory({ category }: CategoryProps) {
   const { data: respondedData, error, isLoading } = useAllProducts({});
 
   if (isLoading) {
@@ -39,14 +38,18 @@ export default function ShopByCategory({category}: CategoryProps) {
   }
 
   if (error) {
-    return <p className="text-center py-10 text-red-500">Failed to load categories.</p>;
+    return (
+      <p className="text-center py-10 text-red-500">
+        Failed to load categories.
+      </p>
+    );
   }
 
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-serif text-foreground mb-4">
+          <h2 className="text-4xl font-bold text-foreground mb-4">
             Shop by Category
           </h2>
           <p className="text-xl text-muted-foreground">
@@ -54,18 +57,18 @@ export default function ShopByCategory({category}: CategoryProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {category?.map((category: any, index: number) => {
-            // count products for this category
-            const productCount = respondedData?.filter(
-              (p: any) => p.categoryID?._id === category._id
-            ).length;
-
-            const Icon = categoryIcons[category.name] || Monitor;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {category?.map((cat: any, index: number) => {
+            const Icon = categoryIcons[cat.name] || Monitor; // default icon
             const color = categoryColors[index % categoryColors.length];
 
+            // Count products for this category
+            const productCount = respondedData?.filter(
+              (p: any) => p.categoryID?._id === cat._id
+            ).length;
+
             return (
-              <Link key={category._id} href={`/search?categoryID=${category._id}`}>
+              <Link key={cat._id} href={`/search?categoryID=${cat._id}`}>
                 <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-muted to-card border border-border hover:border-primary/50 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
                   <div
                     className="absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity"
@@ -79,11 +82,11 @@ export default function ShopByCategory({category}: CategoryProps) {
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold font-serif text-foreground mb-1">
-                      {category.name}
+                    <h3 className="text-lg font-bold text-foreground mb-1">
+                      {cat.name}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {category.description || "Explore products"}
+                      {cat.description || "Explore products"}
                     </p>
                     <p className="text-xs font-medium text-primary">
                       {productCount || 0} items

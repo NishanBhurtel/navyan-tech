@@ -5,7 +5,7 @@ export default function InqueryAfterOrderSuccess(){
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <span>Our team will review your inquiry within 2-4 hours</span>
+                    <span>Our team will review your inquiry within 24 hours</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>

@@ -49,9 +49,9 @@ export default function RelatedProducts({
       const result = addToWishlist(item);
   
       if (result.success) {
-        showToast(result.message, "bg-green-600");
+        showToast(result.message, "bg-primary");
       } else {
-        showToast(result.message, "bg-red-600");
+        showToast(result.message, "bg-destructive");
       }
     };
 

@@ -85,7 +85,7 @@ export default function SidebarFilter({ products }: ProductGridProps) {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-6">
               <Filter className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold font-serif text-foreground">
+              <h2 className="text-xl font-bold text-foreground">
                 Filters
               </h2>
             </div>

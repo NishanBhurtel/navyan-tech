@@ -48,12 +48,12 @@ export default function RegisterForm() {
       }),
     onSuccess: () => {
       router.push("/login");
-      showToast("Registration successful!", "bg-green-600");
+      showToast("Registration successful!", "bg-primary");
     },
     onError: (error: any) => {
       showToast(
         "Registration failed: " + error?.message || "Unknown error",
-        "bg-red-600"
+        "bg-destructive"
       );
       console.log(error.message);
     },

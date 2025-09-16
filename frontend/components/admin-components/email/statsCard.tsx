@@ -2,40 +2,12 @@
 
 import { Card, CardContent } from "@/components/user-components/ui/card";
 import { Users, Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-
-// API service function - updated for your response format
-const fetchUserCount = async (): Promise<number> => {
-  const response = await fetch("http://localhost:5000/users/all");
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user count");
-  }
-
-  const data = await response.json();
-
-  // Extract totalUsers from the response object
-  if (data && typeof data.totalUsers === "number") {
-    return data.totalUsers;
-  }
-
-  // Fallback if the structure is unexpected
-  console.warn("Unexpected API response structure:", data);
-  return 0;
-};
+import { useAllUsers } from "@/hooks/users/getAllUser";
 
 export default function StatsCard() {
-  // TanStack Query hook
-  const {
-    data: userCount,
-    isLoading,
-    error,
-    isError,
-  } = useQuery({
-    queryKey: ["userCount"],
-    queryFn: fetchUserCount,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+
+  const { data: users, isError, isLoading } = useAllUsers();
+  const customerUsers = users?.filter((u) => u.role === "customer") ?? [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -57,7 +29,7 @@ export default function StatsCard() {
                 <p className="text-sm text-red-600">Error loading count</p>
               ) : (
                 <p className="text-2xl font-bold text-gray-900">
-                  {userCount?.toLocaleString()}
+                  {customerUsers ? customerUsers.length : "100"}
                 </p>
               )}
             </div>

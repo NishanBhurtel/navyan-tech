@@ -97,15 +97,15 @@ export default function InquiryDialog({
             {actionType === "email" && (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="emailTo">To</Label>
+                  <Label className="my-2" htmlFor="emailTo">To</Label>
                   <Input id="emailTo" value={inquiry.customerEmail} disabled />
                 </div>
                 <div>
-                  <Label htmlFor="emailSubject">Subject</Label>
+                  <Label className="my-2" htmlFor="emailSubject">Subject</Label>
                   <Input id="emailSubject" placeholder="Enter email subject" defaultValue={`Regarding your inquiry for ${inquiry.productName}`} />
                 </div>
                 <div>
-                  <Label htmlFor="emailMessage">Message</Label>
+                  <Label className="my-2" htmlFor="emailMessage">Message</Label>
                   <Textarea
                     id="emailMessage"
                     placeholder="Enter your message"

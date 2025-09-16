@@ -11,7 +11,7 @@ export default function QuickAction() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+        <CardTitle className="text-lg font-semibold pt-4">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -12,23 +12,25 @@ export default function ContactPage() {
       <Navbar />
       <ContactHero />
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex flex-row gap-12">
-          {/* Contact Form */}
-          <div className="grid grid-row-2">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="flex flex-col md:flex-row gap-10 lg:gap-12">
+          <div className="w-full md:w-2/3">
             <ContactForm />
-
-            <NavyanMap />
           </div>
+          <div className="w-full md:w-1/3">
+            <ConctactInformation />
+          </div>
+        </div>
 
-          {/* Contact Information */}
-         <div className="w-full">
-           <ConctactInformation  />
-         </div>
+        {/* Map goes full width */}
+        <div className="mt-12">
+          <NavyanMap />
         </div>
 
         {/* FAQ Section */}
-        <FAQ />
+        <div className="mt-16">
+          <FAQ />
+        </div>
       </div>
 
       {/* Footer */}
