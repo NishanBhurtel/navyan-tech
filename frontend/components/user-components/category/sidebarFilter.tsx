@@ -55,22 +55,19 @@ export default function SidebarFilter({ products }: ProductGridProps) {
   }));
 
   // --- Category/subCategory filtering logic ---
-  const searchedCategory = categories?.find(
-    (cat) =>
-      cat._id === categoryID ||
-      cat.subCategories?.some((subCat) => subCat._id === subCategoryID)
-  );
+const searchedCategory = categories?.find(
+  (cat) => cat._id === categoryID
+);
 
-  const categoriesRelatedToSearchQuery = categories.filter((cat) => {
-    return cat.subCategories?.some((sub) => {
-      if (search) {
-        const regex = new RegExp(search, "i");
-        return (
-          regex.test(sub?.name || "") || regex.test(sub?.description || "")
-        );
-      }
-    });
-  });
+
+const categoriesRelatedToSearchQuery = categories.filter((cat) => {
+  if (search) {
+    const regex = new RegExp(search, "i");
+    return regex.test(cat.name) || regex.test(cat.description || "");
+  }
+  return false;
+});
+
 
   const isSearchedByCategory = categoryID || subCategoryID;
   const shouldDisplaySearchCategoryFilter =
