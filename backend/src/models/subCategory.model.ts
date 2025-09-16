@@ -1,28 +1,27 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
-interface ICategoryModel extends Document {
-  name:string;
-  description:string;
-  parentCategoryId:mongoose.Schema.Types.ObjectId;
+// Interface for SubCategory
+export interface ICategoryModel extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  description: string;
+  parentCategoryId: Types.ObjectId;
 }
 
-const subCategorySchema = new mongoose.Schema({
-   name:{
-    type:String,
-    required:true,
+// Mongoose schema
+const subCategorySchema = new Schema<ICategoryModel>({
+  name: { type: String, required: true },
+  description: { type: String, required: false },
+  parentCategoryId: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
   },
-  description:{
-    type:String,
-    required:true,
-  },
-  parentCategoryId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref: "Category"
-  }
-})
+});
 
+// Mongoose model
 const SubCategoryModel = mongoose.model<ICategoryModel>(
-  "subCategory",
+  "SubCategory",
   subCategorySchema
 );
 

@@ -1,22 +1,29 @@
 import z from "zod";
 
 export const createCategorySchema = z.object({
-    name: z.string(),
-    description: z.string(),
+  name: z.string().min(1, "Categoroy is required!"),
+  description: z.string().min(1, "Description is required!"),
 });
 
-export const getAllCategorySchema = z.object({
+export const getAllCategorySchema = z.array(
+  z.object({
     _id: z.string(),
     name: z.string(),
     description: z.string(),
-});
-
+    subCategories: z.array(
+      z.object({
+        _id: z.string(),
+        name: z.string(),
+        description: z.string(),
+        parentCategoryId: z.string(),
+      })
+    ),
+  })
+);
 export const updateCategoryDetailsSchema = z.object({
-    _id: z.string(),
-    name: z.string(),
-    description: z.string(),
+  _id: z.string(),
+  name: z.string().min(1, "Categoroy is required!"),
+  description: z.string().min(1, "Description is required!"),
 });
 
-export const removeCategorySchema = z.object({
-    categoryID: z.string(),
-});
+export const removeCategorySchema = z.object({});

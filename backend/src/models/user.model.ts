@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-interface IUser extends Document {
+export interface IUser extends Document {
+  userId: string;
+  _id: string;
   userName: {
     firstName: string;
     lastName: string;
   };
   email: string;
   password: string;
-  phoneNumber: Number;
+  phoneNumber: string;
   role: string;
   createdAt: Date;
   updatedAt: Date;
@@ -41,7 +43,7 @@ const UserSchema = new mongoose.Schema(
       default: "customer",
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

@@ -3,28 +3,16 @@ import { initContract } from "@ts-rest/core";
 import {
   loginSchema,
   registerSchema,
-  getProfileSchema,
   loginResponseSchema,
-  updateUserDetailsSchema,
 } from "./auth.schema";
 
 import z from "zod";
 import { errorSchema, successSchema } from "../common.schema";
+import { METHODS } from "http";
 
 const c = initContract();
 
 export const authContract = c.router({
-  getProfile: {
-    method: "GET",
-    path: "/auth/me",
-    summary: "get user profile",
-    responses: {
-      200: getProfileSchema,
-      400: errorSchema,
-      404: errorSchema,
-      500: errorSchema,
-    },
-  },
   register: {
     method: "POST",
     path: "/auth/register",
@@ -52,15 +40,12 @@ export const authContract = c.router({
       500: errorSchema,
     },
   },
-  updateUserDetails: {
-    method: "PUT",
-    path: "/auth/updateUserDetails",
-    body: updateUserDetailsSchema,
-    summary: "Update user personal details",
+  getTotalNumberOfUsers: {
+    method: "GET",
+    path: "/users/all",
+    summary: "Get total number of  users",
     responses: {
       200: successSchema,
-      400: errorSchema,
-      401: errorSchema,
       404: errorSchema,
       500: errorSchema,
     },

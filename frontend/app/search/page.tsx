@@ -1,0 +1,76 @@
+"use client";
+import Pagination from "@/components/user-components/category/pagination";
+import ProductGrid from "@/components/user-components/category/productGrid";
+import SidebarFilter from "@/components/user-components/category/sidebarFilter";
+import SortByFeatured from "@/components/user-components/category/sortByFeatured";
+import Annoucement from "@/components/user-components/layout/Annoucement";
+import Footer from "@/components/user-components/layout/Footer";
+import Navbar from "@/components/user-components/layout/Navbar";
+import { useAllProducts } from "@/hooks/product/getAllProducts";
+import { useSearchParams } from "next/navigation";
+
+export default function CategoryPage() {
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get("search"); // e.g., ?search=laptop
+  const brand = searchParams.get("brand");
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
+  const categoryID = searchParams.get("categoryId");
+  const subCategoryID = searchParams.get("subCategoryID");
+
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useAllProducts({
+    search: search || undefined,
+    filter: {
+      brand: brand || undefined,
+      categoryID: categoryID || undefined,
+      subCategoryID: subCategoryID || undefined,
+      minPrice: minPrice || undefined,
+      maxPrice: maxPrice || undefined,
+    },
+  });
+
+  if (isLoading)
+    return <div className="p-12 text-center">Loading product...</div>;
+  if (isError || !products)
+    return <div className="p-12 text-center">Product Not Found</div>;
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Announcement Bar */}
+      <Annoucement />
+
+      {/* Header */}
+      <Navbar />
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Sidebar Filters */}
+          <SidebarFilter products={products} />
+
+          {/* Products Grid */}
+          <div className="lg:col-span-3">
+            <div className="space-y-6">
+              {/* Sort by featured */}
+              <SortByFeatured products={products} />
+
+              {/* Products Grid */}
+              <ProductGrid products={products} />
+
+              {/* Pagination */}
+              <Pagination />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+
+      <Footer />
+    </div>
+  );
+}

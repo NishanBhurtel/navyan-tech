@@ -1,15 +1,24 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface IProductModel extends Document {
+export interface IProductModel extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
+  productId: string;
   name: string;
-  price: number;
-  quantity: number;
+  originalPrice: number;
+  discountedPrice: number;
   description: string;
+  brand: string;
+  isFeatured: boolean;
+  stock: number;
   images: string[];
-  specifications: {};
+  specifications: {
+    key: string;
+    value: string;
+  }[];
+  categoryID: string;
+  subCategoryID: string;
   technicalSpecification: {
     performance: {
-      brand: string;
       series: string;
       cpu: string;
       graphics: string;
@@ -24,7 +33,7 @@ interface IProductModel extends Document {
       audio: string;
       battery: string;
       weight: string;
-      warrenty: string;
+      warranty: string;
     };
   };
   createdAt: Date;
@@ -37,27 +46,37 @@ const ProductSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    price: {
+    originalPrice: {
       type: Number,
       required: true,
     },
-    quantity: {
+    discountedPrice: {
       type: Number,
     },
-
     description: {
       type: String,
       required: true,
+    },
+    category: {
+      type: String,
+      required: false,
+    },
+    stock: {
+      type: Number,
     },
     images: {
       type: [String],
       required: true,
     },
+    brand: {
+      type: String,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     technicalSpecification: {
       performance: {
-        brand: {
-          type: String,
-        },
         series: {
           type: String,
         },
@@ -96,13 +115,26 @@ const ProductSchema: Schema = new Schema(
         weight: {
           type: String,
         },
-        warrenty: {
+        warranty: {
           type: String,
         },
       },
     },
     specifications: {
-      type: Object,
+      type: [
+        {
+          key: String,
+          value: String,
+        },
+      ],
+    },
+    categoryID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
+    subCategoryID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
     },
   },
   { timestamps: true }
