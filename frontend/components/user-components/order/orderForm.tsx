@@ -28,10 +28,14 @@ import { IProduct } from "@/lib/utils/types/product.type";
 interface OrderFormProps {
   product: IProduct;
   quantity: number;
-  total:number;
+  total: number;
 }
 
-export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
+export default function OrderForm({
+  product,
+  quantity,
+  total,
+}: OrderFormProps) {
   const {
     register,
     handleSubmit,
@@ -48,7 +52,6 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
       state: "",
       zip: "",
       notes: "",
-      preferredContact: "",
       productID: product._id,
       quantity,
       totalPrice: total,
@@ -59,35 +62,41 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
   const { showToast } = useToast();
 
   const mutation = useMutation({
-    mutationFn: (data: TCreateOrderFormSchema) => orderApi.createOrderApi({
-      personalInformation:{
-        email:data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phoneNumber: data.phone,
-      },
-      shippingAddress:{
-        city: data.city,
-        state: data.state,
-        streetAddress: data.address,
-        zip: +data.zip,
-      },
-      additionalInformation:{
-        notes: data.notes,
-      },
-      preferredContactMethod:data.preferredContact,
-      productID: data.productID,
-      quantity: data.quantity,
-      totalPrice: data.totalPrice,
-    }),
+    mutationFn: (data: TCreateOrderFormSchema) =>
+      orderApi.createOrderApi({
+        personalInformation: {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phone,
+        },
+        shippingAddress: {
+          city: data.city,
+          state: data.state,
+          streetAddress: data.address,
+          zip: +data.zip,
+        },
+        additionalInformation: {
+          notes: data.notes,
+        },
+        preferredContactMethod: data.preferredContact,
+        productID: data.productID,
+        quantity: data.quantity,
+        totalPrice: data.totalPrice,
+      }),
     onSuccess: () => {
-      showToast("Order submitted successfully", "bg-green-600");
-      router.push("/order/success");
+      showToast("Order submitted successfully", "bg-primary");
+
+      // Wait 1-2 seconds before redirect
+      setTimeout(() => {
+        router.push("/order/success");
+      }, 1500);
     },
+
     onError: (error: any) => {
       showToast(
         "Failed to submit order! " + (error?.message || "Unknown error"),
-        "bg-red-600"
+        "bg-destructive"
       );
     },
   });
@@ -120,7 +129,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="firstName">
+                    First Name <span className="text-red-600">*</span>
+                  </Label>
                   <Input
                     id="firstName"
                     {...register("firstName")}
@@ -133,7 +144,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="lastName">
+                    Last Name <span className="text-red-600">*</span>
+                  </Label>
                   <Input
                     id="lastName"
                     {...register("lastName")}
@@ -148,7 +161,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="email">
+                    Email Address <span className="text-red-600">*</span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -162,7 +177,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="phone">
+                    Phone Number <span className="text-red-600">*</span>
+                  </Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -186,7 +203,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
                 Shipping Address
               </h3>
               <div className="space-y-2">
-                <Label htmlFor="address">Street Address <span className="text-red-600">*</span></Label>
+                <Label htmlFor="address">
+                  Street Address <span className="text-red-600">*</span>
+                </Label>
                 <Input id="address" {...register("address")} className="h-11" />
                 {errors.address && (
                   <p className="text-red-500 text-sm">
@@ -196,7 +215,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="city">City <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="city">
+                    City <span className="text-red-600">*</span>
+                  </Label>
                   <Input id="city" {...register("city")} className="h-11" />
                   {errors.city && (
                     <p className="text-red-500 text-sm">
@@ -205,7 +226,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state">State/Province <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="state">
+                    State/Province <span className="text-red-600">*</span>
+                  </Label>
                   {/* <Input id="state" {...register("state")} className="h-11" /> */}
                   <select
                     id="state"
@@ -231,7 +254,9 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="zip">ZIP/Postal Code <span className="text-red-600">*</span></Label>
+                  <Label htmlFor="zip">
+                    ZIP/Postal Code <span className="text-red-600">*</span>
+                  </Label>
                   <Input id="zip" {...register("zip")} className="h-11" />
                   {errors.zip && (
                     <p className="text-red-500 text-sm">{errors.zip.message}</p>
@@ -257,7 +282,8 @@ export default function OrderForm({ product, quantity ,total}: OrderFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="preferredContact">
-                  Preferred Contact Method <span className="text-red-600">*</span>
+                  Preferred Contact Method{" "}
+                  <span className="text-red-600">*</span>
                 </Label>
                 <select
                   id="preferredContact"

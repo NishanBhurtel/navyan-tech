@@ -25,7 +25,7 @@ export default function OrderSummary({ product, quantity, paymentDetails }: Orde
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center space-x-4 p-4 bg-muted/30 rounded-lg">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+            <div className="w-36 h-28 bg-gray-100 rounded-lg flex items-center justify-center">
               <img
                 src={product.images?.[0] || "/placeholder.svg"}
                 alt={product.name}

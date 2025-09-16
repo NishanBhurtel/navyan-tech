@@ -29,7 +29,16 @@ export const createOrderFormSchema = z.object({
   address: z.string().min(1, "Street address is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State/Province is required"),
-  zip: z.string().min(1, "ZIP/Postal Code is required"),
+  zip: z
+    .string()
+    .nonempty("ZIP/Postal Code is required") // not empty
+    .refine((val) => /^\d+$/.test(val), {
+      message: "ZIP/Postal Code must contain numbers only",
+    }) // numeric only
+    .refine((val) => val.length === 5, {
+      message: "ZIP/Postal Code must be exactly 5 digits",
+    }),
+
   notes: z.string(),
   preferredContact: z.preprocess(
     (val) => (val === "" ? undefined : val),
@@ -43,7 +52,7 @@ export const getAllOrderSchema = z.object({
   _id: z.string().min(1, "Order ID is required"),
   productID: z.string().min(1, "Product ID is required"),
   quantity: z.string().min(1, "Quantiry is required"),
-    totalPrice: z.number().min(1, "Required"),
+  totalPrice: z.number().min(1, "Required"),
   firstName: z
     .string()
     .min(1, "First name is required")
@@ -83,7 +92,7 @@ export const getOrderByIDSchema = z.object({
   _id: z.string().min(1, "Order ID is required"),
   productID: z.string().min(1, "Product ID is required"),
   quantity: z.string().min(1, "Quantiry is required"),
-    totalPrice: z.number().min(1, "Required"),
+  totalPrice: z.number().min(1, "Required"),
   firstName: z
     .string()
     .min(1, "First name is required")
@@ -118,7 +127,6 @@ export const getOrderByIDSchema = z.object({
     })
   ),
 });
-
 
 export type TCreateOrderFormSchema = z.infer<typeof createOrderFormSchema>;
 export type TGetAllOrderSchema = z.infer<typeof getAllOrderSchema>;

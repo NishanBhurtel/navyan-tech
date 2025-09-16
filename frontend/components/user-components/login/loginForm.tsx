@@ -38,10 +38,10 @@ export default function LoginForm() {
       }),
     onSuccess: () => {
       router.push("/");
-      showToast("Login successful!", "bg-green-600");
+      showToast("Login successful!", "bg-primary");
     },
     onError: (error: any) => {
-      showToast("Login failed: " + (error?.message || "Unknown error"), "bg-red-600");
+      showToast("Login failed: " + (error?.message || "Unknown error"), "bg-destructive");
     },
   });
 

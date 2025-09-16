@@ -9,27 +9,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/user-components/ui/card";
-import { Filter } from "lucide-react";
+import { Download } from "lucide-react";
 import { useDeleteProduct } from "@/hooks/product/removeProduct";
 import { useState } from "react";
 import { IProduct } from "@/lib/utils/types/product.type";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import ConfirmDialog from "@/lib/confirmModel";
 
 export default function ProductsPage() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
+  const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
-  const removeProduct = (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(id);
+  const handleRemoveClick = (id: string) => {
+    setItemToRemove(id); // open modal
+  };
+
+  const confirmRemove = () => {
+    if (itemToRemove) {
+      deleteProduct(itemToRemove);
+      setItemToRemove(null); // close modal after deletion
     }
   };
 
   const handleExport = () => {
     if (!filteredProducts.length) return;
 
-    const data = filteredProducts.map((product) => ({
+    const data = filteredProducts.map((product, i) => ({
+      "S.N.": String(i + 1),
       Name: product.name,
       Brand: product.brand,
       Category: product.categoryID?.name || "",
@@ -44,17 +52,21 @@ export default function ProductsPage() {
       CPU: product.technicalSpecification?.performance?.cpu || "",
       Graphics: product.technicalSpecification?.performance?.graphics || "",
       Display: product.technicalSpecification?.performance?.display || "",
-      OperatingSystem: product.technicalSpecification?.performance?.operatingSystem || "",
+      OperatingSystem:
+        product.technicalSpecification?.performance?.operatingSystem || "",
 
       // Flatten technical specifications (memoryAndStorage)
-      MainMemory: product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
+      MainMemory:
+        product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
       Storage: product.technicalSpecification?.memoryAndStorage?.storage || "",
-      Connectivity: product.technicalSpecification?.memoryAndStorage?.connectivity || "",
+      Connectivity:
+        product.technicalSpecification?.memoryAndStorage?.connectivity || "",
       Camera: product.technicalSpecification?.memoryAndStorage?.camera || "",
       Audio: product.technicalSpecification?.memoryAndStorage?.audio || "",
       Battery: product.technicalSpecification?.memoryAndStorage?.battery || "",
       Weight: product.technicalSpecification?.memoryAndStorage?.weight || "",
-      Warranty: product.technicalSpecification?.memoryAndStorage?.warranty || "",
+      Warranty:
+        product.technicalSpecification?.memoryAndStorage?.warranty || "",
 
       // Flatten specifications array into a single string
       Specifications: product.specifications
@@ -92,18 +104,30 @@ export default function ProductsPage() {
 
       {/* Products Table */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <Button variant="outline" size="sm" onClick={handleExport}>
-              <Filter className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProductTable products={filteredProducts} onDelete={removeProduct} />
-        </CardContent>
+        <div className="my-6">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <Button variant="outline" onClick={handleExport}>
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProductTable
+              products={filteredProducts}
+              onDelete={handleRemoveClick}
+            />
+          </CardContent>
+        </div>
       </Card>
+      <ConfirmDialog
+        open={itemToRemove !== null}
+        title="Remove Product"
+        message="Are you sure you want to remove this product?"
+        onConfirm={confirmRemove}
+        onCancel={() => setItemToRemove(null)}
+      />
     </div>
   );
 }

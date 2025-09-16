@@ -15,7 +15,20 @@ export const createProductSchema = z.object({
     (val) => Number(val),
     z.number().min(0, "Price must be positive")
   ),
-  images: z.string().array().optional(),
+  images: z
+    .string()
+    .array()
+    .optional()
+    .refine((files) => !files || files.length <= 4, {
+      message: "You can upload a maximum of 4 images",
+    })
+    .refine(
+      (files) =>
+        !files || files.every((file) => /\.(jpe?g|png|webp)$/i.test(file)),
+      {
+        message: "Only .jpeg, .jpg, .png, or .webp files are allowed",
+      }
+    ),
   specifications: z.array(z.object({ key: z.string(), value: z.string() })),
   categoryID: z.string().min(1, "Category ID is required"),
   subCategoryID: z.string().min(1, "SubCategory ID is required"),
@@ -59,7 +72,20 @@ export const updateProductDetailsSchema = z.object({
     (val) => Number(val),
     z.number().min(0, "Price must be positive")
   ),
-  images: z.array(z.string()).nonempty("At least one image is required"),
+  images: z
+    .string()
+    .array()
+    .optional()
+    .refine((files) => !files || files.length <= 4, {
+      message: "You can upload a maximum of 4 images",
+    })
+    .refine(
+      (files) =>
+        !files || files.every((file) => /\.(jpe?g|png|webp)$/i.test(file)),
+      {
+        message: "Only .jpeg, .jpg, .png, or .webp files are allowed",
+      }
+    ),
   specifications: z.array(z.object({ key: z.string(), value: z.string() })),
   categoryID: z.string().min(1, "Category is required"),
   subCategoryID: z.string().min(1, "Sub category is required"),

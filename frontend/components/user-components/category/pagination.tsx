@@ -1,23 +1,41 @@
 import { Button } from "../ui/button";
-export default function Pagination(){
-    return(
-        <div className="flex items-center justify-center space-x-2 pt-8">
-                <Button variant="outline" className="bg-transparent">
-                  Previous
-                </Button>
-                {[1, 2, 3, 4, 5].map((page) => (
-                  <Button
-                    key={page}
-                    variant={page === 1 ? "default" : "outline"}
-                    className={page === 1 ? "" : "bg-transparent"}
-                    size="icon"
-                  >
-                    {page}
-                  </Button>
-                ))}
-                <Button variant="outline" className="bg-transparent">
-                  Next
-                </Button>
-              </div>
-    )
+
+export default function Pagination() {
+  const totalPages = 5;
+  const currentPage = 1;
+
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2 pt-6 sm:pt-8">
+      {/* Previous */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="bg-transparent px-3 sm:px-4"
+      >
+        Previous
+      </Button>
+
+      {/* Page numbers */}
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <Button
+          key={page}
+          variant={page === currentPage ? "default" : "outline"}
+          size="sm"
+          className={`px-3 sm:px-4 ${page !== currentPage ? "bg-transparent" : ""} 
+            ${page > 3 ? "hidden sm:inline-flex" : "inline-flex"}`}
+        >
+          {page}
+        </Button>
+      ))}
+
+      {/* Next */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="bg-transparent px-3 sm:px-4"
+      >
+        Next
+      </Button>
+    </div>
+  );
 }

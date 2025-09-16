@@ -28,7 +28,7 @@ export default function Hero() {
             <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-2">
               New Arrivals
             </Badge>
-            <h1 className="text-5xl lg:text-6xl font-bold font-serif text-foreground leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               Build Your
               <span className="text-primary block">Dream PC</span>
             </h1>
@@ -81,9 +81,9 @@ export default function Hero() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-3xl"></div>
             <img
-              src="/custom-pc-build.png"
+              src="/hero_image.png"
               alt="Custom PC Components"
-              className="relative z-10 w-full h-auto rounded-2xl shadow-2xl"
+              className="relative z-10 w-full h-auto rounded-2xl"
             />
           </div>
         </div>

@@ -1,7 +1,6 @@
 "use client";
 import { use } from "react";
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -24,7 +23,6 @@ import {
   TabsTrigger,
 } from "@/components/user-components/ui/tabs";
 import { TabsList } from "@radix-ui/react-tabs";
-import { Badge } from "@/components/user-components/ui/badge";
 import {
   Table,
   TableBody,
@@ -33,6 +31,7 @@ import {
 } from "@/components/user-components/ui/table";
 import { useProductByID } from "@/hooks/product/getProductByID";
 import { useDeleteProduct } from "@/hooks/product/removeProduct";
+import ConfirmDialog from "@/lib/confirmModel";
 
 export default function ProductViewPage({
   params,
@@ -45,12 +44,17 @@ export default function ProductViewPage({
 
   const product = responseData?.data;
 
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
+  const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
-  const removeProduct = (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(id);
+  const handleRemoveClick = (id: string) => {
+    setItemToRemove(id); // open modal
+  };
+
+  const confirmRemove = () => {
+    if (itemToRemove) {
+      deleteProduct(itemToRemove);
+      setItemToRemove(null); // close modal after deletion
     }
   };
 
@@ -101,7 +105,7 @@ export default function ProductViewPage({
 
           <Button
             variant="destructive"
-            onClick={() => removeProduct(product._id)}
+            onClick={() => handleRemoveClick(product._id)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Delete
@@ -118,7 +122,7 @@ export default function ProductViewPage({
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-600">Price</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ₹{product.discountedPrice.toLocaleString()}
+                  Rs.{product.discountedPrice.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -150,7 +154,7 @@ export default function ProductViewPage({
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
+              <CardHeader className="pt-4">
                 <CardTitle>Product Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -204,14 +208,14 @@ export default function ProductViewPage({
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="pt-4">
                 <CardTitle>Product Image</CardTitle>
               </CardHeader>
               <CardContent>
                 <img
                   src={product.images[0] || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-64 object-cover rounded-lg bg-gray-100"
+                  className="w-full h-[400px] object-cover rounded-lg bg-gray-100"
                 />
               </CardContent>
             </Card>
@@ -220,7 +224,7 @@ export default function ProductViewPage({
 
         <TabsContent value="specifications">
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Technical Specifications</CardTitle>
             </CardHeader>
             <CardContent>
@@ -242,7 +246,7 @@ export default function ProductViewPage({
 
         <TabsContent value="images">
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Product Images</CardTitle>
             </CardHeader>
             <CardContent>
@@ -252,7 +256,7 @@ export default function ProductViewPage({
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`${product.name} - Image ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg bg-gray-100"
+                      className="w-full h-[400px] object-cover rounded-lg bg-gray-100"
                     />
                   </div>
                 ))}
@@ -261,6 +265,13 @@ export default function ProductViewPage({
           </Card>
         </TabsContent>
       </Tabs>
+      <ConfirmDialog
+        open={itemToRemove !== null}
+        title="Remove Product"
+        message="Are you sure you want to remove this product?"
+        onConfirm={confirmRemove}
+        onCancel={() => setItemToRemove(null)}
+      />
     </div>
   );
 }

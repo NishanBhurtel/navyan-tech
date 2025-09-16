@@ -18,7 +18,7 @@ export default function EmailMarketingPage() {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex w-[685px]">
+        <TabsList className="flex w-[685px] py-2">
           <TabsTrigger value="compose">Compose Email</TabsTrigger>
         </TabsList>
 

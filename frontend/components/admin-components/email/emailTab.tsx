@@ -99,7 +99,7 @@ export default function EmailTab() {
         {/* Email Composer */}
         <div className="lg:col-span-2">
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Create Email Campaign</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -147,7 +147,7 @@ export default function EmailTab() {
                   ) : (
                     <>
                       <Send className="h-4 w-4 mr-2" />
-                      Send Campaign
+                      Send Mail
                     </>
                   )}
                 </Button>
