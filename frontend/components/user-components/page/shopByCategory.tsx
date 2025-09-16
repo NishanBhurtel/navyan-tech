@@ -46,7 +46,7 @@ export default function ShopByCategory({category}: CategoryProps) {
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-serif text-foreground mb-4">
+          <h2 className="text-4xl font-bold text-foreground mb-4">
             Shop by Category
           </h2>
           <p className="text-xl text-muted-foreground">
@@ -54,7 +54,7 @@ export default function ShopByCategory({category}: CategoryProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {category?.map((category: any, index: number) => {
             // count products for this category
             const productCount = respondedData?.filter(
@@ -79,7 +79,7 @@ export default function ShopByCategory({category}: CategoryProps) {
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold font-serif text-foreground mb-1">
+                    <h3 className="text-lg font-bold text-foreground mb-1">
                       {category.name}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-2">

@@ -32,7 +32,6 @@ export class OrderRepository {
         productID:orderData.productID,
         totalPrice: orderData.totalPrice,
       });
-      console.log(orderData)
 
       const savedOrder = await order.save();
       return savedOrder.toObject();

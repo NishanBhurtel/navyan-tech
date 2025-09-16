@@ -24,7 +24,7 @@ export default function ProductTableRow({ product, onDelete }: { product: IProdu
       </TableCell>
       <TableCell className="font-mono text-sm">{product.brand}</TableCell>
       <TableCell>{product.categoryID.name}</TableCell>
-      <TableCell className="font-medium">₹{product.originalPrice.toLocaleString()}</TableCell>
+      <TableCell className="font-medium">₹{product.discountedPrice.toLocaleString()}</TableCell>
       <TableCell>
         <span
           className={`${

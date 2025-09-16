@@ -131,7 +131,7 @@ export default function StatsGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((stat) => (
-        <Card key={stat.title} className={`${stat.bg} shadow-sm`}>
+        <Card key={stat.title} className={`${stat.bg} py-6 shadow-sm`}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">
               {stat.title}

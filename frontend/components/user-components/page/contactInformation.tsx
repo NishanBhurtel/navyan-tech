@@ -43,7 +43,7 @@ export default function ConctactInformation() {
                 </p>
                 <p className="font-medium text-foreground">+(977) 9864400400</p>
                 <p className="text-xs text-muted-foreground">
-                  Sun-Fri: 9AM-7:30PM EST
+                  Sun-Fri: 9AM-7:30PM GMT
                 </p>
               </div>
             </div>
@@ -135,23 +135,6 @@ export default function ConctactInformation() {
               Get Directions
             </Button>
           </Link>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-xl border-0 bg-gradient-to-br from-primary/5 to-accent/5">
-        <CardContent className="p-6">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto">
-              <Headset className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">
-              Need Immediate Help?
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Our technical experts are standing by to help you with any
-              questions about our products or services.
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

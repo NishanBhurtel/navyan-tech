@@ -59,7 +59,7 @@ export default function AddProductPage() {
         const data = await categoriesApi.getAll();
         setCategories(data);
       } catch (err: any) {
-        showToast(err.message || "Failed to load categories", "bg-red-600");
+        showToast(err.message || "Failed to load categories", "bg-destructive");
       }
     };
     fetchCategories();
@@ -98,14 +98,14 @@ export default function AddProductPage() {
       productApi.createProductApi(data),
     onSuccess: () => {
       setFiles([]);
-      showToast("Product added successfully", "bg-green-600");
+      showToast("Product added successfully", "bg-primary");
       router.push("/admin/products");
       setIsUploading(false);
     },
     onError: (err: any) => {
       showToast(
         "Failed to add product! " + (err?.message || "Unknown error"),
-        "bg-red-600"
+        "bg-destructive"
       );
       setIsUploading(false);
     },
@@ -113,7 +113,7 @@ export default function AddProductPage() {
 
   const onSubmit = async (data: TCreateProductSchema) => {
     if (files.length === 0) {
-      showToast("Please upload at least one image", "bg-red-600");
+      showToast("Please upload at least one image", "bg-destructive");
       return;
     }
 
@@ -128,7 +128,7 @@ export default function AddProductPage() {
     } catch (err) {
       setIsUploading(false);
       console.error(err);
-      showToast("Image upload failed", "bg-red-600");
+      showToast("Image upload failed", "bg-destructive");
     }
   };
 
@@ -139,8 +139,8 @@ export default function AddProductPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Info */}
           <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+            <CardHeader className="pt-4">
+              <CardTitle className="pt-4">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -203,7 +203,7 @@ export default function AddProductPage() {
 
           {/* Images */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Upload Images *</CardTitle>
             </CardHeader>
             <CardContent>
@@ -234,7 +234,7 @@ export default function AddProductPage() {
             categories.find((c) => c._id === selectedCategoryID)?.name || ""
           ) && (
             <Card>
-              <CardHeader>
+              <CardHeader className="pt-4">
                 <CardTitle>Technical Specification</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -498,7 +498,7 @@ export default function AddProductPage() {
 
           {/* Specifications */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle className="flex items-center justify-between">
                 Specifications
                 <Button
@@ -549,7 +549,7 @@ export default function AddProductPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Organization</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -614,7 +614,7 @@ export default function AddProductPage() {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="pt-4">
               <CardTitle>Inventory</CardTitle>
             </CardHeader>
             <CardContent>

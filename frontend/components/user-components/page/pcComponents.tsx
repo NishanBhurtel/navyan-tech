@@ -25,6 +25,7 @@ export default function PcComponents() {
     return <div className="p-12 text-center">Product Not Found</div>;
 
   const handleAddToWishlist = (product: any) => {
+    const isAvailable = product.stock > 0;
     const item: WishlistItem = {
       id: product._id,
       name: product.name,
@@ -32,36 +33,37 @@ export default function PcComponents() {
       price: product.originalPrice ?? "",
       originalPrice: product.discountedPrice ?? "",
       category: product.categoryID?.name ?? "",
-      inStock: product.inStock ?? true,
+      inStock: isAvailable,
     };
 
     const result = addToWishlist(item);
-    showToast(result.message, result.success ? "bg-green-600" : "bg-red-600");
+    showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
   };
 
   return (
     <section className="py-16 bg-background" id="components">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-4xl font-bold font-serif text-foreground mb-4">
+        <div className="flex-cols items-center justify-between mb-12">
+          <div className="w-full flex items-center justify-between py-4">
+            <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Build your dream PC with premium components
-            </p>
+            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+              <Button size="sm" variant="outline" className="bg-transparent">
+                View All <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </Link>
           </div>
-          <Link href={categoryID ? `/search?categoryID=${categoryID}` : "#"}>
-            <Button variant="outline" className="bg-transparent">
-              View All <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
+          <p className="text-xl text-muted-foreground">
+            Build your dream PC with premium components
+          </p>
         </div>
 
         {pcComponents.length === 0 ? (
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-muted-foreground">
-              No any product related to <span className="font-bold">{heading}</span>
+              No any product related to{" "}
+              <span className="font-bold">{heading}</span>
             </h3>
           </div>
         ) : (
@@ -69,68 +71,70 @@ export default function PcComponents() {
             {pcComponents.map((product: any) => {
               const isAvailable = product.stock > 0;
               return (
-              <Card
-                key={product._id}
-                className="group hover:shadow-xl transition-all duration-300 border-border hover:border-primary/50 overflow-hidden bg-white hover:-translate-y-1"
-              >
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                     <div className="relative w-full h-32 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center">
-                        <img
-                          src={product.images?.[0] ?? ""}
-                          alt={product.name}
-                          className="w-full h-full object-cover rounded-lg border border-gray-200"
-                        />
-                        <span
-                          className={`absolute top-2 left-2 px-3 py-2 text-[10px] font-semibold rounded-[4px] ${
-                            isAvailable
-                              ? "bg-primary text-white"
-                              : "bg-destructive text-white"
-                          }`}
-                        >
-                          {isAvailable ? "In Stock" : "Not in Stock"}
-                        </span>
-                      </div>
+               <Card
+                  key={product._id}
+                  className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
+                >
+                  {/* Product Image */}
+                  <div className="relative w-full h-40 overflow-hidden">
+                    <img
+                      src={product.images?.[0] ?? ""}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <span
+                      className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                        isAvailable
+                          ? "bg-green-600 text-white"
+                          : "bg-red-500 text-white"
+                      }`}
+                    >
+                      {isAvailable ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </div>
 
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-bold font-serif text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-                        {product.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {product.brand}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-foreground">
+                  {/* Content */}
+                  <CardContent className="p-3 space-y-2">
+                    {/* Category */}
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {product.categoryID?.name}
+                    </p>
+
+                    {/* Name */}
+                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+                      {product.name}
+                    </h3>
+
+                    {/* Price */}
+                    <div className="flex items-baseline space-x-2">
+                      <span className="text-base font-bold text-primary">
+                        Rs.{product.originalPrice}
+                      </span>
+                      {product.discountedPrice && (
+                        <span className="text-xs line-through text-muted-foreground">
                           Rs.{product.discountedPrice}
-                        </span>
-                      </div>
-                      {product.originalPrice && (
-                        <span className="text-xs text-muted-foreground line-through">
-                          Rs.{product.originalPrice}
                         </span>
                       )}
                     </div>
 
-                    <div className="flex gap-2">
+                    {/* Buttons (always visible) */}
+                    <div className="flex gap-2 pt-2">
                       <Link href={`/product/${product._id}`} className="flex-1">
-                        <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-2 text-xs">
+                        <Button className="w-full bg-primary text-white text-xs font-semibold hover:bg-primary/90">
                           View Details
                         </Button>
                       </Link>
                       <Button
                         size="icon"
                         variant="outline"
-                        className="w-8 h-8 bg-transparent hover:bg-primary hover:text-white"
+                        className="w-8 h-8 hover:bg-primary hover:text-white"
                         onClick={() => handleAddToWishlist(product)}
                       >
                         <Heart className="w-3 h-3" />
                       </Button>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

@@ -8,7 +8,6 @@ import InquiriesTable, {
 import InquiryDialog, {
   DialogAction,
 } from "@/components/admin-components/order/inquiryDialog";
-import StatsGrid from "@/components/admin-components/order/statusGrid";
 import { Inquiry } from "@/components/admin-components/order/order-inqueries";
 import { useAllOrders } from "@/hooks/order/getAllOrders";
 import * as XLSX from "xlsx";
@@ -57,15 +56,15 @@ export default function OrderInquiriesPage() {
     if (filteredInquiries.length === 0) return;
 
 
-    const data = filteredInquiries.map((order) => ({
-      ID: order.id,
+    const data = filteredInquiries.map((order,i) => ({
+      "S.N.": String(i+1),
       Customer_Name: order.customerName,
       Customer_Email: order.customerEmail,
       Customer_Phone: order.customerEmail,
       Product_Name: order.productName,
-      Product_Price: order.productPrice,
+      "Product_Price(Rs)": order.productPrice,
       Quantity: order.quantity,
-      Total_Price: order.totalAmount,
+      "Total_Price(Rs)": order.totalAmount,
       Notes: order.notes,
       Address: order.address,
       Prefered_Contact: order.preferredContact,
@@ -75,7 +74,7 @@ export default function OrderInquiriesPage() {
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
 
     // Generate buffer
     const excelBuffer = XLSX.write(workbook, {
@@ -85,7 +84,7 @@ export default function OrderInquiriesPage() {
 
     // Save file
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, `Navyan Tech Order Records_${new Date().toISOString()}.xlsx`);
+    saveAs(blob, `Navyan Tech Customer Order Records_${new Date().toISOString()}.xlsx`);
   };
 
   const handleInquiryAction = (inquiry: Inquiry, action: InquiryAction) => {

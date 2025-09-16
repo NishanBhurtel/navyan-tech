@@ -10,10 +10,10 @@ export function useDeleteProduct() {
     mutationFn: (id: string) => productApi.deleteProductApi(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      showToast("Product Deleted successfully", "bg-green-600");
+      showToast("Product Deleted successfully", "bg-primary");
     },
     onError: (error: any) => {
-      showToast("Failed to delete product", "bg-red-600");
+      showToast("Failed to delete product", "bg-destructive");
     },
   });
 }

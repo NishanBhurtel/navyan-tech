@@ -14,6 +14,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
   const { showToast } = useToast();
 
   const handleAddToWishlist = (product: any) => {
+    const isAvailable = product.stock > 0;
     const item: WishlistItem = {
       id: product._id,
       name: product.name,
@@ -21,15 +22,15 @@ export default function ProductGrid({ products }: ProductGridProps) {
       price: product.originalPrice ?? "",
       originalPrice: product.discountedPrice ?? "",
       category: product.categoryID?.name ?? "",
-      inStock: product.inStock ?? true,
+      inStock: isAvailable,
     };
 
     const result = addToWishlist(item);
 
     if (result.success) {
-      showToast(result.message, "bg-green-600");
+      showToast(result.message, "bg-primary");
     } else {
-      showToast(result.message, "bg-red-600");
+      showToast(result.message, "bg-destructive");
     }
   };
 
@@ -67,7 +68,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
                   <p className="text-xs text-primary font-medium">
                     {product.brand}
                   </p>
-                  <h3 className="text-lg font-bold font-serif text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                     {product.name}
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -77,7 +78,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
 
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold font-serif text-foreground">
+                    <span className="text-xl font-bold text-foreground">
                       Rs.{product.discountedPrice}
                     </span>
                     {product.originalPrice && (

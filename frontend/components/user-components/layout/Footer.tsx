@@ -1,6 +1,8 @@
 "use client";
 import { useCategories } from "@/hooks/categories/getCategories";
 import Link from "next/link";
+import { Facebook, Instagram, Youtube } from "lucide-react";
+import { FaTiktok } from "react-icons/fa";
 
 const Footer = () => {
   const { data: categories, isError, isLoading } = useCategories();
@@ -13,7 +15,7 @@ const Footer = () => {
   return (
     <footer className="bg-card border-t border-border py-16 mt-4">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo + Description */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
@@ -102,6 +104,45 @@ const Footer = () => {
                 </Link>
               </li>
             </ul>
+          </div>
+
+          {/* Social Icons */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Follow Us</h3>
+            <div className="space-y-2 text-muted-foreground">
+              <a
+                href="https://www.facebook.com/navyantechstore"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 transition-colors flex gap items-center"
+              >
+               Facebook <Facebook className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/navyantech?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-pink-600 transition-colors gap-1 flex items-center"
+              >
+               Instagram <Instagram className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.youtube.com/@navyantechstore9923/featured"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-red-600 transition-colors gap-1 flex items-center"
+              >
+               Youtube <Youtube className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@navyantratrading"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black transition-colors gap-1 flex items-center"
+              >
+               Tiktok <FaTiktok className="w-4 h-4" />{" "}
+              </a>
+            </div>
           </div>
         </div>
 
