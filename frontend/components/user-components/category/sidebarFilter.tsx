@@ -55,19 +55,22 @@ export default function SidebarFilter({ products }: ProductGridProps) {
   }));
 
   // --- Category/subCategory filtering logic ---
-const searchedCategory = categories?.find(
-  (cat) => cat._id === categoryID
-);
+  const searchedCategory = categories?.find(
+    (cat) =>
+      cat._id === categoryID ||
+      cat.subCategories?.some((subCat) => subCat._id === subCategoryID)
+  );
 
-
-const categoriesRelatedToSearchQuery = categories.filter((cat) => {
-  if (search) {
-    const regex = new RegExp(search, "i");
-    return regex.test(cat.name) || regex.test(cat.description || "");
-  }
-  return false;
-});
-
+  const categoriesRelatedToSearchQuery = categories.filter((cat) => {
+    return cat.subCategories?.some((sub) => {
+      if (search) {
+        const regex = new RegExp(search, "i");
+        return (
+          regex.test(sub?.name || "") || regex.test(sub?.description || "")
+        );
+      }
+    });
+  });
 
   const isSearchedByCategory = categoryID || subCategoryID;
   const shouldDisplaySearchCategoryFilter =
@@ -82,7 +85,7 @@ const categoriesRelatedToSearchQuery = categories.filter((cat) => {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-6">
               <Filter className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold text-foreground">
+              <h2 className="text-xl font-bold font-serif text-foreground">
                 Filters
               </h2>
             </div>

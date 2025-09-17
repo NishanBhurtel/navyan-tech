@@ -12,7 +12,7 @@ import { useSearchParams } from "next/navigation";
 export default function CategoryPage() {
   const searchParams = useSearchParams();
 
-  const search = searchParams.get("search");
+  const search = searchParams.get("search"); // e.g., ?search=laptop
   const brand = searchParams.get("brand");
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
@@ -47,17 +47,13 @@ export default function CategoryPage() {
       {/* Header */}
       <Navbar />
 
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-        <div
-          className="grid gap-8 grid-cols-1 md:grid-cols-4"
-        >
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar Filters */}
-          <div className="md:col-span-4 lg:col-span-1">
-            <SidebarFilter products={products} />
-          </div>
+          <SidebarFilter products={products} />
 
-          {/* Products Section */}
-          <div className="md:col-span-4 lg:col-span-3">
+          {/* Products Grid */}
+          <div className="lg:col-span-3">
             <div className="space-y-6">
               {/* Sort by featured */}
               <SortByFeatured products={products} />
@@ -71,6 +67,8 @@ export default function CategoryPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
 
       <Footer />
     </div>

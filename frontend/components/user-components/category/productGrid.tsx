@@ -35,7 +35,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
   };
 
   return (
-    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => {
         const isAvailable = product.stock > 0;
 
@@ -45,22 +45,24 @@ export default function ProductGrid({ products }: ProductGridProps) {
             className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
           >
             {/* Product Image */}
-            <div className="relative w-full h-40 overflow-hidden">
-              <img
-                src={product.images?.[0] ?? ""}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-              <span
-                className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
-                  isAvailable
-                    ? "bg-green-600 text-white"
-                    : "bg-red-500 text-white"
-                }`}
-              >
-                {isAvailable ? "In Stock" : "Out of Stock"}
-              </span>
-            </div>
+             <Link href={`/product/${product._id}`} className="flex-1">
+                    <div className="relative w-full h-40 overflow-hidden">
+                      <img
+                        src={product.images?.[0] ?? ""}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <span
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                          isAvailable
+                            ? "bg-green-600 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        {isAvailable ? "In Stock" : "Out of Stock"}
+                      </span>
+                    </div>
+                  </Link>
 
             {/* Content */}
             <CardContent className="p-3 space-y-2">

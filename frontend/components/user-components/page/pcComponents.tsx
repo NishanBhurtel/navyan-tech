@@ -17,7 +17,7 @@ export default function PcComponents() {
     ? products.filter((product) => product.categoryID.name === "Components")
     : [];
 
-  const categoryID = pcComponents?.[0]?.categoryID?._id;
+  const subCategoryID = pcComponents?.[0]?.subCategoryID?._id;
 
   if (isLoading)
     return <div className="p-12 text-center">Loading product...</div>;
@@ -48,7 +48,11 @@ export default function PcComponents() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link
+              href={
+                subCategoryID ? `/search?subCategoryID=${subCategoryID}` : "#"
+              }
+            >
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -76,7 +80,7 @@ export default function PcComponents() {
                   className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   {/* Product Image */}
-                   <Link href={`/product/${product._id}`} className="flex-1">
+                  <Link href={`/product/${product._id}`} className="flex-1">
                     <div className="relative w-full h-40 overflow-hidden">
                       <img
                         src={product.images?.[0] ?? ""}
@@ -98,14 +102,16 @@ export default function PcComponents() {
                   {/* Content */}
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
-                      <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
-                      <Link className="hover:underline hover:text-blue-600"
+                    <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
+                      <Link
+                        className="hover:underline hover:text-blue-600"
                         href={`/search?categoryID=${product.categoryID._id}`}
                       >
                         {product.categoryID?.name}{" "}
                       </Link>
                       <ChevronRight className="w-3 h-3" />
-                      <Link className="hover:underline hover:text-blue-600"
+                      <Link
+                        className="hover:underline hover:text-blue-600"
                         href={`/search?categoryID=${product.subCategoryID._id}`}
                       >
                         {product.subCategoryID?.name}{" "}

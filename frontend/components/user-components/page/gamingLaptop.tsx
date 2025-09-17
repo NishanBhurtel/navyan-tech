@@ -19,7 +19,7 @@ export default function GamingLaptop() {
       )
     : [];
 
-  const categoryID = gamingLaptops?.[0]?.categoryID?._id;
+  const subCategoryID = gamingLaptops?.[0]?.subCategoryID?._id;
 
   if (isLoading)
     return <div className="p-12 text-center">Loading product...</div>;
@@ -50,7 +50,11 @@ export default function GamingLaptop() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link
+              href={
+                subCategoryID ? `/search?subCategoryID=${subCategoryID}` : "#"
+              }
+            >
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -100,19 +104,21 @@ export default function GamingLaptop() {
                   {/* Content */}
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
-                      <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
-                        <Link className="hover:underline hover:text-blue-600"
-                          href={`/search?categoryID=${product.categoryID._id}`}
-                        >
-                          {product.categoryID?.name}{" "}
-                        </Link>
-                        <ChevronRight className="w-3 h-3" />
-                        <Link className="hover:underline hover:text-blue-600"
-                          href={`/search?categoryID=${product.subCategoryID._id}`}
-                        >
-                          {product.subCategoryID?.name}{" "}
-                        </Link>
-                      </p>
+                    <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.categoryID._id}`}
+                      >
+                        {product.categoryID?.name}{" "}
+                      </Link>
+                      <ChevronRight className="w-3 h-3" />
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.subCategoryID._id}`}
+                      >
+                        {product.subCategoryID?.name}{" "}
+                      </Link>
+                    </p>
 
                     {/* Name */}
                     <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
