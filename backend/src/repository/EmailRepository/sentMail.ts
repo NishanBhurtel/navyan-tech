@@ -36,6 +36,39 @@ export class SentMail {
     }
   }
 
+  async sendMailToSpecificUser({
+    from,
+    to,
+    subject,
+    text,
+    html,
+  }: // attachments,
+  {
+    from?: string;
+    to: string | string[];
+    subject: string;
+    text?: string;
+    html?: string;
+    // attachments?: { filename: string; path: string }[];
+  }) {
+    try {
+      const info = await transporter.sendMail({
+        from: from || process.env.ADMIN_EMAIL,
+        to,
+        subject,
+        text,
+        html,
+        // attachments,
+      });
+
+      console.log("✅ Email sent:", info.messageId);
+      return info;
+    } catch (err) {
+      console.error("❌ Error sending email:", err);
+      throw err;
+    }
+  }
+
   // send to all users in DB
   async sendMailToAllUsers({
     from,

@@ -4,6 +4,7 @@ import { emailContract } from "../../contract/email/email.contract";
 
 import { SentMail } from "../../repository/EmailRepository/sentMail";
 import EmailTemplate from "./emailTemplate";
+import EmailTemplateForSpecificUser from "./emailTemplateForSpecificUser";
 const emailService = new SentMail();
 
 const sentMailMutation: AppRouteMutationImplementation<
@@ -35,6 +36,47 @@ const sentMailMutation: AppRouteMutationImplementation<
   }
 };
 
+const sentEmailToSpecificUserMutation: AppRouteMutationImplementation<
+  typeof emailContract.sendEmailToSpecificUser
+> = async ({ req }) => {
+  try {
+    const { email, subject, text, html } = req.body;
+    await emailService.sendMailToSpecificUser({
+      // to: email,
+      // subject,
+      // text: text,
+      // // html: `<p>${text}  </p>`,
+      // html: EmailTemplateForSpecificUser(),
+
+      to: email,
+      subject,
+      text,
+      html:
+        html ||
+        EmailTemplateForSpecificUser({
+          username: email.split("@")[0], // 👈 e.g. "customer"
+          message: text,
+        }),
+    });
+    return {
+      status: 200,
+      body: {
+        success: true,
+        message: "Emails sent successfully",
+      },
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      body: {
+        success: false,
+        error: "Error Sending Mail",
+      },
+    };
+  }
+};
+
 export const emailMutationHandler = {
   sentMailMutation,
+  sentEmailToSpecificUserMutation,
 };
