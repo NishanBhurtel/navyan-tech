@@ -58,7 +58,6 @@ export class SentMail {
       }
 
       const emails = users.map((user) => user.email);
-
       const info = await transporter.sendMail({
         from: from || process.env.SMTP_USER,
         to: emails.join(", "),

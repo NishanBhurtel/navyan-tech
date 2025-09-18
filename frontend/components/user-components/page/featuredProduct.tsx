@@ -79,7 +79,7 @@ export default function FeaturedProduct() {
                         className="w-full h-full object-cover"
                       />
                       <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${
                           isAvailable
                             ? "bg-green-600 text-white"
                             : "bg-red-500 text-white"

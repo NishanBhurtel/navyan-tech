@@ -7,6 +7,7 @@ import { categoryRouter } from "./category/category.router";
 import { userRouter } from "./users/user.router";
 import { emailRouter } from "./email/email.router";
 import { orderRouter } from "./order/order.router";
+import { contactRouter } from "./contact/contact.router";
 
 const s = initServer();
 
@@ -18,4 +19,5 @@ export const router = s.router(contract, {
   category: categoryRouter,
   email: emailRouter,
   order: orderRouter,
+  contact: contactRouter,
 });
