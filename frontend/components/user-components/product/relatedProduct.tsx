@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import  useToast  from "@/lib/Toast";
+import  useToast  from "../../../lib/Toast";
 
 interface RelatedProductsProps {
   currentProduct: any;

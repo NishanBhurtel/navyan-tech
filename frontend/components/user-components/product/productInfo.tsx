@@ -8,7 +8,7 @@ import Link from "next/link";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import  useToast from "@/lib/Toast";
+import  useToast from "../../../lib/Toast";
 
 export default function ProductInfo({ product }: { product: IProduct }) {
   const { showToast } = useToast();
