@@ -6,10 +6,10 @@ import { Heart, ChevronRight } from "lucide-react";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import useToast from "../../../lib/Toast";
+// import useToast from "../../../lib/Toast";
 
 export default function PcComponents() {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const { data: products, isLoading, isError } = useAllProducts({});
   const heading = "PC Components";
 
@@ -37,7 +37,7 @@ export default function PcComponents() {
     };
 
     const result = addToWishlist(item);
-    showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
+    // showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
   };
 
   return (

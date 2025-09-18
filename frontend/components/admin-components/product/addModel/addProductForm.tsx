@@ -21,7 +21,7 @@ import {
 import { Upload, X, Plus } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useToast from "../../../../lib/Toast";
+// import useToast from "../../../../lib/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
 import {
@@ -45,7 +45,7 @@ interface Category {
 
 export default function AddProductPage() {
   const router = useRouter();
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const { uploadImages } = useUploadImages();
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -59,7 +59,7 @@ export default function AddProductPage() {
         const data = await categoriesApi.getAll();
         setCategories(data);
       } catch (err: any) {
-        showToast(err.message || "Failed to load categories", "bg-destructive");
+        // showToast(err.message || "Failed to load categories", "bg-destructive");
       }
     };
     fetchCategories();
@@ -104,22 +104,22 @@ export default function AddProductPage() {
       productApi.createProductApi(data),
     onSuccess: () => {
       setFiles([]);
-      showToast("Product added successfully", "bg-primary");
+      // showToast("Product added successfully", "bg-primary");
       router.push("/admin/products");
       setIsUploading(false);
     },
     onError: (err: any) => {
-      showToast(
-        "Failed to add product! " + (err?.message || "Unknown error"),
-        "bg-destructive"
-      );
+      // showToast(
+      //   "Failed to add product! " + (err?.message || "Unknown error"),
+      //   "bg-destructive"
+      // );
       setIsUploading(false);
     },
   });
 
   const onSubmit = async (data: TCreateProductSchema) => {
     if (files.length === 0) {
-      showToast("Please upload at least one image", "bg-destructive");
+      // showToast("Please upload at least one image", "bg-destructive");
       return;
     }
 
@@ -134,7 +134,7 @@ export default function AddProductPage() {
     } catch (err) {
       setIsUploading(false);
       console.error(err);
-      showToast("Image upload failed", "bg-destructive");
+      // showToast("Image upload failed", "bg-destructive");
     }
   };
 

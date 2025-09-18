@@ -19,11 +19,11 @@ import {
   removeFromWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
-import  useToast from "../../../lib/Toast";
+// import  useToast from "../../../lib/Toast";
 import ConfirmDialog from "../../../lib/confirmModel";
 
 export default function MyWishList() {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [itemToRemove, setItemToRemove] = useState<number | null>(null);
 
@@ -40,7 +40,7 @@ export default function MyWishList() {
       removeFromWishlist(itemToRemove);
       const updated = getWishlist().slice().reverse();
       setWishlistItems(updated);
-      showToast("Product removed from wishlist", "bg-primary");
+      // showToast("Product removed from wishlist", "bg-primary");
       setItemToRemove(null); // close modal
     }
   };

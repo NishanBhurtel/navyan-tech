@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Heart, Star } from "lucide-react";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import  useToast  from "../../../lib/Toast";
+// import  useToast  from "../../../lib/Toast";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 
 type ProductGridProps = {
@@ -11,7 +11,7 @@ type ProductGridProps = {
 };
 
 export default function ProductGrid({ products }: ProductGridProps) {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -28,9 +28,9 @@ export default function ProductGrid({ products }: ProductGridProps) {
     const result = addToWishlist(item);
 
     if (result.success) {
-      showToast(result.message, "bg-primary");
+      // showToast(result.message, "bg-primary");
     } else {
-      showToast(result.message, "bg-destructive");
+      // showToast(result.message, "bg-destructive");
     }
   };
 

@@ -21,11 +21,11 @@ import {
   TContactFormSchema,
 } from "@/lib/form-validation/contact.validation";
 import { contactApi } from "@/lib/api/contact.api";
-import useToast from "../../../lib/Toast";
+// import useToast from "../../../lib/Toast";
 import { useState } from "react";
 
 export default function ContactForm() {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<TContactFormSchema>({
@@ -44,14 +44,14 @@ export default function ContactForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: TContactFormSchema) => contactApi.contactFormApi(data),
     onSuccess: () => {
-      showToast("Email sent successfully", "bg-primary");
+      // showToast("Email sent successfully", "bg-primary");
       setLoading(false);
     },
     onError: (err: any) => {
-      showToast(
-        "Failed to send email! " + (err?.message || "Unknown error"),
-        "bg-destructive"
-      );
+      // showToast(
+      //   "Failed to send email! " + (err?.message || "Unknown error"),
+      //   "bg-destructive"
+      // );
       setLoading(false);
     },
   });
