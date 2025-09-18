@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Heart, Star } from "lucide-react";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/Toast";
+import  useToast  from "@/lib/Toast";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 
 type ProductGridProps = {

@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
-import { useToast } from "@/lib/Toast";
+import useToast from "@/lib/Toast";
 
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
-  const {showToast} = useToast();
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: (id: string) => productApi.deleteProductApi(id),

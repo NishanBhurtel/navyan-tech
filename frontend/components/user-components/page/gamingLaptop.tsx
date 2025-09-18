@@ -6,7 +6,8 @@ import { Heart, ChevronRight } from "lucide-react";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/Toast";
+
+import useToast from "@/lib/Toast";
 
 export default function GamingLaptop() {
   const { showToast } = useToast();

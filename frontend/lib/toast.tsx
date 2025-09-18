@@ -10,7 +10,7 @@ type ToastContextType = {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export function useToast() {
+function useToast() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used inside ToastProvider");
   return ctx;
@@ -45,3 +45,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+
+
+export default useToast;

@@ -21,7 +21,7 @@ import {
   TCreateOrderFormSchema,
 } from "@/lib/form-validation/order-validation";
 import { orderApi } from "@/lib/api/order.api";
-import { useToast } from "@/lib/Toast";
+import useToast from "@/lib/Toast";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
 

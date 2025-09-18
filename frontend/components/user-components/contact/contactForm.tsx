@@ -21,7 +21,7 @@ import {
   TContactFormSchema,
 } from "@/lib/form-validation/contact.validation";
 import { contactApi } from "@/lib/api/contact.api";
-import { useToast } from "@/lib/Toast";
+import useToast from "@/lib/Toast";
 import { useState } from "react";
 
 export default function ContactForm() {

@@ -21,7 +21,7 @@ import {
 import { Upload, X, Plus } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/lib/Toast";
+import useToast from "@/lib/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
 import {

@@ -19,7 +19,7 @@ import {
   removeFromWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
-import { useToast } from "@/lib/Toast";
+import  useToast from "@/lib/Toast";
 import ConfirmDialog from "../../../lib/confirmModel";
 
 export default function MyWishList() {
