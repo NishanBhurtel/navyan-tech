@@ -1,1 +1,1 @@
-Navyan Techsss
+Navyan Tech
