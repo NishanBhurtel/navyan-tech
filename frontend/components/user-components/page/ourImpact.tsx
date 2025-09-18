@@ -12,6 +12,18 @@ export default function OurImpact() {
 
   const displayCount = customerCount > 100 ? customerCount : 120;
 
+  // Dynamic Years of Service
+  const foundingYear = 2017;
+  const currentYear = new Date().getFullYear();
+  const yearsOfService = currentYear - foundingYear;
+
+  const stats = [
+    { number: `${displayCount}+`, label: "Citizens Served" },
+    { number: `${yearsOfService}+`, label: "Years of Service" },
+    { number: "95%", label: "Satisfaction Rate" },
+    { number: "24/7", label: "Support Available" },
+  ];
+
   return (
     <section className="py-16 text-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,12 +35,7 @@ export default function OurImpact() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { number: displayCount+"+", label: "Citizens Served" },
-            { number: "15+", label: "Years of Service" },
-            { number: "98%", label: "Satisfaction Rate" },
-            { number: "24/7", label: "Support Available" },
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-4xl font-bold text-black mb-2">
                 {stat.number}

@@ -16,7 +16,7 @@ export const createProductSchema = z.object({
     z.number().min(0, "Price must be positive")
   ),
   images: z.array(z.string()).nonempty("At least one image is required"),
-  specifications: z.array(z.object({ key: z.string(), value: z.string() })),
+  specifications: z.array(z.object({ key: z.string(), value: z.string() })).optional(),
   categoryID: z.string().min(1, "Category is required"),
   subCategoryID: z.string().min(1, "SubCategory ID is required"),
   brand: z.string().min(1, "Brand is required"),

@@ -74,6 +74,12 @@ export default function AddProductPage() {
     formState: { errors },
   } = useForm<TCreateProductSchema>({
     resolver: zodResolver(createProductSchema),
+    defaultValues: {
+      technicalSpecification: {
+        performance: {},
+        memoryAndStorage: {},
+      }
+    }
   });
 
   const { fields, append, remove } = useFieldArray({

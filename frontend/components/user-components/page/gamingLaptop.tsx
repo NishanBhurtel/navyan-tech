@@ -85,8 +85,8 @@ export default function GamingLaptop() {
                         alt={product.name}
                         className="w-full h-full object-cover"
                       />
-                      <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
+                         <span
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${
                           isAvailable
                             ? "bg-green-600 text-white"
                             : "bg-red-500 text-white"

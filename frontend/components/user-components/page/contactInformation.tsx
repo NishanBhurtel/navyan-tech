@@ -19,7 +19,7 @@ import {
 export default function ConctactInformation() {
   return (
     <div className="w-full space-y-6">
-      <Card className="shadow-xl border-0">
+      <Card className="shadow-xl border-0 py-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-foreground">
             Contact Information
@@ -38,11 +38,11 @@ export default function ConctactInformation() {
                 <h3 className="font-semibold text-foreground mb-1">
                   Phone Support
                 </h3>
-                <p className="text-muted-foreground text-sm mb-2">
+                <p className="text-muted-foreground text-[14px] mb-2">
                   Call us for immediate assistance
                 </p>
                 <p className="font-medium text-foreground">+(977) 9864400400</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[14px] text-muted-foreground">
                   Sun-Fri: 9AM-7:30PM GMT
                 </p>
               </div>
@@ -58,7 +58,7 @@ export default function ConctactInformation() {
                   Quick messaging support
                 </p>
                 <p className="font-medium text-foreground">+(977) 9864400400</p>
-                <p className="text-xs text-muted-foreground">Available 24/7</p>
+                <p className="text-[14px] text-muted-foreground">Available 24/7</p>
               </div>
             </div>
 
@@ -70,13 +70,13 @@ export default function ConctactInformation() {
                 <h3 className="font-semibold text-foreground mb-1">
                   Email Support
                 </h3>
-                <p className="text-muted-foreground text-sm mb-2">
+                <p className="text-muted-foreground text-[14px] mb-2">
                   Detailed inquiries and support
                 </p>
                 <p className="font-medium text-foreground">
                   navyan2018@gmail.com
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[14px] text-muted-foreground">
                   Response within 24 hours
                 </p>
               </div>
@@ -85,7 +85,7 @@ export default function ConctactInformation() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-xl border-0">
+      <Card className="shadow-xl border-0 py-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-foreground">
             Visit Our Store
@@ -101,7 +101,7 @@ export default function ConctactInformation() {
               <h3 className="font-semibold text-foreground mb-1">
                 Paschimanchal ,
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-[14px]">
                 Finance-chowk
                 <br />
                 Butwal-8
@@ -119,7 +119,7 @@ export default function ConctactInformation() {
               <h3 className="font-semibold text-foreground mb-1">
                 Store Hours
               </h3>
-              <div className="text-sm text-muted-foreground space-y-1">
+              <div className="text-[14px] text-muted-foreground space-y-1">
                 <p>Sunday - Friday: 10AM - 7:30PM</p>
               </div>
             </div>
