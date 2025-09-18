@@ -14,11 +14,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/lib/Toast";
+// import useToast from "../../../lib/Toast";
 
 export default function LoginForm() {
   const router = useRouter();
-  
+
   const {
     register,
     handleSubmit,
@@ -27,7 +27,7 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   // ✅ Mutation for login API
   const mutation = useMutation({
@@ -38,10 +38,10 @@ export default function LoginForm() {
       }),
     onSuccess: () => {
       router.push("/");
-      showToast("Login successful!", "bg-primary");
+      // showToast("Login successful!", "bg-primary");
     },
     onError: (error: any) => {
-      showToast("Login failed: " + (error?.message || "Unknown error"), "bg-destructive");
+      // showToast("Login failed: " + (error?.message || "Unknown error"), "bg-destructive");
     },
   });
 

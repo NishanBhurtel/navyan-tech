@@ -19,11 +19,11 @@ import {
   removeFromWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
-import { useToast } from "@/lib/Toast";
+// import  useToast from "../../../lib/Toast";
 import ConfirmDialog from "../../../lib/confirmModel";
 
 export default function MyWishList() {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [itemToRemove, setItemToRemove] = useState<number | null>(null);
 
@@ -40,7 +40,7 @@ export default function MyWishList() {
       removeFromWishlist(itemToRemove);
       const updated = getWishlist().slice().reverse();
       setWishlistItems(updated);
-      showToast("Product removed from wishlist", "bg-primary");
+      // showToast("Product removed from wishlist", "bg-primary");
       setItemToRemove(null); // close modal
     }
   };
@@ -175,21 +175,21 @@ export default function MyWishList() {
 
                           <div className="flex items-center space-x-2">
                             <span className="text-xl font-bold text-foreground">
-                              {item.price}
+                              Rs.{item.price}
                             </span>
                             {item.originalPrice && (
                               <span className="text-sm text-muted-foreground line-through">
-                                {item.originalPrice}
+                                Rs.{item.originalPrice}
                               </span>
                             )}
                           </div>
                           <div className="flex items-center space-x-2">
                             {item.inStock ? (
-                              <Badge className="bg-green-100 text-green-800 border-green-200">
+                              <Badge className="bg-primary text-white py-1 border-green-200">
                                 In Stock
                               </Badge>
                             ) : (
-                              <Badge className="bg-red-100 text-red-800 border-red-200">
+                              <Badge className="bg-destructive text-white py-1 border-red-200">
                                 Out of Stock
                               </Badge>
                             )}

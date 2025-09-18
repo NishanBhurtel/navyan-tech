@@ -21,7 +21,7 @@ import {
   TCreateOrderFormSchema,
 } from "@/lib/form-validation/order-validation";
 import { orderApi } from "@/lib/api/order.api";
-import { useToast } from "@/lib/Toast";
+// import useToast from "../../../lib/Toast";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
 
@@ -59,7 +59,7 @@ export default function OrderForm({
   });
 
   const router = useRouter();
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   const mutation = useMutation({
     mutationFn: (data: TCreateOrderFormSchema) =>
@@ -85,7 +85,7 @@ export default function OrderForm({
         totalPrice: data.totalPrice,
       }),
     onSuccess: () => {
-      showToast("Order submitted successfully", "bg-primary");
+      // showToast("Order submitted successfully", "bg-primary");
 
       // Wait 1-2 seconds before redirect
       setTimeout(() => {
@@ -94,10 +94,10 @@ export default function OrderForm({
     },
 
     onError: (error: any) => {
-      showToast(
-        "Failed to submit order! " + (error?.message || "Unknown error"),
-        "bg-destructive"
-      );
+      // showToast(
+      //   "Failed to submit order! " + (error?.message || "Unknown error"),
+      //   "bg-destructive"
+      // );
     },
   });
 

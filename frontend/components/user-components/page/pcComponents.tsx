@@ -6,10 +6,10 @@ import { Heart, ChevronRight } from "lucide-react";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/Toast";
+// import useToast from "../../../lib/Toast";
 
 export default function PcComponents() {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   const { data: products, isLoading, isError } = useAllProducts({});
   const heading = "PC Components";
 
@@ -37,7 +37,7 @@ export default function PcComponents() {
     };
 
     const result = addToWishlist(item);
-    showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
+    // showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
   };
 
   return (
@@ -76,7 +76,7 @@ export default function PcComponents() {
                   className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   {/* Product Image */}
-                   <Link href={`/product/${product._id}`} className="flex-1">
+                  <Link href={`/product/${product._id}`} className="flex-1">
                     <div className="relative w-full h-40 overflow-hidden">
                       <img
                         src={product.images?.[0] ?? ""}
@@ -84,11 +84,10 @@ export default function PcComponents() {
                         className="w-full h-full object-cover"
                       />
                       <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
-                          isAvailable
-                            ? "bg-green-600 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${isAvailable
+                          ? "bg-green-600 text-white"
+                          : "bg-red-500 text-white"
+                          }`}
                       >
                         {isAvailable ? "In Stock" : "Out of Stock"}
                       </span>
@@ -98,7 +97,7 @@ export default function PcComponents() {
                   {/* Content */}
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
-                      <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
+                    <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
                       <Link className="hover:underline hover:text-blue-600"
                         href={`/search?categoryID=${product.categoryID._id}`}
                       >

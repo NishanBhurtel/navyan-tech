@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/Toast";
+// import  useToast  from "../../../lib/Toast";
 
 interface RelatedProductsProps {
   currentProduct: any;
@@ -32,7 +32,7 @@ export default function RelatedProducts({
 
   if (relatedProducts.length === 0) return null;
 
-    const { showToast } = useToast();
+    // const { showToast } = useToast();
   
 
     const handleAddToWishlist = (product: any) => {
@@ -49,9 +49,9 @@ export default function RelatedProducts({
       const result = addToWishlist(item);
   
       if (result.success) {
-        showToast(result.message, "bg-primary");
+        // showToast(result.message, "bg-primary");
       } else {
-        showToast(result.message, "bg-destructive");
+        // showToast(result.message, "bg-destructive");
       }
     };
 

@@ -20,7 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/lib/Toast";
+// import  useToast  from "../../../lib/Toast";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
   // ✅ Mutation for registration API
   const mutation = useMutation({
     mutationFn: (data: TRegisterSchema) =>
@@ -48,13 +48,13 @@ export default function RegisterForm() {
       }),
     onSuccess: () => {
       router.push("/login");
-      showToast("Registration successful!", "bg-primary");
+      // showToast("Registration successful!", "bg-primary");
     },
     onError: (error: any) => {
-      showToast(
-        "Registration failed: " + error?.message || "Unknown error",
-        "bg-destructive"
-      );
+      // showToast(
+      // //   "Registration failed: " + error?.message || "Unknown error",
+      // //   "bg-destructive"
+      // );
       console.log(error.message);
     },
   });

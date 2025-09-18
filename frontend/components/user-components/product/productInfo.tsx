@@ -8,10 +8,10 @@ import Link from "next/link";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-import { useToast } from "@/lib/Toast";
+// import  useToast from "../../../lib/Toast";
 
 export default function ProductInfo({ product }: { product: IProduct }) {
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   const [orderNumber, setOrderNumber] = useState(1);
 
@@ -30,9 +30,9 @@ export default function ProductInfo({ product }: { product: IProduct }) {
     const result = addToWishlist(item);
 
     if (result.success) {
-      showToast(result.message, "bg-primary");
+      // showToast(result.message, "bg-primary");
     } else {
-      showToast(result.message, "bg-destructive");
+      // showToast(result.message, "bg-destructive");
     }
   };
 

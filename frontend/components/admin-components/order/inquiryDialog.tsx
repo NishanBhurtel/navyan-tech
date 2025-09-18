@@ -102,7 +102,7 @@ export default function InquiryDialog({
                 </div>
                 <div>
                   <Label className="my-2" htmlFor="emailSubject">Subject</Label>
-                  <Input id="emailSubject" placeholder="Enter email subject" defaultValue={`Regarding your inquiry for ${inquiry.productName}`} />
+                  <Input id="emailSubject" placeholder="Enter email subject" defaultValue={`Regarding your order inquery for ${inquiry.productName}`} />
                 </div>
                 <div>
                   <Label className="my-2" htmlFor="emailMessage">Message</Label>
