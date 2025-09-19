@@ -1,6 +1,6 @@
 import { AppRouteImplementationOrOptions } from "@ts-rest/express/src/lib/types";
 
-import OrderRepository from "../../repository/mangodb/order/order.repository";
+import OrderRepository from "../../repository/mongodb/order/order.repository";
 import { orderContract } from "../../contract/order/order.contract";
 
 const getAllOrders: AppRouteImplementationOrOptions<

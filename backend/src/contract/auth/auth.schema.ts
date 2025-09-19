@@ -48,6 +48,8 @@ export const loginResponseSchema = z.object({
   email: z.string().email(),
   firstName: z.string(),
   lastName: z.string(),
+  token: z.string(),
+  role: z.enum(["admin", "customer"]),
 });
 
 export const logout = z.object({});

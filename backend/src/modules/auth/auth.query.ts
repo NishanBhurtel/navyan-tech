@@ -1,7 +1,7 @@
 import { AppRouteImplementationOrOptions } from "@ts-rest/express/src/lib/types";
 
 import { authContract } from "../../contract/auth/auth.contract";
-import usersRepository from "../../repository/mangodb/user/users.repository";
+import usersRepository from "../../repository/mongodb/user/users.repository";
 
 export const getTotalNumberOfUsers: AppRouteImplementationOrOptions<
   typeof authContract.getTotalNumberOfUsers

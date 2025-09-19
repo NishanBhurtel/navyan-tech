@@ -1,6 +1,6 @@
 import { AppRouteQueryImplementation } from "@ts-rest/express";
 import { usersContract } from "../../contract/users/users.contract";
-import usersRepository from "../../repository/mangodb/user/users.repository";
+import usersRepository from "../../repository/mongodb/user/users.repository";
 
 // GET /users/details/:userID
 const getUserDetailsByID: AppRouteQueryImplementation<

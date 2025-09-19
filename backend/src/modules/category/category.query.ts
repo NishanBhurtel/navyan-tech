@@ -2,8 +2,8 @@ import { AppRouteQueryImplementation } from "@ts-rest/express";
 
 import { categoryContract } from "../../contract/categories/category.contract";
 
-import { getAllCategories } from "../../repository/mangodb/category/category.repository";
-import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+import { getAllCategories } from "../../repository/mongodb/category/category.repository";
+import subCategoryRepository from "../../repository/mongodb/subCategory/subCategory.repository";
 import { promise } from "zod";
 
 // Get all categories
