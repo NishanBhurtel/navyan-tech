@@ -15,7 +15,7 @@ export default function GamingLaptop() {
   const heading = "Gaming Laptops";
 
   const gamingLaptops = products
-    ? products.filter(
+    ? products.data.filter(
         (product) => product.subCategoryID.name === "Gaming Laptops"
       )
     : [];
@@ -51,7 +51,7 @@ export default function GamingLaptop() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link href={categoryID ? `/search?categoryID=${categoryID}` : "#"}>
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>

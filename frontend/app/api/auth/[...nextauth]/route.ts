@@ -1,12 +1,12 @@
-// pages/api/auth/[...nextauth].ts
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authApi } from "@/lib/api/auth.api";
 
-// ✅ Extend NextAuth types to include your custom fields
+// Extend NextAuth types
 declare module "next-auth" {
   interface User {
-    _id: string;
+    id: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -16,7 +16,7 @@ declare module "next-auth" {
 
   interface Session {
     user: {
-      _id: string;
+      id: string;
       email: string;
       firstName: string;
       lastName: string;
@@ -26,7 +26,7 @@ declare module "next-auth" {
   }
 
   interface JWT {
-    _id: string;
+    id: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -44,17 +44,50 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("🔍 authorize() called with:", {
+          email: credentials?.email,
+          password: credentials?.password ? "***" : "",
+        });
+
+        if (!credentials?.email || !credentials?.password) {
+          console.log("❌ Missing email or password");
+          return null;
+        }
+
         try {
-          const res = await authApi.loginApi({
+          console.log("📡 Calling authApi.loginApi...");
+          const data = await authApi.loginApi({
             email: credentials?.email || "",
             password: credentials?.password || "",
           });
 
-          // Expecting backend response { _id, email, firstName, lastName, token, role }
-          const user = res.data;
+          console.log("📥 API Response:", {
+            status: data.status,
+            data: data,
+          });
+
+          const user = data;
+
+          if (!user) {
+            console.log("❌ No user data in response");
+            return null;
+          }
+
+          if (!user.token) {
+            console.log("❌ No token in user response");
+            return null;
+          }
 
           if (user && user.token) {
-            return user; // returned user is passed to jwt callback
+            return {
+              id: user.id,
+              _id: user.id, // for backward compatibility
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+              token: user.token,
+            };
           }
 
           return null;
@@ -68,9 +101,8 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      // On login
       if (user) {
-        token._id = user._id;
+        token.id = user.id;
         token.email = user.email;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
@@ -81,13 +113,15 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      if (session.user) {
-        session.user._id = token._id as string;
-        session.user.email = token.email as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.user.role = token.role as "admin" | "customer";
-        session.user.token = token.accessToken as string;
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+          firstName: token.firstName as string,
+          lastName: token.lastName as string,
+          role: token.role as "admin" | "customer",
+          token: token.accessToken as string,
+        };
       }
       return session;
     },
@@ -99,4 +133,5 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

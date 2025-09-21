@@ -16,13 +16,12 @@ interface RelatedProductsProps {
 export default function RelatedProducts({
   currentProduct,
 }: RelatedProductsProps) {
-  const { data: allProducts = [], isLoading } = useAllProducts({});
+  const { data, isLoading } = useAllProducts({});
 
   if (isLoading) return <div>Loading related products...</div>;
 
   // Filter related products: same category or subcategory, exclude current product
-  const relatedProducts = allProducts
-    .filter(
+  const relatedProducts = data?.data.filter(
       (p: any) =>
         p._id !== currentProduct._id &&
         (p.categoryID?._id === currentProduct.categoryID?._id ||
@@ -30,7 +29,7 @@ export default function RelatedProducts({
     )
     .slice(0, 5); // limit to 5 products
 
-  if (relatedProducts.length === 0) return null;
+  if (relatedProducts?.length === 0) return null;
 
     // const { showToast } = useToast();
   
@@ -61,7 +60,7 @@ export default function RelatedProducts({
         You may also like
       </h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-        {relatedProducts.map((p, i) => (
+        {relatedProducts?.map((p, i) => (
           <Card
             key={i}
             className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-border hover:border-primary/50 overflow-hidden bg-white hover:-translate-y-1"

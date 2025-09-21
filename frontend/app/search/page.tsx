@@ -16,14 +16,16 @@ export default function CategoryPage() {
   const brand = searchParams.get("brand");
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
-  const categoryID = searchParams.get("categoryId");
+  const categoryID = searchParams.get("categoryID");
   const subCategoryID = searchParams.get("subCategoryID");
 
+
   const {
-    data: products,
     isLoading,
     isError,
+    data
   } = useAllProducts({
+
     search: search || undefined,
     filter: {
       brand: brand || undefined,
@@ -34,9 +36,14 @@ export default function CategoryPage() {
     },
   });
 
+  const products = data?.data || [];
+
+  console.log("Products fetched:", products);
+
   if (isLoading)
     return <div className="p-12 text-center">Loading product...</div>;
-  if (isError || !products)
+
+  if (isError || !data || products.length === 0)
     return <div className="p-12 text-center">Product Not Found</div>;
 
   return (

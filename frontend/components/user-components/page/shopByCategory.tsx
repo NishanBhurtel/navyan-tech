@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useAllProducts } from "@/hooks/product/getAllProducts";
 
 // Icons for categories
 import { Cpu, Monitor, Laptop, Gamepad2, Headphones } from "lucide-react";
+import { Category } from "@/components/admin-components/category/types";
 
 type CategoryProps = {
-  category?: any[];
+  category?: Category[];
 };
 
 // Map category names to icons
@@ -31,19 +31,8 @@ const categoryColors: string[] = [
 ];
 
 export default function ShopByCategory({ category }: CategoryProps) {
-  const { data: respondedData, error, isLoading } = useAllProducts({});
 
-  if (isLoading) {
-    return <p className="text-center py-10">Loading categories...</p>;
-  }
 
-  if (error) {
-    return (
-      <p className="text-center py-10 text-red-500">
-        Failed to load categories.
-      </p>
-    );
-  }
 
   return (
     <section className="py-16 bg-background">
@@ -58,15 +47,11 @@ export default function ShopByCategory({ category }: CategoryProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {category?.map((cat: any, index: number) => {
+          {category?.map((cat, index: number) => {
             const Icon = categoryIcons[cat.name] || Monitor; // default icon
             const color = categoryColors[index % categoryColors.length];
 
             // Count products for this category
-            const productCount = respondedData?.filter(
-              (p: any) => p.categoryID?._id === cat._id
-            ).length;
-
             return (
               <Link key={cat._id} href={`/search?categoryID=${cat._id}`}>
                 <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-muted to-card border border-border hover:border-primary/50 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-1">
@@ -89,7 +74,7 @@ export default function ShopByCategory({ category }: CategoryProps) {
                       {cat.description || "Explore products"}
                     </p>
                     <p className="text-xs font-medium text-primary">
-                      {productCount || 0} items
+                      {cat.totalItems || 0} items
                     </p>
                   </div>
                 </div>

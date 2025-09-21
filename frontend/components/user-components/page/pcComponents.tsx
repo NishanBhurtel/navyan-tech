@@ -14,7 +14,7 @@ export default function PcComponents() {
   const heading = "PC Components";
 
   const pcComponents = products
-    ? products.filter((product) => product.categoryID.name === "Components")
+    ? products.data?.filter((product) => product.categoryID.name === "Components")
     : [];
 
   const categoryID = pcComponents?.[0]?.categoryID?._id;
@@ -48,7 +48,7 @@ export default function PcComponents() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link href={categoryID ? `/search?categoryID=${categoryID}` : "#"}>
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>

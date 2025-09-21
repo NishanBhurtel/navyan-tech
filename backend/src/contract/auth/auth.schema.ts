@@ -44,7 +44,7 @@ export const loginSchema = z.object({
 });
 
 export const loginResponseSchema = z.object({
-  _id: z.string(),
+  id: z.string(),
   email: z.string().email(),
   firstName: z.string(),
   lastName: z.string(),

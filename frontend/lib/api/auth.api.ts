@@ -17,6 +17,7 @@ const registerApi = async (
 // POST /auth/login - Login user
 const loginApi = async (loginPayload: TLoginSchema) => {
   const response = await apiClient.post("/auth/login", loginPayload);
+  console.log("response from login api : ", response);
   return response.data;
 };
 

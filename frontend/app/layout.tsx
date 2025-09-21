@@ -4,6 +4,7 @@ import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import InnerLayoutClient from "./innerLayout";
 import ClientProviders from "@/lib/clientProvider";
+import { SessionProvider } from "next-auth/react";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -37,9 +38,9 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <ClientProviders>
-          <InnerLayoutClient>{children}</InnerLayoutClient>
-        </ClientProviders>
+          <ClientProviders>
+            <InnerLayoutClient>{children}</InnerLayoutClient>
+          </ClientProviders>
       </body>
     </html>
   );

@@ -49,8 +49,11 @@ export const productContract = c.router({
         minPrice: z.coerce.number().optional(),
         maxPrice: z.coerce.number().optional(),
         categoryID:z.string().optional(),
-        subCategoryID:z.string().optional()
-      }).optional()
+        subCategoryID:z.string().optional(),
+      }).optional(),
+      limit:z.coerce.number().min(1).max(100).default(10).optional(),
+      page:z.coerce.number().min(1).default(1).optional(),
+
     }),
     responses: {
       200: getAllProductSchema,

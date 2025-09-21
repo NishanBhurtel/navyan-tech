@@ -57,13 +57,15 @@ export const loginUser: AppRouteMutationImplementation<
     const users = await userRepository.getAllUsers({
       email: email.toLowerCase(),
     });
+
     if (users.length === 0) {
       return { status: 404, body: { success: false, error: "User not found" } };
     }
 
     const user = users[0];
-
+    console.log(password)
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       return {
         status: 401,
@@ -82,7 +84,7 @@ export const loginUser: AppRouteMutationImplementation<
       body: {
         success: true,
         message: "User logged in successfully",
-        _id: userId,
+        id: userId,
         email: user.email,
         firstName: user.userName.firstName,
         lastName: user.userName.lastName,

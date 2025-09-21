@@ -1,4 +1,3 @@
-import { FilterQuery } from "mongoose";
 import Product, { IProductModel } from "../../../models/product.model";
 
 class ProductRepository {
@@ -89,16 +88,18 @@ class ProductRepository {
         data: savedProduct,
       };
     } catch (error: any) {
-     throw new Error(`${error.message || "Failed to save product in database"}`)
+      throw new Error(
+        `${error.message || "Failed to save product in database"}`
+      );
     }
   }
-
-
 
   // ✅ Get by ID
   async getByID(id: string) {
     try {
-      return await this.productModel.findById(id).populate(["categoryID", "subCategoryID"]);
+      return await this.productModel
+        .findById(id)
+        .populate(["categoryID", "subCategoryID"]);
     } catch (error) {
       throw new Error(`Error fetching product by ID: ${error}`);
     }
@@ -120,112 +121,121 @@ class ProductRepository {
     }
   };
 
-async getAllProducts({
-  searchQuery,
-  filters,
-}: {
-  searchQuery?: string;
-  filters?: Partial<
-    Pick<IProductModel, "brand" | "categoryID" | "subCategoryID"> & {
-      minPrice: number;
-      maxPrice: number;
-    }
-  >;
-} = {}): Promise<any[]> {
-  try {
-    const query: any = {};
-
-    // --- Price Filter ---
-    if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
-      query.discountedPrice = {};
-      if (filters.minPrice !== undefined) {
-        query.discountedPrice.$gte = filters.minPrice;
+  async getAllProducts({
+    searchQuery,
+    filters,
+    skip = 0,
+    limit = 10,
+  }: {
+    searchQuery?: string;
+    filters?: Partial<
+      Pick<IProductModel, "brand" | "categoryID" | "subCategoryID"> & {
+        minPrice: number;
+        maxPrice: number;
       }
-      if (filters.maxPrice !== undefined) {
-        query.discountedPrice.$lte = filters.maxPrice;
-      }
-    }
+    >;
+    skip?: number;
+    limit?: number;
+  } = {}): Promise<{ products: any[]; total: number }> {
+    try {
+      const query: any = {};
 
-    // --- Brand Filter ---
-    if (filters?.brand) {
-      query.brand = { $regex: new RegExp(filters.brand, "i") };
-    }
-
-    // --- Category Filter ---
-    if (filters?.categoryID) {
-      query.categoryID = filters.categoryID;
-    }
-
-    // --- SubCategory Filter ---
-    if (filters?.subCategoryID) {
-      query.subCategoryID = filters.subCategoryID;
-    }
-
-    // --- Search Query ---
-    if (searchQuery?.trim()) {
-      const searchRegex = new RegExp(searchQuery, "i");
-
-      query.$or = [
-        { name: searchRegex },
-        { description: searchRegex },
-        { brand: searchRegex },
-      ];
-    }
-
-    // Fetch products with populated category and subcategory
-    const products = await Product.find(query)
-    .sort({ createdAt: -1 })
-      .populate<{
-        categoryID:{
-          _id:string;
-          name:string;
+      // --- Price Filter ---
+      if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+        query.discountedPrice = {};
+        if (filters.minPrice !== undefined) {
+          query.discountedPrice.$gte = filters.minPrice;
         }
-      }>("categoryID", "name") // Populate only 'name' field
-      .populate<{
-        subCategoryID:{
-          _id:string;
-          name:string;
-        };
-      }>("subCategoryID", "name")
-      .exec();
+        if (filters.maxPrice !== undefined) {
+          query.discountedPrice.$lte = filters.maxPrice;
+        }
+      }
 
-    // If searchQuery exists, also match against populated fields (category/subcategory name)
-    const filteredProducts = searchQuery?.trim()
-      ? products.filter((product) => {
-          const regex = new RegExp(searchQuery, "i");
-          return (
-            regex.test(product?.categoryID?.name ?? "") ||
-            regex.test(product?.subCategoryID?.name ?? "") ||
-            regex.test(product.name) ||
-            regex.test(product.description) ||
-            regex.test(product.brand)
-          );
-        })
-      : products;
+      // --- Brand Filter ---
+      if (filters?.brand) {
+        query.brand = { $regex: new RegExp(filters.brand, "i") };
+      }
 
-    // Format and return
-    return filteredProducts.map((product) => ({
-      _id: product._id.toString(),
-      name: product.name,
-      images: product.images ?? [],
-      discountedPrice: product.discountedPrice,
-      originalPrice: product.originalPrice,
-      brand: product.brand ?? "",
-      isFeatured: product.isFeatured,
-      description: product.description ?? "",
-      categoryID: product.categoryID ?? {},
-      subCategoryID: product.subCategoryID ?? {},
-      stock: product.stock ?? 0,
-      technicalSpecification: product.technicalSpecification ?? undefined,
-      specifications: product.specifications ?? undefined,
-      createdAt: product.createdAt,
-    }));
-  } catch (error) {
-    console.error("Failed to get products:", error);
-    throw new Error("Failed to get products");
+      // --- Category Filter ---
+      if (filters?.categoryID) {
+        query.categoryID = filters.categoryID;
+      }
+
+      // --- SubCategory Filter ---
+      if (filters?.subCategoryID) {
+        query.subCategoryID = filters.subCategoryID;
+      }
+
+      // --- Search Query ---
+      if (searchQuery?.trim()) {
+        const searchRegex = new RegExp(searchQuery, "i");
+        query.$or = [
+          { name: searchRegex },
+          { description: searchRegex },
+          { brand: searchRegex },
+        ];
+      }
+
+      console.log("Final MongoDB Query:", { filters, query, skip, limit });
+
+      // --- Count total products for pagination ---
+      const total = await Product.countDocuments(query);
+
+      // --- Fetch products with pagination ---
+      const products = await Product.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip) // ✅ apply skip
+        .limit(limit) // ✅ apply limit
+        .populate<{ categoryID: { _id: string; name: string } }>(
+          "categoryID",
+          "name"
+        )
+        .populate<{ subCategoryID: { _id: string; name: string } }>(
+          "subCategoryID",
+          "name"
+        )
+        .exec();
+
+      // --- Format response ---
+      const formattedProducts = products.map((product) => ({
+        _id: product._id.toString(),
+        name: product.name,
+        images: product.images ?? [],
+        discountedPrice: product.discountedPrice,
+        originalPrice: product.originalPrice,
+        brand: product.brand ?? "",
+        isFeatured: product.isFeatured,
+        description: product.description ?? "",
+        categoryID: product.categoryID ?? {},
+        subCategoryID: product.subCategoryID ?? {},
+        stock: product.stock ?? 0,
+        technicalSpecification: product.technicalSpecification ?? undefined,
+        specifications: product.specifications ?? undefined,
+        createdAt: product.createdAt,
+      }));
+
+      return { products: formattedProducts, total };
+    } catch (error) {
+      console.error("Failed to get products:", error);
+      throw new Error("Failed to get products");
+    }
   }
-}
 
+  async countProducts({
+    categoryID,
+  }: {
+    categoryID?: string;
+  }): Promise<number> {
+    try {
+      const query: any = {};
+      if (categoryID) {
+        query.categoryID = categoryID;
+      }
+      return await Product.countDocuments(query);
+    } catch (error) {
+      throw new Error(`Error counting products by category: ${error}`);
+    }
+  }
 
   // ✅ Delete product
   async delete(id: string) {

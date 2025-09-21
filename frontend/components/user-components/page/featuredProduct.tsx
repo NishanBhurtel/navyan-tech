@@ -15,7 +15,7 @@ export default function FeaturedProduct() {
   const heading = "Featured Products";
 
   const featuredProducts = products
-    ? products.filter((product) => product.isFeatured === true)
+    ? products.data.filter((product) => product.isFeatured === true)
     : [];
 
   if (isLoading) {
