@@ -8,12 +8,12 @@ import Link from "next/link";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import  useToast from "../../../lib/Toast";
+import { useAppToast } from "@/lib/tostify";
 
 export default function ProductInfo({ product }: { product: IProduct }) {
-  // const { showToast } = useToast();
-
   const [orderNumber, setOrderNumber] = useState(1);
+  const [token, setToken] = useState<string | null>(null);
+  const { toastSuccess, toastError } = useAppToast();
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -30,9 +30,9 @@ export default function ProductInfo({ product }: { product: IProduct }) {
     const result = addToWishlist(item);
 
     if (result.success) {
-      // showToast(result.message, "bg-primary");
+      toastSuccess(result.message);
     } else {
-      // showToast(result.message, "bg-destructive");
+      toastError(result.message);
     }
   };
 
@@ -40,7 +40,6 @@ export default function ProductInfo({ product }: { product: IProduct }) {
   const decrementOrder = () =>
     setOrderNumber((prev) => (prev > 1 ? prev - 1 : 1));
   const isAvailable = product.stock > 0;
-
 
   return (
     <div className="space-y-6">
@@ -69,12 +68,16 @@ export default function ProductInfo({ product }: { product: IProduct }) {
               Rs.{product.originalPrice?.toLocaleString()}
             </span>
           </div>
-          <Badge className={`bg-primary text-white
-            ${isAvailable
-            ? "bg-primary text-white"
-            : "bg-destructive text-white"}`}>
-              {isAvailable ? "In Stock": "Not in Stock"}
-            </Badge>
+          <Badge
+            className={`bg-primary text-white
+            ${
+              isAvailable
+                ? "bg-primary text-white"
+                : "bg-destructive text-white"
+            }`}
+          >
+            {isAvailable ? "In Stock" : "Not in Stock"}
+          </Badge>
         </div>
 
         {/* Quantity */}
@@ -107,14 +110,22 @@ export default function ProductInfo({ product }: { product: IProduct }) {
 
         {/* Actions */}
         <div className="flex space-x-4">
-          <Link
-            href={`/order?product=${product._id}&order=${orderNumber}`}
-            className="flex-1"
-          >
-            <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium py-3">
-              Order Now
-            </Button>
-          </Link>
+          {token ? (
+            <Link
+              href={`/order?product=${product._id}&order=${orderNumber}`}
+              className="flex-1"
+            >
+              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium py-3">
+                Order Now
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/login" className="flex-1">
+              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium py-3">
+                Order Now
+              </Button>
+            </Link>
+          )}
           <Button
             variant="outline"
             size="icon"

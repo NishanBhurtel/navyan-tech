@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Heart, Star } from "lucide-react";
+import { ChevronRight, Heart, Star } from "lucide-react";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import  useToast  from "../../../lib/Toast";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
+import { useAppToast } from "@/lib/tostify";
 
 type ProductGridProps = {
   products: any[];
 };
 
 export default function ProductGrid({ products }: ProductGridProps) {
-  // const { showToast } = useToast();
+  const { toastSuccess, toastError } = useAppToast();
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -28,9 +28,9 @@ export default function ProductGrid({ products }: ProductGridProps) {
     const result = addToWishlist(item);
 
     if (result.success) {
-      // showToast(result.message, "bg-primary");
+      toastSuccess(result.message);
     } else {
-      // showToast(result.message, "bg-destructive");
+      toastError(result.message);
     }
   };
 
@@ -45,28 +45,42 @@ export default function ProductGrid({ products }: ProductGridProps) {
             className="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
           >
             {/* Product Image */}
-            <div className="relative w-full h-40 overflow-hidden">
-              <img
-                src={product.images?.[0] ?? ""}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-              <span
-                className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-2 shadow-sm ${
-                  isAvailable
-                    ? "bg-green-600 text-white"
-                    : "bg-red-500 text-white"
-                }`}
-              >
-                {isAvailable ? "In Stock" : "Out of Stock"}
-              </span>
-            </div>
+            <Link href={`/product/${product._id}`} className="flex-1">
+              <div className="relative w-full h-40 overflow-hidden">
+                <img
+                  src={product.images?.[0] ?? ""}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+                <span
+                  className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
+                    isAvailable
+                      ? "bg-green-600 text-white"
+                      : "bg-red-500 text-white"
+                  }`}
+                >
+                  {isAvailable ? "In Stock" : "Out of Stock"}
+                </span>
+              </div>
+            </Link>
 
             {/* Content */}
             <CardContent className="p-3 space-y-2">
               {/* Category */}
-              <p className="text-xs font-medium text-muted-foreground">
-                {product.categoryID?.name}
+              <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
+                <Link
+                  className="hover:underline hover:text-blue-600"
+                  href={`/search?categoryID=${product.categoryID._id}`}
+                >
+                  {product.categoryID?.name}{" "}
+                </Link>
+                <ChevronRight className="w-3 h-3" />
+                <Link
+                  className="hover:underline hover:text-blue-600"
+                  href={`/search?categoryID=${product.subCategoryID._id}`}
+                >
+                  {product.subCategoryID?.name}{" "}
+                </Link>
               </p>
 
               {/* Name */}

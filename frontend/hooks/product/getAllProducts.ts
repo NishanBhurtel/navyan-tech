@@ -18,7 +18,7 @@ export function useAllProducts({
  filter
 }: IProductQueryParams) {
   return useQuery<IProduct[]>({
-    queryKey: ["products",search,filter], // 🔑 unique cache key
+    queryKey: ["getProductsByAdmin",search,filter], // 🔑 unique cache key
     queryFn: () => productApi.getAllProductsApi({search,filter}), // 💡 assumes this returns Promise<IProduct[]>
     staleTime: 1000 * 60 * 5, // ✅ optional: cache is fresh for 5 minutes
   });

@@ -32,7 +32,7 @@ export default function ConfirmDialog({
             Cancel
           </Button>
           <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={onConfirm}>
-            Yes, Remove
+            Proceed
           </Button>
         </div>
       </div>

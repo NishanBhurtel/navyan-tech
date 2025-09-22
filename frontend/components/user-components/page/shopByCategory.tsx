@@ -4,6 +4,8 @@ import { useAllProducts } from "@/hooks/product/getAllProducts";
 
 // Icons for categories
 import { Cpu, Monitor, Laptop, Gamepad2, Headphones } from "lucide-react";
+import ErrorState from "../layout/ErrorPage";
+import DataLoading from "../layout/LoadingPage";
 
 type CategoryProps = {
   category?: any[];
@@ -34,14 +36,12 @@ export default function ShopByCategory({ category }: CategoryProps) {
   const { data: respondedData, error, isLoading } = useAllProducts({});
 
   if (isLoading) {
-    return <p className="text-center py-10">Loading categories...</p>;
+    return <DataLoading />;
   }
 
   if (error) {
     return (
-      <p className="text-center py-10 text-red-500">
-        Failed to load categories.
-      </p>
+      <ErrorState />
     );
   }
 

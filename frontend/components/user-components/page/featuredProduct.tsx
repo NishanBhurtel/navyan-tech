@@ -6,10 +6,11 @@ import { Button } from "../ui/button";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import useToast from "../../../lib/Toast";
+import { useAppToast } from "@/lib/tostify";
+import ErrorState from "../layout/ErrorPage";
+import DataLoading from "../layout/LoadingPage";
 
 export default function FeaturedProduct() {
-  // const { showToast } = useToast();
   const { data: products, isLoading, isError } = useAllProducts({});
 
   const heading = "Featured Products";
@@ -19,12 +20,14 @@ export default function FeaturedProduct() {
     : [];
 
   if (isLoading) {
-    return <div className="p-12 text-center">Loading product...</div>;
+    return <DataLoading />;
   }
 
   if (isError || !products) {
-    return <div className="p-12 text-center">Product Not Found</div>;
+    return <ErrorState />
   }
+
+  const { toastSuccess, toastError } = useAppToast();
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -39,8 +42,8 @@ export default function FeaturedProduct() {
     };
 
     const result = addToWishlist(item);
-    // showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
-  };
+     result.success ? toastSuccess("Item added to wishlist") : toastError("Item failed to add in your wishlist");
+  }
 
   return (
     <section className="py-16 bg-muted/30">
@@ -79,7 +82,7 @@ export default function FeaturedProduct() {
                         className="w-full h-full object-cover"
                       />
                       <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
                           isAvailable
                             ? "bg-green-600 text-white"
                             : "bg-red-500 text-white"

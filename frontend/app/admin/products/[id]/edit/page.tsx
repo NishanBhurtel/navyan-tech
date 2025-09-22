@@ -25,6 +25,7 @@ import {
 import { useCategories } from "@/hooks/categories/getCategories";
 import { TUpdateProductSchema } from "@/lib/form-validation/product-validation";
 import { productApi } from "@/lib/api/product.api";
+import { useAppToast } from "@/lib/tostify";
 
 export default function ProductEditPage() {
   const params = useParams();
@@ -32,6 +33,7 @@ export default function ProductEditPage() {
   const { data: categories, isLoading } = useCategories();
   const productResponse = useProductByID(params.id as string);
   const productData = productResponse.data?.data;
+  const { toastSuccess, toastError } = useAppToast();
 
   const [formData, setFormData] = useState({
     _id: "",
@@ -43,10 +45,12 @@ export default function ProductEditPage() {
     brand: "",
     stock: 0,
     description: "",
-    specifications: [{
-      key:"",
-      value: "",
-    }],
+    specifications: [
+      {
+        key: "",
+        value: "",
+      },
+    ],
     images: [""],
     technicalSpecification: {
       performance: {
@@ -70,7 +74,6 @@ export default function ProductEditPage() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  
 
   // Populate form when productData and categories load
   useEffect(() => {
@@ -78,7 +81,7 @@ export default function ProductEditPage() {
       const categoryObj = categories.find(
         (c: any) => c._id === productData.categoryID?._id
       );
-              console.log(productData?.categoryID);
+      console.log(productData?.categoryID);
       console.log(productData?.subCategoryID);
 
       setSelectedCategory(categoryObj || null);
@@ -117,7 +120,6 @@ export default function ProductEditPage() {
       });
     }
   }, [productData, categories]);
-  
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -205,11 +207,10 @@ export default function ProductEditPage() {
       );
 
       console.log("Product updated successfully:", updatedProduct);
-      alert("Product updated successfully!");
-      // router.push(`/products/${params.id}`);
+      toastSuccess("Product updated successfully!");
     } catch (error: any) {
       console.error("Error updating product:", error);
-      alert(
+      toastError(
         error?.response?.data?.message ||
           "Something went wrong while updating the product."
       );
@@ -401,16 +402,21 @@ export default function ProductEditPage() {
               <CardTitle>Specifications</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {(formData.specifications).map((specification) => (
+              {formData.specifications.map((specification) => (
                 <div key={specification.key} className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="capitalize my-2">{specification.key}</Label>
+                    <Label className="capitalize my-2">
+                      {specification.key}
+                    </Label>
                   </div>
                   <div>
                     <Input
                       value={String(specification.value)}
                       onChange={(e) =>
-                        handleSpecificationChange(specification.key, e.target.value)
+                        handleSpecificationChange(
+                          specification.key,
+                          e.target.value
+                        )
                       }
                       placeholder={`Enter ${specification.key}`}
                     />

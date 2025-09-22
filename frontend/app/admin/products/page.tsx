@@ -16,11 +16,21 @@ import { IProduct } from "@/lib/utils/types/product.type";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import ConfirmDialog from "@/lib/confirmModel";
+import { useProductStatus } from "@/hooks/product/setProductStatus";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ProductsPage() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
+  const [itemToActive, setItemToActive] = useState<{
+    id: string;
+    isActive: boolean;
+  } | null>(null);
+  const { invalidateQueries } = useQueryClient();
+
+  const queryClient = useQueryClient();
+  const { mutate: setProductStatus } = useProductStatus();
 
   const handleRemoveClick = (id: string) => {
     setItemToRemove(id); // open modal
@@ -30,6 +40,23 @@ export default function ProductsPage() {
     if (itemToRemove) {
       deleteProduct(itemToRemove);
       setItemToRemove(null); // close modal after deletion
+    }
+  };
+  
+
+  const handleActiveClick = (id: string, isActive: boolean) => {
+    console.log(id, isActive);
+    setItemToActive({ id, isActive }); // open modal
+  };
+
+  const confirmActive = () => {
+    if (itemToActive) {
+      setProductStatus(itemToActive, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["getProductsByAdmin"] });
+          setItemToActive(null); // Close modal
+        },
+      });
     }
   };
 
@@ -117,6 +144,7 @@ export default function ProductsPage() {
             <ProductTable
               products={filteredProducts}
               onDelete={handleRemoveClick}
+              onSetActive={handleActiveClick}
             />
           </CardContent>
         </div>
@@ -127,6 +155,13 @@ export default function ProductsPage() {
         message="Are you sure you want to remove this product?"
         onConfirm={confirmRemove}
         onCancel={() => setItemToRemove(null)}
+      />
+      <ConfirmDialog
+        open={itemToActive !== null}
+        title="Change Product Status"
+        message="Are you sure you want to change the current status of this product?"
+        onConfirm={confirmActive}
+        onCancel={() => setItemToActive(null)}
       />
     </div>
   );

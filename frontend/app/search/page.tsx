@@ -4,12 +4,17 @@ import ProductGrid from "@/components/user-components/category/productGrid";
 import SidebarFilter from "@/components/user-components/category/sidebarFilter";
 import SortByFeatured from "@/components/user-components/category/sortByFeatured";
 import Annoucement from "@/components/user-components/layout/Annoucement";
+import ErrorState from "@/components/user-components/layout/ErrorPage";
 import Footer from "@/components/user-components/layout/Footer";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 import Navbar from "@/components/user-components/layout/Navbar";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function CategoryPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const searchParams = useSearchParams();
 
   const search = searchParams.get("search");
@@ -34,10 +39,8 @@ export default function CategoryPage() {
     },
   });
 
-  if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
-  if (isError || !products)
-    return <div className="p-12 text-center">Product Not Found</div>;
+  if (isLoading) return <DataLoading />;
+  if (isError || !products) return <ErrorState />;
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,9 +51,7 @@ export default function CategoryPage() {
       <Navbar />
 
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-        <div
-          className="grid gap-8 grid-cols-1 md:grid-cols-4"
-        >
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-4">
           {/* Sidebar Filters */}
           <div className="md:col-span-4 lg:col-span-1">
             <SidebarFilter products={products} />
@@ -61,12 +62,15 @@ export default function CategoryPage() {
             <div className="space-y-6">
               {/* Sort by featured */}
               <SortByFeatured products={products} />
-
               {/* Products Grid */}
               <ProductGrid products={products} />
-
               {/* Pagination */}
-              <Pagination />
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                maxLimit={5}
+              />{" "}
             </div>
           </div>
         </div>

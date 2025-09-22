@@ -42,11 +42,6 @@ const sentEmailToSpecificUserMutation: AppRouteMutationImplementation<
   try {
     const { email, subject, text, html } = req.body;
     await emailService.sendMailToSpecificUser({
-      // to: email,
-      // subject,
-      // text: text,
-      // // html: `<p>${text}  </p>`,
-      // html: EmailTemplateForSpecificUser(),
 
       to: email,
       subject,

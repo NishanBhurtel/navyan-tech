@@ -3,7 +3,6 @@ import { initServer } from "@ts-rest/express";
 import { emailContract } from "../../contract/email/email.contract";
 
 import { emailMutationHandler } from "./email.mutation";
-import e from "cors";
 
 const s = initServer();
 

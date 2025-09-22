@@ -24,6 +24,7 @@ import { orderApi } from "@/lib/api/order.api";
 // import useToast from "../../../lib/Toast";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
+import { useAppToast } from "@/lib/tostify";
 
 interface OrderFormProps {
   product: IProduct;
@@ -59,8 +60,7 @@ export default function OrderForm({
   });
 
   const router = useRouter();
-  // const { showToast } = useToast();
-
+const { toastSuccess, toastError} = useAppToast();
   const mutation = useMutation({
     mutationFn: (data: TCreateOrderFormSchema) =>
       orderApi.createOrderApi({
@@ -85,19 +85,14 @@ export default function OrderForm({
         totalPrice: data.totalPrice,
       }),
     onSuccess: () => {
-      // showToast("Order submitted successfully", "bg-primary");
-
-      // Wait 1-2 seconds before redirect
+      toastSuccess("Order placed successfully!");
       setTimeout(() => {
         router.push("/order/success");
       }, 1500);
     },
 
     onError: (error: any) => {
-      // showToast(
-      //   "Failed to submit order! " + (error?.message || "Unknown error"),
-      //   "bg-destructive"
-      // );
+     toastError("Failed to placed your order!")
     },
   });
 

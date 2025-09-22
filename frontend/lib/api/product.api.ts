@@ -34,9 +34,7 @@ const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
 };
 
 // GET /products/:id - Get product details by ID
-const getProductByIdApi = async (
-  productId: TGetProductByIDSchema["_id"]
-) => {
+const getProductByIdApi = async (productId: TGetProductByIDSchema["_id"]) => {
   const response = await apiClient.get(`/products/details/${productId}`);
   return response.data;
 };
@@ -50,10 +48,18 @@ export const deleteProductApi = async (productId: string) => {
   return response.data;
 };
 
+export const updateProductStatusApi = async (productId: string, isActive: boolean) => {
+  const response = await apiClient.put(`/setProduct/${productId}`, {
+    isActive
+  });
+  return response.data;
+};
+
 export const productApi = {
   createProductApi,
   updateProductApi,
   getAllProductsApi,
   getProductByIdApi,
+  updateProductStatusApi,
   deleteProductApi,
 };

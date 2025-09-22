@@ -4,10 +4,10 @@ import z from "zod";
 import { errorSchema, successSchema } from "../common.schema";
 import {
   createProductSchema,
-  removeProductSchema,
   updateProductDetailsSchema,
   getProductDetailsByID,
   getAllProductSchema,
+  updateProductStatus,
 } from "./product.schema";
 
 const c = initContract();
@@ -66,6 +66,22 @@ export const productContract = c.router({
     }),
     body: updateProductDetailsSchema,
     summary: "Update product details details",
+    responses: {
+      200: successSchema,
+      400: errorSchema,
+      401: errorSchema,
+      404: errorSchema,
+      500: errorSchema,
+    },
+  },
+    updateProductStatus: {
+    method: "PUT",
+    path: "/setProduct/:productID",
+    pathParams: z.object({
+      productID: z.string().min(1, "Product ID is required"),
+    }),
+    body: updateProductStatus,
+    summary: "Update product status",
     responses: {
       200: successSchema,
       400: errorSchema,

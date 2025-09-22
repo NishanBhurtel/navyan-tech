@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
+import DataUnavailable from "../layout/LoadingPage";
 
 export default function Hero() {
   const { data: products, isError, isLoading } = useAllProducts({});
@@ -16,7 +17,7 @@ export default function Hero() {
   const displayCount = customerCount > 100 ? customerCount : 120;
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading product details...</div>;
+    return <DataUnavailable item="Categories" />;
   if (isError || !products)
     return <div className="p-12 text-center">Product details Not Found</div>;
 

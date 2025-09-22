@@ -18,6 +18,7 @@ class ProductRepository {
       | "stock"
       | "brand"
       | "isFeatured"
+      | "isActive"
       | "description"
       | "images"
       | "technicalSpecification"
@@ -36,6 +37,7 @@ class ProductRepository {
         description: productData.description || "",
         brand: productData.brand || "",
         isFeatured: productData.isFeatured || false,
+        isActive: productData.isActive || false,
         images: productData.images || [],
         technicalSpecification: {
           performance: {
@@ -89,16 +91,18 @@ class ProductRepository {
         data: savedProduct,
       };
     } catch (error: any) {
-     throw new Error(`${error.message || "Failed to save product in database"}`)
+      throw new Error(
+        `${error.message || "Failed to save product in database"}`
+      );
     }
   }
-
-
 
   // ✅ Get by ID
   async getByID(id: string) {
     try {
-      return await this.productModel.findById(id).populate(["categoryID", "subCategoryID"]);
+      return await this.productModel
+        .findById(id)
+        .populate(["categoryID", "subCategoryID"]);
     } catch (error) {
       throw new Error(`Error fetching product by ID: ${error}`);
     }
@@ -120,112 +124,128 @@ class ProductRepository {
     }
   };
 
-async getAllProducts({
-  searchQuery,
-  filters,
-}: {
-  searchQuery?: string;
-  filters?: Partial<
-    Pick<IProductModel, "brand" | "categoryID" | "subCategoryID"> & {
-      minPrice: number;
-      maxPrice: number;
-    }
-  >;
-} = {}): Promise<any[]> {
-  try {
-    const query: any = {};
+  updateProductStatus = async (productId: string, isActive: boolean) => {
+    try {
+      const updatedProductStatus = await this.productModel.findByIdAndUpdate(
+        productId,
+        { $set: { isActive } }, // only update this field
+        { new: true, runValidators: true } // return updated doc & validate
+      );
 
-    // --- Price Filter ---
-    if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
-      query.discountedPrice = {};
-      if (filters.minPrice !== undefined) {
-        query.discountedPrice.$gte = filters.minPrice;
+      return updatedProductStatus;
+    } catch (error) {
+      throw new Error(
+        "Error updating product status: " + (error as Error).message
+      );
+    }
+  };
+
+  async getAllProducts({
+    searchQuery,
+    filters,
+  }: {
+    searchQuery?: string;
+    filters?: Partial<
+      Pick<IProductModel, "brand" | "categoryID" | "subCategoryID"> & {
+        minPrice: number;
+        maxPrice: number;
       }
-      if (filters.maxPrice !== undefined) {
-        query.discountedPrice.$lte = filters.maxPrice;
-      }
-    }
+    >;
+  } = {}): Promise<any[]> {
+    try {
+      const query: any = {};
 
-    // --- Brand Filter ---
-    if (filters?.brand) {
-      query.brand = { $regex: new RegExp(filters.brand, "i") };
-    }
-
-    // --- Category Filter ---
-    if (filters?.categoryID) {
-      query.categoryID = filters.categoryID;
-    }
-
-    // --- SubCategory Filter ---
-    if (filters?.subCategoryID) {
-      query.subCategoryID = filters.subCategoryID;
-    }
-
-    // --- Search Query ---
-    if (searchQuery?.trim()) {
-      const searchRegex = new RegExp(searchQuery, "i");
-
-      query.$or = [
-        { name: searchRegex },
-        { description: searchRegex },
-        { brand: searchRegex },
-      ];
-    }
-
-    // Fetch products with populated category and subcategory
-    const products = await Product.find(query)
-    .sort({ createdAt: -1 })
-      .populate<{
-        categoryID:{
-          _id:string;
-          name:string;
+      // --- Price Filter ---
+      if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+        query.discountedPrice = {};
+        if (filters.minPrice !== undefined) {
+          query.discountedPrice.$gte = filters.minPrice;
         }
-      }>("categoryID", "name") // Populate only 'name' field
-      .populate<{
-        subCategoryID:{
-          _id:string;
-          name:string;
-        };
-      }>("subCategoryID", "name")
-      .exec();
+        if (filters.maxPrice !== undefined) {
+          query.discountedPrice.$lte = filters.maxPrice;
+        }
+      }
 
-    // If searchQuery exists, also match against populated fields (category/subcategory name)
-    const filteredProducts = searchQuery?.trim()
-      ? products.filter((product) => {
-          const regex = new RegExp(searchQuery, "i");
-          return (
-            regex.test(product?.categoryID?.name ?? "") ||
-            regex.test(product?.subCategoryID?.name ?? "") ||
-            regex.test(product.name) ||
-            regex.test(product.description) ||
-            regex.test(product.brand)
-          );
-        })
-      : products;
+      // --- Brand Filter ---
+      if (filters?.brand) {
+        query.brand = { $regex: new RegExp(filters.brand, "i") };
+      }
 
-    // Format and return
-    return filteredProducts.map((product) => ({
-      _id: product._id.toString(),
-      name: product.name,
-      images: product.images ?? [],
-      discountedPrice: product.discountedPrice,
-      originalPrice: product.originalPrice,
-      brand: product.brand ?? "",
-      isFeatured: product.isFeatured,
-      description: product.description ?? "",
-      categoryID: product.categoryID ?? {},
-      subCategoryID: product.subCategoryID ?? {},
-      stock: product.stock ?? 0,
-      technicalSpecification: product.technicalSpecification ?? undefined,
-      specifications: product.specifications ?? undefined,
-      createdAt: product.createdAt,
-    }));
-  } catch (error) {
-    console.error("Failed to get products:", error);
-    throw new Error("Failed to get products");
+      // --- Category Filter ---
+      if (filters?.categoryID) {
+        query.categoryID = filters.categoryID;
+      }
+
+      // --- SubCategory Filter ---
+      if (filters?.subCategoryID) {
+        query.subCategoryID = filters.subCategoryID;
+      }
+
+      // --- Search Query ---
+      if (searchQuery?.trim()) {
+        const searchRegex = new RegExp(searchQuery, "i");
+
+        query.$or = [
+          { name: searchRegex },
+          { description: searchRegex },
+          { brand: searchRegex },
+        ];
+      }
+
+      // Fetch products with populated category and subcategory
+      const products = await Product.find(query)
+        .sort({ createdAt: -1 })
+        .populate<{
+          categoryID: {
+            _id: string;
+            name: string;
+          };
+        }>("categoryID", "name") // Populate only 'name' field
+        .populate<{
+          subCategoryID: {
+            _id: string;
+            name: string;
+          };
+        }>("subCategoryID", "name")
+        .exec();
+
+      // If searchQuery exists, also match against populated fields (category/subcategory name)
+      const filteredProducts = searchQuery?.trim()
+        ? products.filter((product) => {
+            const regex = new RegExp(searchQuery, "i");
+            return (
+              regex.test(product?.categoryID?.name ?? "") ||
+              regex.test(product?.subCategoryID?.name ?? "") ||
+              regex.test(product.name) ||
+              regex.test(product.description) ||
+              regex.test(product.brand)
+            );
+          })
+        : products;
+
+      // Format and return
+      return filteredProducts.map((product) => ({
+        _id: product._id.toString(),
+        name: product.name,
+        images: product.images ?? [],
+        discountedPrice: product.discountedPrice,
+        originalPrice: product.originalPrice,
+        brand: product.brand ?? "",
+        isFeatured: product.isFeatured,
+        isActive: product.isActive,
+        description: product.description ?? "",
+        categoryID: product.categoryID ?? {},
+        subCategoryID: product.subCategoryID ?? {},
+        stock: product.stock ?? 0,
+        technicalSpecification: product.technicalSpecification ?? undefined,
+        specifications: product.specifications ?? undefined,
+        createdAt: product.createdAt,
+      }));
+    } catch (error) {
+      console.error("Failed to get products:", error);
+      throw new Error("Failed to get products");
+    }
   }
-}
-
 
   // ✅ Delete product
   async delete(id: string) {

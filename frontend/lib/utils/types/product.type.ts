@@ -8,6 +8,7 @@ export interface IProduct {
   originalPrice: number;
   brand: string;
   isFeatured: boolean;
+  isActive: boolean;
   description: string;
   categoryID: {
     _id: string;

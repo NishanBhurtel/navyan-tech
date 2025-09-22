@@ -19,13 +19,14 @@ import {
   removeFromWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import Link from "next/link";
-// import  useToast from "../../../lib/Toast";
 import ConfirmDialog from "../../../lib/confirmModel";
+import { useAppToast } from "@/lib/tostify";
 
 export default function MyWishList() {
-  // const { showToast } = useToast();
+  const [token, setToken] = useState<string | null>(null);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [itemToRemove, setItemToRemove] = useState<number | null>(null);
+  const { toastSuccess, toastError } = useAppToast();
 
   useEffect(() => {
     setWishlistItems(getWishlist());
@@ -40,7 +41,7 @@ export default function MyWishList() {
       removeFromWishlist(itemToRemove);
       const updated = getWishlist().slice().reverse();
       setWishlistItems(updated);
-      // showToast("Product removed from wishlist", "bg-primary");
+      toastSuccess("Product removed from wishlist");
       setItemToRemove(null); // close modal
     }
   };
@@ -214,14 +215,20 @@ export default function MyWishList() {
                             disabled={!item.inStock}
                           >
                             <ShoppingBag className="w-4 h-4 mr-2" />
-                            <Link
-                              href={`/order?product=${item.id}&order=${
-                                quantities[item.id] || 1
-                              }`}
-                              className="flex-1"
-                            >
-                              Order Now
-                            </Link>
+                            {token ? (
+                              <Link
+                                href={`/order?product=${item.id}&order=${
+                                  quantities[item.id] || 1
+                                }`}
+                                className="flex-1"
+                              >
+                                Order Now
+                              </Link>
+                            ) : (
+                              <Link href="/login" className="flex-1">
+                                Order Now
+                              </Link>
+                            )}
                           </Button>
                         </div>
                       </div>

@@ -31,6 +31,8 @@ import {
 import { useEffect, useState } from "react";
 import { categoriesApi } from "@/lib/api/category";
 import { useUploadImages } from "@/hooks/images/imageUpload";
+import { useAppToast } from "@/lib/tostify";
+import { useCategories } from "@/hooks/categories/getCategories";
 
 interface Subcategory {
   _id: string;
@@ -45,13 +47,13 @@ interface Category {
 
 export default function AddProductPage() {
   const router = useRouter();
-  // const { showToast } = useToast();
   const { uploadImages } = useUploadImages();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const { toastSuccess, toastError } = useAppToast();
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -59,7 +61,7 @@ export default function AddProductPage() {
         const data = await categoriesApi.getAll();
         setCategories(data);
       } catch (err: any) {
-        // showToast(err.message || "Failed to load categories", "bg-destructive");
+        toastError(err.message || "Failed to load categories");
       }
     };
     fetchCategories();
@@ -78,8 +80,8 @@ export default function AddProductPage() {
       technicalSpecification: {
         performance: {},
         memoryAndStorage: {},
-      }
-    }
+      },
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -104,22 +106,19 @@ export default function AddProductPage() {
       productApi.createProductApi(data),
     onSuccess: () => {
       setFiles([]);
-      // showToast("Product added successfully", "bg-primary");
+      toastSuccess("Product added successfully");
       router.push("/admin/products");
       setIsUploading(false);
     },
     onError: (err: any) => {
-      // showToast(
-      //   "Failed to add product! " + (err?.message || "Unknown error"),
-      //   "bg-destructive"
-      // );
+      toastError("Product failed to add!");
       setIsUploading(false);
     },
   });
 
   const onSubmit = async (data: TCreateProductSchema) => {
     if (files.length === 0) {
-      // showToast("Please upload at least one image", "bg-destructive");
+      toastError("Please upload at least one image");
       return;
     }
 
@@ -134,7 +133,7 @@ export default function AddProductPage() {
     } catch (err) {
       setIsUploading(false);
       console.error(err);
-      // showToast("Image upload failed", "bg-destructive");
+      toastError("Image upload failed");
     }
   };
 
@@ -239,268 +238,268 @@ export default function AddProductPage() {
           {["Computer", "Computers", "Laptop", "Laptops"].includes(
             categories.find((c) => c._id === selectedCategoryID)?.name || ""
           ) && (
-              <Card>
-                <CardHeader className="pt-4">
-                  <CardTitle>Technical Specification</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Performance */}
-                  <div>
-                    <h4 className="font-semibold mb-2">Performance</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Series *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.performance.series"
-                          )}
-                          placeholder="Series"
-                        />
-                        {errors.technicalSpecification?.performance?.series && (
-                          <p className="text-red-500 text-sm">
-                            {
-                              errors.technicalSpecification.performance.series
-                                .message
-                            }
-                          </p>
+            <Card>
+              <CardHeader className="pt-4">
+                <CardTitle>Technical Specification</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Performance */}
+                <div>
+                  <h4 className="font-semibold mb-2">Performance</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Series *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.series"
                         )}
-                      </div>
-                      <div>
-                        <Label>CPU *</Label>
-                        <Input
-                          className="my-2"
-                          {...register("technicalSpecification.performance.cpu")}
-                          placeholder="CPU"
-                        />
-                        {errors.technicalSpecification?.performance?.cpu && (
-                          <p className="text-red-500 text-sm">
-                            {
-                              errors.technicalSpecification.performance.cpu
-                                .message
-                            }
-                          </p>
+                        placeholder="Series"
+                      />
+                      {errors.technicalSpecification?.performance?.series && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.series
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>CPU *</Label>
+                      <Input
+                        className="my-2"
+                        {...register("technicalSpecification.performance.cpu")}
+                        placeholder="CPU"
+                      />
+                      {errors.technicalSpecification?.performance?.cpu && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.cpu
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Graphics *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.graphics"
                         )}
-                      </div>
-                      <div>
-                        <Label>Graphics *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.performance.graphics"
-                          )}
-                          placeholder="Graphics"
-                        />
-                        {errors.technicalSpecification?.performance?.graphics && (
-                          <p className="text-red-500 text-sm">
-                            {
-                              errors.technicalSpecification.performance.graphics
-                                .message
-                            }
-                          </p>
+                        placeholder="Graphics"
+                      />
+                      {errors.technicalSpecification?.performance?.graphics && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.graphics
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Display *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.display"
                         )}
-                      </div>
-                      <div>
-                        <Label>Display *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.performance.display"
-                          )}
-                          placeholder="Display"
-                        />
-                        {errors.technicalSpecification?.performance?.display && (
-                          <p className="text-red-500 text-sm">
-                            {
-                              errors.technicalSpecification.performance.display
-                                .message
-                            }
-                          </p>
+                        placeholder="Display"
+                      />
+                      {errors.technicalSpecification?.performance?.display && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance.display
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Operating System *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.performance.operatingSystem"
                         )}
-                      </div>
-                      <div>
-                        <Label>Operating System *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.performance.operatingSystem"
-                          )}
-                          placeholder="Operating System"
-                        />
-                        {errors.technicalSpecification?.performance
-                          ?.operatingSystem && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.performance
-                                  .operatingSystem.message
-                              }
-                            </p>
-                          )}
-                      </div>
+                        placeholder="Operating System"
+                      />
+                      {errors.technicalSpecification?.performance
+                        ?.operatingSystem && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.performance
+                              .operatingSystem.message
+                          }
+                        </p>
+                      )}
                     </div>
                   </div>
+                </div>
 
-                  {/* Memory & Storage */}
-                  <div>
-                    <h4 className="font-semibold mb-2">Memory & Storage</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Main Memory *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.mainMemory"
-                          )}
-                          placeholder="Main Memory"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.mainMemory && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .mainMemory.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Storage *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.storage"
-                          )}
-                          placeholder="Storage"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.storage && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .storage.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Connectivity *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.connectivity"
-                          )}
-                          placeholder="Connectivity"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.connectivity && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .connectivity.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Camera *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.camera"
-                          )}
-                          placeholder="Camera"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.camera && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .camera.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Audio *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.audio"
-                          )}
-                          placeholder="Audio"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.audio && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage.audio
-                                  .message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Battery *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.battery"
-                          )}
-                          placeholder="Battery"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.battery && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .battery.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Weight *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.weight"
-                          )}
-                          placeholder="Weight"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.weight && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .weight.message
-                              }
-                            </p>
-                          )}
-                      </div>
-                      <div>
-                        <Label>Warranty *</Label>
-                        <Input
-                          className="my-2"
-                          {...register(
-                            "technicalSpecification.memoryAndStorage.warranty"
-                          )}
-                          placeholder="Warranty"
-                        />
-                        {errors.technicalSpecification?.memoryAndStorage
-                          ?.warranty && (
-                            <p className="text-red-500 text-sm">
-                              {
-                                errors.technicalSpecification.memoryAndStorage
-                                  .warranty.message
-                              }
-                            </p>
-                          )}
-                      </div>
+                {/* Memory & Storage */}
+                <div>
+                  <h4 className="font-semibold mb-2">Memory & Storage</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Main Memory *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.mainMemory"
+                        )}
+                        placeholder="Main Memory"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.mainMemory && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .mainMemory.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Storage *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.storage"
+                        )}
+                        placeholder="Storage"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.storage && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .storage.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Connectivity *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.connectivity"
+                        )}
+                        placeholder="Connectivity"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.connectivity && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .connectivity.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Camera *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.camera"
+                        )}
+                        placeholder="Camera"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.camera && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .camera.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Audio *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.audio"
+                        )}
+                        placeholder="Audio"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.audio && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage.audio
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Battery *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.battery"
+                        )}
+                        placeholder="Battery"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.battery && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .battery.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Weight *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.weight"
+                        )}
+                        placeholder="Weight"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.weight && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .weight.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Warranty *</Label>
+                      <Input
+                        className="my-2"
+                        {...register(
+                          "technicalSpecification.memoryAndStorage.warranty"
+                        )}
+                        placeholder="Warranty"
+                      />
+                      {errors.technicalSpecification?.memoryAndStorage
+                        ?.warranty && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            errors.technicalSpecification.memoryAndStorage
+                              .warranty.message
+                          }
+                        </p>
+                      )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Specifications */}
           <Card>
@@ -614,6 +613,14 @@ export default function AddProductPage() {
                   type="checkbox"
                   className="w-3"
                   {...register("isFeatured")}
+                />
+              </div>
+              <div className="flex gap-2 items-center">
+                <Label>Set product status active</Label>
+                <Input
+                  type="checkbox"
+                  className="w-3"
+                  {...register("isActive")}
                 />
               </div>
             </CardContent>

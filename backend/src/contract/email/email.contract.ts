@@ -19,7 +19,7 @@ export const emailContract = c.router({
   },
   sendEmailToSpecificUser: {
     method: "POST",
-    path: "/email/sent",
+    path: "/api/emailToOrderedUser",
     summary: "sent email to specific user",
     body: emailSchemaToSpecificUser,
     responses: {

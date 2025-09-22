@@ -1,6 +1,8 @@
 "use client"
 import Annoucement from "@/components/user-components/layout/Annoucement";
+import ErrorState from "@/components/user-components/layout/ErrorPage";
 import Footer from "@/components/user-components/layout/Footer";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 import Navbar from "@/components/user-components/layout/Navbar";
 import FeaturedProduct from "@/components/user-components/page/featuredProduct";
 import GamingLaptop from "@/components/user-components/page/gamingLaptop";
@@ -15,13 +17,12 @@ export default function HomePage() {
   const {data: categories, isError, isLoading } = useCategories();
 
     if (isLoading)
-    return <div className="p-12 text-center">Loading categories...</div>;
+    return <DataLoading  />;
     if (isError || !categories)
-    return <div className="p-12 text-center">Categories Not Found</div>;
+    return <ErrorState />
 
   return (
     <div className="min-h-screen bg-background">
-  
       <Annoucement />
       <Navbar />
       <Hero />

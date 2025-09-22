@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { boolean } from "zod";
 
 export interface IProductModel extends Document {
   _id: mongoose.Schema.Types.ObjectId;
@@ -9,6 +10,7 @@ export interface IProductModel extends Document {
   description: string;
   brand: string;
   isFeatured: boolean;
+  isActive: boolean;
   stock: number;
   images: string[];
   specifications: {
@@ -64,6 +66,7 @@ const ProductSchema: Schema = new Schema(
     stock: {
       type: Number,
     },
+
     images: {
       type: [String],
       required: true,
@@ -72,6 +75,10 @@ const ProductSchema: Schema = new Schema(
       type: String,
     },
     isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    isActive:{
       type: Boolean,
       default: false,
     },

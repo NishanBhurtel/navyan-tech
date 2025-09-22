@@ -20,6 +20,8 @@ import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import ErrorState from "./ErrorPage";
+import DataLoading from "./LoadingPage";
 
 interface FormValues {
   search: string;
@@ -52,8 +54,10 @@ const Navbar = () => {
     setWishlistItems(items.slice().reverse());
   }, []);
 
-  if (isLoading) return <p>Loading categories...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) 
+    return <DataLoading  />;
+  if (error) 
+    return <ErrorState />
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">

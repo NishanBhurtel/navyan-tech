@@ -6,11 +6,11 @@ import { Heart, ChevronRight } from "lucide-react";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-
-// import useToast from "../../../lib/Toast";
+import DataUnavailable from "../layout/LoadingPage";
+import ErrorState from "../layout/ErrorPage";
+import { useAppToast } from "@/lib/tostify";
 
 export default function GamingLaptop() {
-  // const { showToast } = useToast();
   const { data: products, isLoading, isError } = useAllProducts({});
   const heading = "Gaming Laptops";
 
@@ -20,12 +20,14 @@ export default function GamingLaptop() {
       )
     : [];
 
-  const categoryID = gamingLaptops?.[0]?.categoryID?._id;
+  const subCategoryID = gamingLaptops?.[0]?.subCategoryID?._id;
+    const { toastSuccess, toastError } = useAppToast();
+  
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
+    return <DataUnavailable />;
   if (isError || !products)
-    return <div className="p-12 text-center">Product Not Found</div>;
+    return <ErrorState />
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -40,7 +42,7 @@ export default function GamingLaptop() {
     };
 
     const result = addToWishlist(item);
-    // showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
+     result.success ? toastSuccess("Item added to wishlist") : toastError("Item failed to add in your wishlist");
   };
 
   return (
@@ -51,7 +53,7 @@ export default function GamingLaptop() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link href={subCategoryID ? `/search?subCategoryID=${subCategoryID}` : "#"}>
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -87,7 +89,7 @@ export default function GamingLaptop() {
                         className="w-full h-full object-cover"
                       />
                          <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
                           isAvailable
                             ? "bg-green-600 text-white"
                             : "bg-red-500 text-white"
