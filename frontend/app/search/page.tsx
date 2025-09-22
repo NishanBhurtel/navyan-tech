@@ -38,8 +38,6 @@ export default function CategoryPage() {
 
   const products = data?.data || [];
 
-  console.log("Products fetched:", products);
-
   if (isLoading)
     return <div className="p-12 text-center">Loading product...</div>;
 

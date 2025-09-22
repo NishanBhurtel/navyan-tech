@@ -44,37 +44,25 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("🔍 authorize() called with:", {
-          email: credentials?.email,
-          password: credentials?.password ? "***" : "",
-        });
 
         if (!credentials?.email || !credentials?.password) {
-          console.log("❌ Missing email or password");
           return null;
         }
 
         try {
-          console.log("📡 Calling authApi.loginApi...");
           const data = await authApi.loginApi({
             email: credentials?.email || "",
             password: credentials?.password || "",
           });
 
-          console.log("📥 API Response:", {
-            status: data.status,
-            data: data,
-          });
 
           const user = data;
 
           if (!user) {
-            console.log("❌ No user data in response");
             return null;
           }
 
           if (!user.token) {
-            console.log("❌ No token in user response");
             return null;
           }
 

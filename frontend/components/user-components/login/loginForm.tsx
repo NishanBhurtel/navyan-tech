@@ -55,7 +55,6 @@ export default function LoginForm() {
       password: data.password,
       redirect: false, // stay on same page
     });
-    console.log("res from login page : ", res);
     if (res?.ok) {
       router.push("/");
       // showToast("Login successful!", "bg-primary");

@@ -44,7 +44,7 @@ const Navbar = () => {
     fetchSession();
   }, []);
 
-  console.log("Session in Navbar:", session);
+
 
   const { register, watch } = useForm<FormValues>({
     defaultValues: { search: "" },
@@ -79,7 +79,6 @@ const Navbar = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   const authUser = session?.user;
-  console.log("auth :", session);
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">

@@ -44,7 +44,7 @@ export default function ProductEditPage() {
     stock: 0,
     description: "",
     specifications: [{
-      key:"",
+      key: "",
       value: "",
     }],
     images: [""],
@@ -70,7 +70,7 @@ export default function ProductEditPage() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  
+
 
   // Populate form when productData and categories load
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function ProductEditPage() {
       const categoryObj = categories.find(
         (c: any) => c._id === productData.categoryID?._id
       );
-              console.log(productData?.categoryID);
+      console.log(productData?.categoryID);
       console.log(productData?.subCategoryID);
 
       setSelectedCategory(categoryObj || null);
@@ -117,7 +117,7 @@ export default function ProductEditPage() {
       });
     }
   }, [productData, categories]);
-  
+
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -211,12 +211,10 @@ export default function ProductEditPage() {
       console.error("Error updating product:", error);
       alert(
         error?.response?.data?.message ||
-          "Something went wrong while updating the product."
+        "Something went wrong while updating the product."
       );
     }
   };
-
-  console.log(formData);
 
   if (!productData || isLoading) return <div>Loading...</div>;
 

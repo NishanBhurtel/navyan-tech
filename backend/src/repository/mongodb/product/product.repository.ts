@@ -176,7 +176,6 @@ class ProductRepository {
         ];
       }
 
-      console.log("Final MongoDB Query:", { filters, query, skip, limit });
 
       // --- Count total products for pagination ---
       const total = await Product.countDocuments(query);
