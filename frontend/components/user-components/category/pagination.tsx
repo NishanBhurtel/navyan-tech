@@ -1,12 +1,19 @@
 import React from "react";
 import { Button } from "../ui/button";
 
+interface PaginationProps {
+  totalPages: number;
+  currentPage: number;
+  maxLimit?: number;
+  onPageChange: (page: number) => void; // ✅ tell TS that page is a number
+}
+
 export default function Pagination({
-  totalPages = 1,
-  currentPage = 1,
+  totalPages,
+  currentPage,
+  maxLimit = 10,
   onPageChange,
-  maxLimit = 5,
-}) {
+}: PaginationProps) {
   const safeCurrent = Math.min(Math.max(currentPage, 1), totalPages);
 
   const half = Math.floor(maxLimit / 2);

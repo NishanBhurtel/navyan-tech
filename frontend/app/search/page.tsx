@@ -10,11 +10,12 @@ import DataLoading from "@/components/user-components/layout/LoadingPage";
 import Navbar from "@/components/user-components/layout/Navbar";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CategoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const searchParams = useSearchParams();
 
   const search = searchParams.get("search");
@@ -24,6 +25,7 @@ export default function CategoryPage() {
   const categoryID = searchParams.get("categoryID");
   const subCategoryID = searchParams.get("subCategoryID");
 
+  // 🔑 include page + limit in query
   const { isLoading, isError, data } = useAllProducts({
     search: search || undefined,
     filter: {
@@ -33,21 +35,26 @@ export default function CategoryPage() {
       minPrice: minPrice || undefined,
       maxPrice: maxPrice || undefined,
     },
+    page: currentPage, // ✅ works now
+    limit: 10,
   });
+
   const products = data?.data || [];
+  const pagination = data?.pagination;
+
+  // keep total pages in sync with API response
+  useEffect(() => {
+    if (pagination?.totalPages) {
+      setTotalPages(pagination.totalPages);
+    }
+  }, [pagination]);
 
   if (isLoading) return <DataLoading />;
-
   if (isError || !data || products.length === 0) return <ErrorState />;
-
-  console.log(products)
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Announcement Bar */}
       <Annoucement />
-
-      {/* Header */}
       <Navbar />
 
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8">
@@ -60,17 +67,16 @@ export default function CategoryPage() {
           {/* Products Section */}
           <div className="md:col-span-4 lg:col-span-3">
             <div className="space-y-6">
-              {/* Sort by featured */}
               <SortByFeatured products={products} />
-              {/* Products Grid */}
               <ProductGrid products={products} />
-              {/* Pagination */}
+
+              {/* ✅ Hook up pagination */}
               <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                maxLimit={5}
-              />{" "}
+                onPageChange={(page) => setCurrentPage(page)}
+                maxLimit={10}
+              />
             </div>
           </div>
         </div>
