@@ -20,7 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useAppToast } from "@/lib/tostify";
 
 export default function LoginForm() {
@@ -60,6 +60,12 @@ export default function LoginForm() {
     });
     if (res?.ok) {
       router.push("/");
+      const session = await getSession();
+      if (session?.user?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
       toastSuccess("Login successful!");
     } else {
       toastError("Login failed: " + (res?.error || "Unknown error"));

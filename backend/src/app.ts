@@ -8,11 +8,14 @@ import { contract } from "./contract";
 import swaggerUi from "swagger-ui-express";
 import { openApiDocument } from "./libs/swagger";
 import { createExpressEndpoints } from "@ts-rest/express";
+import morgan from "morgan";
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan("dev"));
+
 app.use(
   cors({
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
