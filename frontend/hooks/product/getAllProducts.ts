@@ -1,9 +1,10 @@
 // hooks/useAllProducts.ts
 import { productApi } from "@/lib/api/product.api";
+import { PaginatedResponse } from "@/lib/utils/types/common.type";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { useQuery } from "@tanstack/react-query";
 
-export interface IProductQueryParams  {
+export interface IProductQueryParams {
   search?: string;
   filter?: {
     brand?: string;
@@ -12,14 +13,11 @@ export interface IProductQueryParams  {
     categoryID?: string;
     subCategoryID?: string;
   };
-};
-export function useAllProducts({
- search,
- filter
-}: IProductQueryParams) {
-  return useQuery<IProduct[]>({
-    queryKey: ["getProductsByAdmin",search,filter], // 🔑 unique cache key
-    queryFn: () => productApi.getAllProductsApi({search,filter}), // 💡 assumes this returns Promise<IProduct[]>
-    staleTime: 1000 * 60 * 5, // ✅ optional: cache is fresh for 5 minutes
+}
+
+export function useAllProducts({ search, filter }: IProductQueryParams) {
+  return useQuery<PaginatedResponse<IProduct>>({
+    queryKey: ["searchProducts", search, JSON.stringify(filter)], // ✅ stable key
+    queryFn: () => productApi.getAllProductsApi({ search, filter }),
   });
 }

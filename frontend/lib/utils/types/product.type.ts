@@ -45,4 +45,4 @@ export interface IProduct {
     key: string;
     value: string;
   }[];
-}
+};

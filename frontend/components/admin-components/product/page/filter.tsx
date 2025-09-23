@@ -20,9 +20,10 @@ interface FiltersProps {
 }
 
 export default function Filters({ onFilter }: FiltersProps) {
-  const { data: productData = [], isLoading: productsLoading } = useAllProducts({});
+  const { data: productResponse, isLoading: productsLoading } = useAllProducts({});
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
+  const productData = productResponse?.data || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [subCategoryFilter, setSubCategoryFilter] = useState("all");
@@ -35,7 +36,7 @@ export default function Filters({ onFilter }: FiltersProps) {
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.categoryID.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.subCategoryID.name.toLowerCase().includes(searchTerm.toLowerCase()); 
+        product.subCategoryID.name.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesCategory =
         categoryFilter === "all" || product.categoryID?._id === categoryFilter;

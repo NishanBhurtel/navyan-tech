@@ -45,7 +45,7 @@ export const createProductSchema = z.object({
   }),
 });
 
-export const getAllProductSchema = z.array(
+export const allProductSchema = z.array(
   z.object({
     _id: z.string(),
     name: z.string(),
@@ -83,6 +83,16 @@ export const getAllProductSchema = z.array(
     specifications: z.array(z.object({ key: z.string(), value: z.string() })),
   })
 );
+
+export const getAllProductSchema = z.object({
+  data: allProductSchema,
+  pagination: z.object({
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+    totalPages: z.number(),
+  }),
+})
 
 export const getProductDetailsByID = z.object({
   success: z.boolean(),

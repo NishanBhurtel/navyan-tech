@@ -22,6 +22,10 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import ErrorState from "./ErrorPage";
 import DataLoading from "./LoadingPage";
+import { getSession } from "next-auth/react";
+import { ISession } from "@/lib/utils/types/auth.type";
+import { signOut } from "next-auth/react";
+
 
 interface FormValues {
   search: string;
@@ -32,6 +36,17 @@ const Navbar = () => {
   const [token, setToken] = useState<string | null>(null);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [session, setSession] = useState<ISession | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+    };
+    fetchSession();
+  }, []);
+
+
 
   const { register, watch } = useForm<FormValues>({
     defaultValues: { search: "" },
@@ -59,6 +74,15 @@ const Navbar = () => {
   if (error) 
     return <ErrorState />
 
+  const handleLogout = async () => {
+    signOut({
+      redirect: true,           // redirect after logout
+      callbackUrl: "/",    // where to go after logout
+    });
+  };
+
+  const authUser = session?.user;
+
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       {/* Top bar */}
@@ -83,7 +107,7 @@ const Navbar = () => {
 
         {/* Right buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {token ? (
+          {authUser ? (
             <>
               <Link href="/wishlist" className="flex items-center space-x-2">
                 <Button variant="ghost" size="icon" className="relative">
@@ -97,16 +121,14 @@ const Navbar = () => {
                 <span className="hidden md:inline">Wishlist</span>
               </Link>
 
-              <Link href="/mycart">
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingCart className="w-6 h-6" />
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
-                    2
-                  </Badge>
+              <Link href="/contact">
+                <Button variant="ghost" size="sm" className="space-x-2">
+                  <Phone className="w-4 h-4" />
+                  <span className="hidden md:inline">Contact</span>
                 </Button>
-                <span className="hidden md:inline">My Cart</span>
               </Link>
-              <Button variant="outline" className="flex items-center space-x-2">
+
+              <Button variant="outline" className="flex items-center space-x-2" onClick={handleLogout}>
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
@@ -171,7 +193,7 @@ const Navbar = () => {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-3">
-              {token ? (
+              {session ? (
                 <>
                   <Link href="/wishlist">
                     <Button

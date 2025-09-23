@@ -2,9 +2,10 @@ import { AppRouteQueryImplementation } from "@ts-rest/express";
 
 import { categoryContract } from "../../contract/categories/category.contract";
 
-import { getAllCategories } from "../../repository/mangodb/category/category.repository";
-import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+import { getAllCategories } from "../../repository/mongodb/category/category.repository";
+import subCategoryRepository from "../../repository/mongodb/subCategory/subCategory.repository";
 import { promise } from "zod";
+import productRepository from "../../repository/mongodb/product/product.repository";
 
 // Get all categories
 const getAllCategoryMutation: AppRouteQueryImplementation<
@@ -21,10 +22,15 @@ const getAllCategoryMutation: AppRouteQueryImplementation<
             await subCategoryRepository.getSubCategoriesByParentCategoryID(
               category._id.toString()
             );
+          const totalItems = await productRepository.countProducts({
+            categoryID: category._id.toString(),
+          });
+
           return {
             _id: category._id.toString(),
             name: category.name,
             description: category.description,
+            totalItems,
             subCategories: subCategories.map((i) => ({
               _id: i._id.toString(),
               name: i.name,

@@ -125,7 +125,6 @@ export default function AddProductPage() {
     try {
       setIsUploading(true);
       const { isCompleted, progress, urls } = await uploadImages(files);
-      console.log(progress);
       setProgress(progress);
       if (isCompleted) {
         mutation.mutate({ ...data, images: urls });

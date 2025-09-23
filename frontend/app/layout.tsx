@@ -6,6 +6,7 @@ import InnerLayoutClient from "./innerLayout";
 import ClientProviders from "@/lib/clientProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SessionProvider } from "next-auth/react";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

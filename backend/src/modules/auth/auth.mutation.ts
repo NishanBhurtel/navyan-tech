@@ -1,7 +1,9 @@
 import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { authContract } from "../../contract/auth/auth.contract";
-import userRepository from "../../repository/mangodb/user/users.repository";
+import userRepository from "../../repository/mongodb/user/users.repository";
 import bcrypt from "bcryptjs";
+import { authRepository } from "../../repository/mongodb/auth/auth.repository";
+import env from "../../config/env";
 
 export const registerUser: AppRouteMutationImplementation<
   typeof authContract.register
@@ -52,14 +54,18 @@ export const loginUser: AppRouteMutationImplementation<
   try {
     const { email, password } = req.body;
 
-    const users = await userRepository.getAllUsers({ email: email.toLowerCase() });
+    const users = await userRepository.getAllUsers({
+      email: email.toLowerCase(),
+    });
+
     if (users.length === 0) {
       return { status: 404, body: { success: false, error: "User not found" } };
     }
 
     const user = users[0];
-
+    console.log(password)
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       return {
         status: 401,
@@ -69,15 +75,21 @@ export const loginUser: AppRouteMutationImplementation<
 
     const userId = user._id.toString();
 
+    const token = authRepository.createJwtToken({ userId }, env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
     return {
       status: 200,
       body: {
         success: true,
         message: "User logged in successfully",
-        _id: userId,
+        id: userId,
         email: user.email,
         firstName: user.userName.firstName,
         lastName: user.userName.lastName,
+        role: user.role,
+        token,
       },
     };
   } catch (error) {

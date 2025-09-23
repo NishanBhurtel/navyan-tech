@@ -1,4 +1,3 @@
-import { FilterQuery } from "mongoose";
 import Product, { IProductModel } from "../../../models/product.model";
 
 class ProductRepository {
@@ -124,25 +123,11 @@ class ProductRepository {
     }
   };
 
-  updateProductStatus = async (productId: string, isActive: boolean) => {
-    try {
-      const updatedProductStatus = await this.productModel.findByIdAndUpdate(
-        productId,
-        { $set: { isActive } }, // only update this field
-        { new: true, runValidators: true } // return updated doc & validate
-      );
-
-      return updatedProductStatus;
-    } catch (error) {
-      throw new Error(
-        "Error updating product status: " + (error as Error).message
-      );
-    }
-  };
-
   async getAllProducts({
     searchQuery,
     filters,
+    skip = 0,
+    limit = 10,
   }: {
     searchQuery?: string;
     filters?: Partial<
@@ -151,7 +136,9 @@ class ProductRepository {
         maxPrice: number;
       }
     >;
-  } = {}): Promise<any[]> {
+    skip?: number;
+    limit?: number;
+  } = {}): Promise<{ products: any[]; total: number }> {
     try {
       const query: any = {};
 
@@ -184,7 +171,6 @@ class ProductRepository {
       // --- Search Query ---
       if (searchQuery?.trim()) {
         const searchRegex = new RegExp(searchQuery, "i");
-
         query.$or = [
           { name: searchRegex },
           { description: searchRegex },
@@ -192,39 +178,27 @@ class ProductRepository {
         ];
       }
 
-      // Fetch products with populated category and subcategory
+
+      // --- Count total products for pagination ---
+      const total = await Product.countDocuments(query);
+
+      // --- Fetch products with pagination ---
       const products = await Product.find(query)
         .sort({ createdAt: -1 })
-        .populate<{
-          categoryID: {
-            _id: string;
-            name: string;
-          };
-        }>("categoryID", "name") // Populate only 'name' field
-        .populate<{
-          subCategoryID: {
-            _id: string;
-            name: string;
-          };
-        }>("subCategoryID", "name")
+        .skip(skip) // ✅ apply skip
+        .limit(limit) // ✅ apply limit
+        .populate<{ categoryID: { _id: string; name: string } }>(
+          "categoryID",
+          "name"
+        )
+        .populate<{ subCategoryID: { _id: string; name: string } }>(
+          "subCategoryID",
+          "name"
+        )
         .exec();
 
-      // If searchQuery exists, also match against populated fields (category/subcategory name)
-      const filteredProducts = searchQuery?.trim()
-        ? products.filter((product) => {
-            const regex = new RegExp(searchQuery, "i");
-            return (
-              regex.test(product?.categoryID?.name ?? "") ||
-              regex.test(product?.subCategoryID?.name ?? "") ||
-              regex.test(product.name) ||
-              regex.test(product.description) ||
-              regex.test(product.brand)
-            );
-          })
-        : products;
-
-      // Format and return
-      return filteredProducts.map((product) => ({
+      // --- Format response ---
+      const formattedProducts = products.map((product) => ({
         _id: product._id.toString(),
         name: product.name,
         images: product.images ?? [],
@@ -241,9 +215,27 @@ class ProductRepository {
         specifications: product.specifications ?? undefined,
         createdAt: product.createdAt,
       }));
+
+      return { products: formattedProducts, total };
     } catch (error) {
       console.error("Failed to get products:", error);
       throw new Error("Failed to get products");
+    }
+  }
+
+  async countProducts({
+    categoryID,
+  }: {
+    categoryID?: string;
+  }): Promise<number> {
+    try {
+      const query: any = {};
+      if (categoryID) {
+        query.categoryID = categoryID;
+      }
+      return await Product.countDocuments(query);
+    } catch (error) {
+      throw new Error(`Error counting products by category: ${error}`);
     }
   }
 

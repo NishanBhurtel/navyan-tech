@@ -5,6 +5,8 @@ import {
   TGetProductByIDSchema,
   TUpdateProductSchema,
 } from "../form-validation/product-validation";
+import { PaginatedResponse } from "../utils/types/common.type";
+import { IProduct } from "../utils/types/product.type";
 
 // POST /products - Create new product
 const createProductApi = async (productPayload: TCreateProductSchema) => {
@@ -22,11 +24,16 @@ const updateProductApi = async (
 };
 
 // GET /products - Get all products (with filters/sorting)
-const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
+const getAllProductsApi = async ({
+  filter,
+  search,
+}: IProductQueryParams): Promise<PaginatedResponse<IProduct>> => {
+  console.log("Fetching products with params:", { filter, search });
+
   const response = await apiClient.get("/products", {
     params: {
       search,
-      ...(filter ?? {}), // spread filter fields into params
+      ...(filter ? { filter } : {}), // ✅ wrap filter inside `filter`
     },
   });
 

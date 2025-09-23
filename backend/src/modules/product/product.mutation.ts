@@ -2,7 +2,7 @@ import { AppRouteMutationImplementation } from "@ts-rest/express";
 
 import { productContract } from "../../contract/products/product.contract";
 
-import productRepository from "../../repository/mangodb/product/product.repository";
+import productRepository from "../../repository/mongodb/product/product.repository";
 
 export const createProduct: AppRouteMutationImplementation<
   typeof productContract.createProduct

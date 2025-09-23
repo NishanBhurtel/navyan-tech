@@ -20,6 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
 import { useAppToast } from "@/lib/tostify";
 
 export default function LoginForm() {
@@ -51,9 +52,20 @@ export default function LoginForm() {
   });
 
   // ✅ Form submit handler
-  const onSubmit = (data: TLoginSchema) => {
-    mutation.mutate(data);
+  const onSubmit = async (data: TLoginSchema) => {
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false, // stay on same page
+    });
+    if (res?.ok) {
+      router.push("/");
+      toastSuccess("Login successful!");
+    } else {
+      toastError("Login failed: " + (res?.error || "Unknown error"));
+    }
   };
+
 
   return (
     <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">

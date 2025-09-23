@@ -1,5 +1,5 @@
 import { AppRouteImplementation } from "@ts-rest/express";
-import orderRepository from "../../repository/mangodb/order/order.repository";
+import orderRepository from "../../repository/mongodb/order/order.repository";
 import { orderContract } from "../../contract/order/order.contract";
 import { ContactMethod } from "../../models/order.model";
 

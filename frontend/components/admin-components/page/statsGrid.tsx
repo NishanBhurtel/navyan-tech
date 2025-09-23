@@ -13,11 +13,12 @@ import { useAllUsers } from "@/hooks/users/getAllUser";
 import { Package, Users, ShoppingCart, FolderTree } from "lucide-react";
 
 export default function StatsGrid() {
-  const { data: products } = useAllProducts({});
+  const { data: productResponse } = useAllProducts({});
   const { data: users } = useAllUsers();
   const { data: orders } = useAllOrders();
   const { data: categories, isLoading, error } = useCategories();
 
+  const products = productResponse?.data;
   if (isLoading) return <p>Loading categories...</p>;
   if (error) return <p>Error: {error.message}</p>;
 

@@ -10,6 +10,7 @@ export const getAllCategorySchema = z.array(
     _id: z.string(),
     name: z.string(),
     description: z.string(),
+    totalItems: z.number(),
     subCategories: z.array(
       z.object({
         _id: z.string(),

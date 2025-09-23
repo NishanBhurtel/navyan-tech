@@ -57,6 +57,7 @@ export default function RegisterForm() {
 
   // ✅ Form submit handler
   const onSubmit = (data: TRegisterSchema) => {
+    console.log("Form Data:", data);
     if (data.password !== data.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -64,7 +65,8 @@ export default function RegisterForm() {
     mutation.mutate(data);
   };
 
-  console.log(errors);
+  console.log("Form Errors:", errors);
+
   return (
     <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
       <div className="w-full max-w-md">

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import UserRepository from "../repository/mangodb/user/users.repository";
+import UserRepository from "../repository/mongodb/user/users.repository";
 
 interface JwtPayload {
   userId: string;

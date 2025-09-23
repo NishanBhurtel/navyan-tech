@@ -21,14 +21,10 @@ export default function CategoryPage() {
   const brand = searchParams.get("brand");
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
-  const categoryID = searchParams.get("categoryId");
+  const categoryID = searchParams.get("categoryID");
   const subCategoryID = searchParams.get("subCategoryID");
 
-  const {
-    data: products,
-    isLoading,
-    isError,
-  } = useAllProducts({
+  const { isLoading, isError, data } = useAllProducts({
     search: search || undefined,
     filter: {
       brand: brand || undefined,
@@ -38,9 +34,13 @@ export default function CategoryPage() {
       maxPrice: maxPrice || undefined,
     },
   });
+  const products = data?.data || [];
 
   if (isLoading) return <DataLoading />;
-  if (isError || !products) return <ErrorState />;
+
+  if (isError || !data || products.length === 0) return <ErrorState />;
+
+  console.log(products)
 
   return (
     <div className="min-h-screen bg-background">

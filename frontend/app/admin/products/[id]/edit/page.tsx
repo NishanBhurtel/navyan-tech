@@ -45,12 +45,19 @@ export default function ProductEditPage() {
     brand: "",
     stock: 0,
     description: "",
+<<<<<<< HEAD
     specifications: [
       {
         key: "",
         value: "",
       },
     ],
+=======
+    specifications: [{
+      key: "",
+      value: "",
+    }],
+>>>>>>> origin/feature/next-auth
     images: [""],
     technicalSpecification: {
       performance: {
@@ -74,6 +81,10 @@ export default function ProductEditPage() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/next-auth
 
   // Populate form when productData and categories load
   useEffect(() => {
@@ -120,6 +131,10 @@ export default function ProductEditPage() {
       });
     }
   }, [productData, categories]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/next-auth
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -212,12 +227,10 @@ export default function ProductEditPage() {
       console.error("Error updating product:", error);
       toastError(
         error?.response?.data?.message ||
-          "Something went wrong while updating the product."
+        "Something went wrong while updating the product."
       );
     }
   };
-
-  console.log(formData);
 
   if (!productData || isLoading) return <div>Loading...</div>;
 
