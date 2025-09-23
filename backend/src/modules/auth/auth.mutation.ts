@@ -54,16 +54,23 @@ export const loginUser: AppRouteMutationImplementation<
   try {
     const { email, password } = req.body;
 
-    const users = await userRepository.getAllUsers({
+    const customerUsers = await userRepository.getAllUsers({
       email: email.toLowerCase(),
     });
 
-    if (users.length === 0) {
-      return { status: 404, body: { success: false, error: "User not found" } };
+    const adminUser = await userRepository.getAdminUser(email.toLowerCase());
+
+    const customerUser = customerUsers[0];
+
+    if (adminUser && customerUser) {
+      return {
+        status: 404,
+        body: { success: false, error: "User not found" },
+      };
     }
 
-    const user = users[0];
-    console.log(password)
+    const user = adminUser || customerUser;
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -78,6 +85,7 @@ export const loginUser: AppRouteMutationImplementation<
     const token = authRepository.createJwtToken({ userId }, env.JWT_SECRET, {
       expiresIn: "1d",
     });
+
 
     return {
       status: 200,

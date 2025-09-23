@@ -27,6 +27,14 @@ class UserRepository {
     }
   }
 
+  async getAdminUser(email: string) {
+    try {
+      return await this.userModel.findOne({ email: email, role: "admin" });
+    } catch (error) {
+      throw new Error(`Error fetching admin user: ${error}`);
+    }
+  }
+
   async getAllUsers(searchQuery?: Partial<IUser>) {
     try {
       const query: any = {
