@@ -127,7 +127,7 @@ class ProductRepository {
     searchQuery,
     filters,
     skip = 0,
-    limit = 10,
+    limit = 9,
   }: {
     searchQuery?: string;
     filters?: Partial<

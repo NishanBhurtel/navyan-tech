@@ -2,12 +2,16 @@
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { ChevronRight, Heart, Star } from "lucide-react";
+import { ChevronRight, Heart } from "lucide-react";
 import Link from "next/link";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
+import {
+  addToWishlist,
+  getWishlist,
+} from "@/lib/localStorage/wishlist.localStorage";
 import { useAppToast } from "@/lib/tostify";
+import { useEffect, useState } from "react";
 
 interface RelatedProductsProps {
   currentProduct: any;
@@ -17,6 +21,13 @@ export default function RelatedProducts({
   currentProduct,
 }: RelatedProductsProps) {
   const { data, isLoading } = useAllProducts({});
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const { toastSuccess, toastError } = useAppToast();
+
+  // ✅ load wishlist from localStorage
+  useEffect(() => {
+    setWishlist(getWishlist());
+  }, []);
 
   if (isLoading) return <div>Loading related products...</div>;
 
@@ -31,8 +42,6 @@ export default function RelatedProducts({
     .slice(0, 5); // limit to 5 products
 
   if (relatedProducts?.length === 0) return null;
-
-  const { toastSuccess, toastError } = useAppToast();
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -50,6 +59,7 @@ export default function RelatedProducts({
 
     if (result.success) {
       toastSuccess(result.message);
+      setWishlist(getWishlist()); // refresh wishlist state
     } else {
       toastError(result.message);
     }
@@ -63,6 +73,8 @@ export default function RelatedProducts({
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {relatedProducts?.map((p, i) => {
           const isAvailable = p.stock > 0;
+          const isInWishlist = wishlist.some((item) => item.id === p._id);
+
           return (
             <Card
               key={i}
@@ -131,14 +143,16 @@ export default function RelatedProducts({
                         View Details
                       </Button>
                     </Link>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="w-8 h-8 bg-transparent hover:bg-primary hover:text-white"
+                    <div
+                      className=" h-9 w-9 flex items-center justify-center border border-gray-200 rounded-[8px]"
                       onClick={() => handleAddToWishlist(p)}
                     >
-                      <Heart className="w-3 h-3" />
-                    </Button>
+                      <Heart
+                        className="w-5 h-5"
+                        fill={isInWishlist ? "green" : "none"}
+                        color={isInWishlist ? "green" : "gray"}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>

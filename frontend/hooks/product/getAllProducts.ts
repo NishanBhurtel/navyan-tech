@@ -16,9 +16,10 @@ export interface IProductQueryParams {
   page?: number;  // ✅ add this
   limit?: number; // ✅ add this
 }
-export function useAllProducts({ search, filter }: IProductQueryParams) {
+export function useAllProducts({ page, limit, search, filter }: IProductQueryParams) {
   return useQuery<PaginatedResponse<IProduct>>({
-    queryKey: ["searchProducts", search, JSON.stringify(filter)], // ✅ stable key
-    queryFn: () => productApi.getAllProductsApi({ search, filter }),
+    queryKey: ["searchProducts", page, limit, search, JSON.stringify(filter)], // ✅ stable key
+    queryFn: () => productApi.getAllProductsApi({ page, limit, search, filter }),
   });
 }
+

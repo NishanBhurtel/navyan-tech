@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/user-components/ui/card";
 import { Input } from "@/components/user-components/ui/input";
 import {
@@ -11,45 +10,24 @@ import {
   SelectValue,
 } from "@/components/user-components/ui/select";
 import { Search } from "lucide-react";
-import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useCategories } from "@/hooks/categories/getCategories";
-import { IProduct } from "@/lib/utils/types/product.type";
+import { useState, useEffect } from "react";
 
 interface FiltersProps {
-  onFilter: (products: IProduct[]) => void;
+  onChange: (filters: { search: string; category: string; subCategory: string }) => void;
 }
 
-export default function Filters({ onFilter }: FiltersProps) {
-  const { data: productResponse, isLoading: productsLoading } = useAllProducts({});
+export default function Filters({ onChange }: FiltersProps) {
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
-  const productData = productResponse?.data || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [subCategoryFilter, setSubCategoryFilter] = useState("all");
 
+  // notify parent when filters change
   useEffect(() => {
-    if (productsLoading) return;
-
-    const filtered = productData.filter((product: IProduct) => {
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.categoryID.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.subCategoryID.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesCategory =
-        categoryFilter === "all" || product.categoryID?._id === categoryFilter;
-
-      const matchesSubCategory =
-        subCategoryFilter === "all" ||
-        product.subCategoryID?._id === subCategoryFilter;
-
-      return matchesSearch && matchesCategory && matchesSubCategory;
-    });
-
-    onFilter(filtered);
-  }, [productData, searchTerm, categoryFilter, subCategoryFilter, productsLoading, onFilter]);
+    onChange({ search: searchTerm, category: categoryFilter, subCategory: subCategoryFilter });
+  }, [searchTerm, categoryFilter, subCategoryFilter]);
 
   return (
     <Card>

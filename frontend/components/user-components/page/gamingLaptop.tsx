@@ -1,29 +1,125 @@
+// "use client";
+// import Link from "next/link";
+// import { Card, CardContent } from "../ui/card";
+// import { Button } from "../ui/button";
+// import { Heart, ChevronRight } from "lucide-react";
+// import { useAllProducts } from "@/hooks/product/getAllProducts";
+// import { WishlistItem } from "@/lib/utils/types/wishlist.type";
+// import { addToWishlist, getWishlist } from "@/lib/localStorage/wishlist.localStorage";
+// import DataUnavailable from "../layout/LoadingPage";
+// import ErrorState from "../layout/ErrorPage";
+// import { useAppToast } from "@/lib/tostify";
+// import { useEffect, useState } from "react";
+
+// export default function GamingLaptop() {
+//   const { data: products, isLoading, isError } = useAllProducts({});
+//   const heading = "Gaming Laptops";
+//   const { toastSuccess, toastError } = useAppToast();
+
+//   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+
+//   useEffect(() => {
+//     const storedWishlist = getWishlist();
+//     setWishlist(storedWishlist);
+//   }, []);
+
+//   const isInWishlist = (id: number) => wishlist.some((item) => item.id === id);
+
+//   const handleAddToWishlist = (product: any) => {
+//     const isAvailable = product.stock > 0;
+//     const item: WishlistItem = {
+//       id: product._id,
+//       name: product.name,
+//       image: product.images?.[0] ?? "",
+//       price: product.originalPrice ?? "",
+//       originalPrice: product.discountedPrice ?? "",
+//       category: product.categoryID?.name ?? "",
+//       inStock: isAvailable,
+//     };
+
+//     const result = addToWishlist(item);
+//     if (result.success) {
+//       toastSuccess("Item added to wishlist");
+//       setWishlist((prev) => [...prev, item]);
+//     } else {
+//       toastError("Item already in your wishlist");
+//     }
+//   };
+
+//   if (isLoading) return <DataUnavailable />;
+//   if (isError || !products) return <ErrorState />;
+
+//   const gamingLaptops = products
+//     ? products.data.filter(
+//         (product) => product.subCategoryID.name === "Gaming Laptops"
+//       )
+//     : [];
+
+//   const categoryID = gamingLaptops?.[0]?.categoryID?._id;
+//   const subCategoryID = gamingLaptops?.[0]?.subCategoryID?._id;
+
 "use client";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
-import { Heart, ChevronRight } from "lucide-react";
-import { useAllProducts } from "@/hooks/product/getAllProducts";
+import { Heart, Heart as HeartOutline, ChevronRight } from "lucide-react";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-import { addToWishlist, getWishlist } from "@/lib/localStorage/wishlist.localStorage";
+import {
+  addToWishlist,
+  getWishlist,
+} from "@/lib/localStorage/wishlist.localStorage";
 import DataUnavailable from "../layout/LoadingPage";
 import ErrorState from "../layout/ErrorPage";
 import { useAppToast } from "@/lib/tostify";
 import { useEffect, useState } from "react";
+import { productApi } from "@/lib/api/product.api";
 
 export default function GamingLaptop() {
-  const { data: products, isLoading, isError } = useAllProducts({});
   const heading = "Gaming Laptops";
   const { toastSuccess, toastError } = useAppToast();
 
+  const [products, setProducts] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
+  // fetch all products from all pages
   useEffect(() => {
-    const storedWishlist = getWishlist();
-    setWishlist(storedWishlist);
-  }, []);
+    let isMounted = true;
 
-  const isInWishlist = (id: number) => wishlist.some((item) => item.id === id);
+    const fetchAllProducts = async () => {
+      try {
+        let page = 1;
+        const limit = 50; // fetch 50 items per page
+        let allProducts: any[] = [];
+        let totalPages = 1;
+
+        do {
+          const res = await productApi.getAllProductsApi({ page, limit });
+          allProducts = [...allProducts, ...(res.data || [])];
+          totalPages = res.pagination?.totalPages || 1;
+          page++;
+        } while (page <= totalPages);
+
+        if (isMounted) {
+          setProducts(allProducts);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchAllProducts();
+    setWishlist(getWishlist());
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -40,22 +136,24 @@ export default function GamingLaptop() {
     const result = addToWishlist(item);
     if (result.success) {
       toastSuccess("Item added to wishlist");
-      setWishlist((prev) => [...prev, item]); // update state
+      setWishlist((prev) => [...prev, item]);
     } else {
       toastError("Item already in your wishlist");
     }
   };
 
-  if (isLoading) return <DataUnavailable />;
-  if (isError || !products) return <ErrorState />;
-
-  const gamingLaptops = products
-    ? products.data.filter(
-        (product) => product.subCategoryID.name === "Gaming Laptops"
-      )
-    : [];
+  // filter products by heading
+  const gamingLaptops = products.filter(
+    (product) => product.subCategoryID?.name === heading
+  );
 
   const categoryID = gamingLaptops?.[0]?.categoryID?._id;
+  const subCategoryID = gamingLaptops?.[0]?.subCategoryID?._id;
+
+  const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
+
+  if (isLoading) return <DataUnavailable />;
+  if (isError) return <ErrorState />;
 
   return (
     <section className="py-16 bg-background">
@@ -66,7 +164,13 @@ export default function GamingLaptop() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               {heading}
             </h2>
-            <Link href={categoryID ? `/search?categoryID=${categoryID}` : "#"}>
+            <Link
+              href={
+                categoryID
+                  ? `/search?categoryID=${categoryID}&subCategoryID=${subCategoryID}`
+                  : "#"
+              }
+            >
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -129,7 +233,7 @@ export default function GamingLaptop() {
                       <ChevronRight className="w-3 h-3" />
                       <Link
                         className="hover:underline hover:text-blue-600"
-                        href={`/search?categoryID=${product.subCategoryID._id}`}
+                        href={`/search?subCategoryID=${product.subCategoryID._id}`}
                       >
                         {product.subCategoryID?.name}{" "}
                       </Link>
@@ -153,29 +257,19 @@ export default function GamingLaptop() {
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex gap-2 pt-2">
-                      <Link href={`/product/${product._id}`} className="flex-1">
-                        <Button className="w-full bg-primary text-white text-xs font-semibold hover:bg-primary/90">
-                          View Details
-                        </Button>
-                      </Link>
+
                       <Button
                         size="icon"
                         variant="outline"
-                        className={`w-8 h-8 ${
-                          alreadyInWishlist
-                            ? "bg-primary text-white"
-                            : "hover:bg-primary hover:text-white"
-                        }`}
+                        className="w-8 h-8 bg-white hover:bg-white"
                         onClick={() => handleAddToWishlist(product)}
                       >
                         <Heart
-                          className={`w-3 h-3 ${
-                            alreadyInWishlist ? "fill-current" : ""
-                          }`}
+                          className="w-3 h-3"
+                          fill={alreadyInWishlist ? "green" : "none"}
+                          color={alreadyInWishlist ? "green" : "gray"}
                         />
                       </Button>
-                    </div>
                   </CardContent>
                 </Card>
               );

@@ -115,8 +115,7 @@ export const updateProductStatus: AppRouteMutationImplementation<
         },
       };
     }
-  await productRepository.updateProductStatus(productID, isActive);
-
+  await productRepository.updateProduct(productID, {isActive});
 
     return {
       status: 200,

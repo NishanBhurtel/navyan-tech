@@ -16,6 +16,7 @@
     "@ts-rest/core": "^3.52.1",
     "@ts-rest/express": "^3.52.1",
     "@ts-rest/open-api": "^3.52.1",
+    "@types/morgan": "^1.9.10",
     "@types/stripe": "^8.0.416",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",

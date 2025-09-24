@@ -11,7 +11,7 @@ interface PaginationProps {
 export default function Pagination({
   totalPages,
   currentPage,
-  maxLimit = 10,
+  maxLimit = 9,
   onPageChange,
 }: PaginationProps) {
   const safeCurrent = Math.min(Math.max(currentPage, 1), totalPages);

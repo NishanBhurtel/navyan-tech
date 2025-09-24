@@ -67,7 +67,8 @@ export default function InquiriesTable({
       subject: string;
       text: string;
       streetAddress: string;
-    }) => emailApi.emailToOrderedUserApi({ email, subject, text, streetAddress }),
+    }) =>
+      emailApi.emailToOrderedUserApi({ email, subject, text, streetAddress }),
     onSuccess: () => {
       toastSuccess("Email sent successfully!");
       setOpen(false);
@@ -80,21 +81,20 @@ export default function InquiriesTable({
     },
   });
 
-const handleSendEmail = () => {
-  if (selectedInquiry) {
-    emailMutation.mutate({
-      email: selectedInquiry.customerEmail,
-      subject:
-        subject ||
-        `Regarding your inquiry about ${selectedInquiry.productName}`,
-      text:
-        message ||
-        `Hello ${selectedInquiry.customerName},\n\nThank you for your inquiry about ${selectedInquiry.productName}.`,
-      streetAddress: selectedInquiry.address || "",
-    });
-  }
-};
-
+  const handleSendEmail = () => {
+    if (selectedInquiry) {
+      emailMutation.mutate({
+        email: selectedInquiry.customerEmail,
+        subject:
+          subject ||
+          `Regarding your inquiry about ${selectedInquiry.productName}`,
+        text:
+          message ||
+          `Hello ${selectedInquiry.customerName},\n\nThank you for your inquiry about ${selectedInquiry.productName}.`,
+        streetAddress: selectedInquiry.address || "",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -110,8 +110,9 @@ const handleSendEmail = () => {
               <TableRow>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
+                <TableHead>Address</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Created At</TableHead>
+                <TableHead>Inquired At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -141,7 +142,10 @@ const handleSendEmail = () => {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium text-sm text-gray-500">
+                    {inquiry.address}
+                  </TableCell>{" "}
+                  <TableCell className="font-medium text-sm text-gray-500">
                     Rs.{inquiry.totalAmount.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-sm text-gray-500">

@@ -1,5 +1,7 @@
 "use client";
 
+import ErrorState from "@/components/user-components/layout/ErrorPage";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 import {
   Card,
   CardContent,
@@ -10,17 +12,54 @@ import { useCategories } from "@/hooks/categories/getCategories";
 import { useAllOrders } from "@/hooks/order/getAllOrders";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
+import { productApi } from "@/lib/api/product.api";
 import { Package, Users, ShoppingCart, FolderTree } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function StatsGrid() {
-  const { data: productResponse } = useAllProducts({});
   const { data: users } = useAllUsers();
   const { data: orders } = useAllOrders();
-  const { data: categories, isLoading, error } = useCategories();
+  const { data: categories } = useCategories();
+    const [products, setProducts] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
 
-  const products = productResponse?.data;
-  if (isLoading) return <p>Loading categories...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchAllProducts = async () => {
+      try {
+        let page = 1;
+        const limit = 50; // fetch 50 items per page
+        let allProducts: any[] = [];
+        let totalPages = 1;
+
+        do {
+          const res = await productApi.getAllProductsApi({ page, limit });
+          allProducts = [...allProducts, ...(res.data || [])];
+          totalPages = res.pagination?.totalPages || 1;
+          page++;
+        } while (page <= totalPages);
+
+        if (isMounted) {
+          setProducts(allProducts);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchAllProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
 
   // ---- Date helpers ----
   const now = new Date();
@@ -128,6 +167,10 @@ export default function StatsGrid() {
       bg: "bg-[#c9b834]",
     },
   ];
+
+  
+    if (isLoading) return <DataLoading />;
+    if (isError) return <ErrorState />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

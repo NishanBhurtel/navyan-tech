@@ -25,7 +25,7 @@ import DataLoading from "./LoadingPage";
 import { getSession } from "next-auth/react";
 import { ISession } from "@/lib/utils/types/auth.type";
 import { signOut } from "next-auth/react";
-
+import { useTheme } from "next-themes";
 
 interface FormValues {
   search: string;
@@ -45,8 +45,6 @@ const Navbar = () => {
     };
     fetchSession();
   }, []);
-
-
 
   const { register, watch } = useForm<FormValues>({
     defaultValues: { search: "" },
@@ -69,19 +67,23 @@ const Navbar = () => {
     setWishlistItems(items.slice().reverse());
   }, []);
 
-  if (isLoading) 
-    return <DataLoading  />;
-  if (error) 
-    return <ErrorState />
+  if (isLoading) return <DataLoading />;
+  if (error) return <ErrorState />;
 
   const handleLogout = async () => {
-    signOut({
-      redirect: true,           // redirect after logout
-      callbackUrl: "/",    // where to go after logout
+    // Clear storages
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Sign out user
+    await signOut({
+      redirect: true, // redirect after logout
+      callbackUrl: "/", // where to go after logout
     });
   };
 
   const authUser = session?.user;
+  console.log(authUser);
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -128,7 +130,11 @@ const Navbar = () => {
                 </Button>
               </Link>
 
-              <Button variant="outline" className="flex items-center space-x-2" onClick={handleLogout}>
+              <Button
+                variant="outline"
+                className="flex items-center space-x-2"
+                onClick={handleLogout}
+              >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
@@ -222,6 +228,7 @@ const Navbar = () => {
                   <Button
                     variant="outline"
                     className="flex items-center space-x-2"
+                    onClick={handleLogout}
                   >
                     <User className="w-4 h-4" />
                     <span>Logout</span>
@@ -283,7 +290,7 @@ const Navbar = () => {
                             {cat.subCategories.map((sub) => (
                               <li key={sub._id}>
                                 <Link
-                                  href={`/search?subCategoryID=${sub._id}`}
+                                  href={`/search?categoryID=${cat._id}&subCategoryID=${sub._id}`}
                                   className="block py-1 text-[14px] text-gray-700 hover:text-primary"
                                 >
                                   {sub.name}
@@ -334,7 +341,7 @@ const Navbar = () => {
                         {cat.subCategories.map((sub) => (
                           <Link
                             key={sub._id}
-                            href={`/search?subCategoryID=${sub._id}`}
+                            href={`/search?categoryID=${cat._id}&subCategoryID=${sub._id}`}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             {sub.name}

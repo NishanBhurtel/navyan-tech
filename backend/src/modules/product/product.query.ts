@@ -74,7 +74,7 @@ const getALLProduct: AppRouteQueryImplementation<
 
     // Extract pagination params (default page=1, limit=10)
     const page = query.page ? Number(query.page) : 1;
-    const limit = query.limit ? Number(query.limit) : 10;
+    const limit = query.limit ? Number(query.limit) : 9;
     const skip = (page - 1) * limit;
 
     // Get products from repo with filters + pagination

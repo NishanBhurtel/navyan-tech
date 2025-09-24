@@ -26,6 +26,7 @@ import { useCategories } from "@/hooks/categories/getCategories";
 import { TUpdateProductSchema } from "@/lib/form-validation/product-validation";
 import { productApi } from "@/lib/api/product.api";
 import { useAppToast } from "@/lib/tostify";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function ProductEditPage() {
   const params = useParams();
@@ -45,19 +46,12 @@ export default function ProductEditPage() {
     brand: "",
     stock: 0,
     description: "",
-<<<<<<< HEAD
     specifications: [
       {
         key: "",
         value: "",
       },
     ],
-=======
-    specifications: [{
-      key: "",
-      value: "",
-    }],
->>>>>>> origin/feature/next-auth
     images: [""],
     technicalSpecification: {
       performance: {
@@ -81,22 +75,10 @@ export default function ProductEditPage() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/feature/next-auth
 
   // Populate form when productData and categories load
   useEffect(() => {
-    if (productData && categories) {
-      const categoryObj = categories.find(
-        (c: any) => c._id === productData.categoryID?._id
-      );
-      console.log(productData?.categoryID);
-      console.log(productData?.subCategoryID);
-
-      setSelectedCategory(categoryObj || null);
-
+    if (productData) {
       setFormData({
         _id: productData._id,
         name: productData.name || "",
@@ -130,11 +112,15 @@ export default function ProductEditPage() {
         },
       });
     }
-  }, [productData, categories]);
-<<<<<<< HEAD
-=======
+  }, [productData]);
 
->>>>>>> origin/feature/next-auth
+  // 2️⃣ Set selectedCategory whenever categories or categoryID changes
+  useEffect(() => {
+    if (categories?.length && formData.categoryID) {
+      const cat = categories.find((c) => c._id === formData.categoryID);
+      setSelectedCategory(cat || null);
+    }
+  }, [categories, formData.categoryID]);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -161,17 +147,18 @@ export default function ProductEditPage() {
   const handleSpecificationChange = (key: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      specifications: { ...prev.specifications, [key]: value },
+      specifications: prev.specifications.map((spec) =>
+        spec.key === key ? { ...spec, value } : spec
+      ),
     }));
   };
 
   const handleCategoryChange = (categoryID: string) => {
-    const categoryObj = categories?.find((c: any) => c._id === categoryID);
+    const categoryObj = categories?.find((c) => c._id === categoryID);
     setSelectedCategory(categoryObj || null);
     setFormData((prev) => ({
       ...prev,
       categoryID,
-      // select first subcategory of new category by default
       subCategoryID: categoryObj?.subCategories?.[0]?._id || "",
     }));
   };
@@ -227,12 +214,12 @@ export default function ProductEditPage() {
       console.error("Error updating product:", error);
       toastError(
         error?.response?.data?.message ||
-        "Something went wrong while updating the product."
+          "Something went wrong while updating the product."
       );
     }
   };
 
-  if (!productData || isLoading) return <div>Loading...</div>;
+  if (!productData || isLoading) return <DataLoading />;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -271,7 +258,7 @@ export default function ProductEditPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Info */}
-          <Card>
+          <Card className="py-6">
             <CardHeader className="pt-4">
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
@@ -316,7 +303,7 @@ export default function ProductEditPage() {
           </Card>
 
           {/* Category & Pricing */}
-          <Card>
+          <Card className="py-6">
             <CardHeader className="pt-4">
               <CardTitle>Category & Pricing</CardTitle>
             </CardHeader>
@@ -354,7 +341,7 @@ export default function ProductEditPage() {
                     onValueChange={(val) =>
                       handleInputChange("subCategoryID", val)
                     }
-                    disabled={!selectedCategory}
+                    disabled={!selectedCategory?.subCategories?.length}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select subcategory" />
@@ -410,7 +397,7 @@ export default function ProductEditPage() {
           </Card>
 
           {/* Specifications */}
-          <Card>
+          <Card className="py-6">
             <CardHeader className="pt-4">
               <CardTitle>Specifications</CardTitle>
             </CardHeader>
@@ -440,7 +427,7 @@ export default function ProductEditPage() {
           </Card>
 
           {/* Images */}
-          <Card>
+          <Card className="py-6">
             <CardHeader className="pt-4">
               <CardTitle>Product Images</CardTitle>
             </CardHeader>
@@ -463,7 +450,7 @@ export default function ProductEditPage() {
                     </Button>
                   </div>
                 ))}
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                   <input
                     type="file"
                     multiple
@@ -482,7 +469,7 @@ export default function ProductEditPage() {
           </Card>
 
           {/* Technical Specification */}
-          <Card>
+          <Card className="py-6">
             <CardHeader className="pt-4">
               <CardTitle>Technical Specification</CardTitle>
             </CardHeader>

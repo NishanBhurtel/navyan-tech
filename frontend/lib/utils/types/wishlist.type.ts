@@ -1,10 +1,10 @@
 // types/wishlist.ts
 export interface WishlistItem {
-  id: number;
+  id: string;
   name: string;
   image: string;
-  price: string;
-  originalPrice?: string;
+  price: number;
+  originalPrice?: number;
   category: string;
   inStock: boolean;
 }

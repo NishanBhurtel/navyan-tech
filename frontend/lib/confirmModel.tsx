@@ -28,10 +28,10 @@ export default function ConfirmDialog({
         <p className="text-sm text-muted-foreground mb-6">{message}</p>
 
         <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={onCancel}>
+          <Button className="bg-red-600 hover:bg-red-700 text-white" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={onConfirm}>
+          <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={onConfirm}>
             Proceed
           </Button>
         </div>

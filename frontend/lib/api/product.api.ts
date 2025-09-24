@@ -27,12 +27,16 @@ const updateProductApi = async (
 const getAllProductsApi = async ({
   filter,
   search,
+  page,
+  limit,
 }: IProductQueryParams): Promise<PaginatedResponse<IProduct>> => {
   console.log("Fetching products with params:", { filter, search });
 
   const response = await apiClient.get("/products", {
     params: {
       search,
+      page,
+      limit,
       ...(filter ? { filter } : {}), // ✅ wrap filter inside `filter`
     },
   });

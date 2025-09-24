@@ -1,4 +1,5 @@
 "use client";
+
 import Filters from "@/components/admin-components/product/page/filter";
 import ProductHeader from "@/components/admin-components/product/page/header";
 import ProductTable from "@/components/admin-components/product/page/productTable";
@@ -18,52 +19,94 @@ import { saveAs } from "file-saver";
 import ConfirmDialog from "@/lib/confirmModel";
 import { useProductStatus } from "@/hooks/product/setProductStatus";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAllProducts } from "@/hooks/product/getAllProducts";
+import { productApi } from "@/lib/api/product.api";
 
 export default function ProductsPage() {
   const { mutate: deleteProduct } = useDeleteProduct();
-  const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "all",
+    subCategory: "all",
+  });
+
+  const [page, setPage] = useState(1);
+  const limit = 9;
+
+  const { data } = useAllProducts({
+    page,
+    limit,
+    search: filters.search,
+    filter: {
+      categoryID: filters.category !== "all" ? filters.category : undefined,
+      subCategoryID:
+        filters.subCategory !== "all" ? filters.subCategory : undefined,
+    },
+  });
+
+  const products: IProduct[] = data?.data || [];
+  const pagination = data?.pagination || {
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    limit,
+  };
+
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
   const [itemToActive, setItemToActive] = useState<{
     id: string;
     isActive: boolean;
   } | null>(null);
-  const { invalidateQueries } = useQueryClient();
 
   const queryClient = useQueryClient();
   const { mutate: setProductStatus } = useProductStatus();
 
   const handleRemoveClick = (id: string) => {
-    setItemToRemove(id); // open modal
+    setItemToRemove(id);
   };
 
   const confirmRemove = () => {
     if (itemToRemove) {
-      deleteProduct(itemToRemove);
-      setItemToRemove(null); // close modal after deletion
+      deleteProduct(itemToRemove, {
+        onSuccess: () =>
+          queryClient.invalidateQueries({ queryKey: ["searchProducts"] }),
+      });
+      setItemToRemove(null);
     }
   };
-  
 
   const handleActiveClick = (id: string, isActive: boolean) => {
-    console.log(id, isActive);
-    setItemToActive({ id, isActive }); // open modal
+    setItemToActive({ id, isActive });
   };
 
   const confirmActive = () => {
     if (itemToActive) {
       setProductStatus(itemToActive, {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["getProductsByAdmin"] });
-          setItemToActive(null); // Close modal
+          queryClient.invalidateQueries({ queryKey: ["searchProducts"] });
+          setItemToActive(null);
         },
       });
     }
   };
 
-  const handleExport = () => {
-    if (!filteredProducts.length) return;
+  const handleExport = async () => {
+  try {
+    const res = await productApi.getAllProductsApi({
+      page: 1,
+      limit: pagination.total,
+      search: filters.search,
+      filter: {
+        categoryID: filters.category !== "all" ? filters.category : undefined,
+        subCategoryID: filters.subCategory !== "all" ? filters.subCategory : undefined,
+      },
+    });
 
-    const data = filteredProducts.map((product, i) => ({
+    const allProducts = res.data;
+
+    if (!allProducts.length) return;
+
+    const data = allProducts.map((product: any, i) => ({
       "S.N.": String(i + 1),
       Name: product.name,
       Brand: product.brand,
@@ -73,31 +116,8 @@ export default function ProductsPage() {
       Discounted_Price: product.discountedPrice,
       Stock: product.stock,
       Description: product.description || "",
-
-      // Flatten technical specifications (performance)
-      Series: product.technicalSpecification?.performance?.series || "",
-      CPU: product.technicalSpecification?.performance?.cpu || "",
-      Graphics: product.technicalSpecification?.performance?.graphics || "",
-      Display: product.technicalSpecification?.performance?.display || "",
-      OperatingSystem:
-        product.technicalSpecification?.performance?.operatingSystem || "",
-
-      // Flatten technical specifications (memoryAndStorage)
-      MainMemory:
-        product.technicalSpecification?.memoryAndStorage?.mainMemory || "",
-      Storage: product.technicalSpecification?.memoryAndStorage?.storage || "",
-      Connectivity:
-        product.technicalSpecification?.memoryAndStorage?.connectivity || "",
-      Camera: product.technicalSpecification?.memoryAndStorage?.camera || "",
-      Audio: product.technicalSpecification?.memoryAndStorage?.audio || "",
-      Battery: product.technicalSpecification?.memoryAndStorage?.battery || "",
-      Weight: product.technicalSpecification?.memoryAndStorage?.weight || "",
-      Warranty:
-        product.technicalSpecification?.memoryAndStorage?.warranty || "",
-
-      // Flatten specifications array into a single string
       Specifications: product.specifications
-        .map((spec) => `${spec.key}: ${spec.value}`)
+        .map((spec: any) => `${spec.key}: ${spec.value}`)
         .join("; "),
       CreatedAt: product.createdAt
         ? new Date(product.createdAt).toLocaleString()
@@ -108,18 +128,14 @@ export default function ProductsPage() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], {
-      type: "application/octet-stream",
-    });
-    saveAs(
-      blob,
-      `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`
-    );
-  };
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`);
+  } catch (error) {
+    console.error("Export failed", error);
+  }
+};
+
 
   return (
     <div className="space-y-6">
@@ -127,7 +143,12 @@ export default function ProductsPage() {
       <ProductHeader />
 
       {/* Filters */}
-      <Filters onFilter={setFilteredProducts} />
+      <Filters
+        onChange={(newFilters) => {
+          setFilters(newFilters);
+          setPage(1); // reset to page 1 when filters change
+        }}
+      />
 
       {/* Products Table */}
       <Card>
@@ -142,13 +163,50 @@ export default function ProductsPage() {
           </CardHeader>
           <CardContent>
             <ProductTable
-              products={filteredProducts}
+              products={products}
               onDelete={handleRemoveClick}
               onSetActive={handleActiveClick}
             />
+
+            {/* Pagination */}
+            <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                Prev
+              </Button>
+
+              {Array.from({ length: pagination.totalPages }, (_, idx) => {
+                const pageNum = idx + 1;
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={pageNum === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setPage(pageNum)}
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page + 1)}
+                disabled={page === pagination.totalPages}
+              >
+                Next
+              </Button>
+            </div>
           </CardContent>
         </div>
       </Card>
+
+      {/* Confirm Dialogs */}
       <ConfirmDialog
         open={itemToRemove !== null}
         title="Remove Product"

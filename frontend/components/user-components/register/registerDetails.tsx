@@ -5,7 +5,7 @@ export default function RegisterDetails(){
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
           <div className="max-w-md text-center">
-            <h1 className="text-5xl font-bold mb-6">Join Navyan Tech Family!</h1>
+            <h1 className="text-5xl font-bold mb-6">Join NavYantra Family!</h1>
             <p className="text-xl mb-8 opacity-90">
               Become part of Nepal's most trusted technology community. Get access to exclusive deals, expert advice,
               and premium tech solutions tailored for you.

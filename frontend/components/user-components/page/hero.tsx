@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
 import DataUnavailable from "../layout/LoadingPage";
+import DataLoading from "../layout/LoadingPage";
 
 export default function Hero() {
   const { data: products, isError, isLoading } = useAllProducts({});
@@ -17,7 +18,7 @@ export default function Hero() {
   const displayCount = customerCount > 100 ? customerCount : 120;
 
   if (isLoading)
-    return <DataUnavailable item="Categories" />;
+    return <DataLoading />;
   if (isError || !products)
     return <div className="p-12 text-center">Product details Not Found</div>;
 
@@ -68,7 +69,7 @@ export default function Hero() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {products?.length}+
+                  {products?.pagination.total}+
                 </div>
                 <div className="text-sm text-muted-foreground">Products</div>
               </div>

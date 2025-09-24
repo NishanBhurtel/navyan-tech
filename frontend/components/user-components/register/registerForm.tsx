@@ -95,7 +95,7 @@ export default function RegisterForm() {
                     {...register("firstName", {
                       required: "First name is required",
                     })}
-                    placeholder="John"
+                    placeholder="Gaurav"
                     className="h-11"
                   />
                   {errors.firstName && (
@@ -110,7 +110,7 @@ export default function RegisterForm() {
                     {...register("lastName", {
                       required: "Last name is required",
                     })}
-                    placeholder="Doe"
+                    placeholder="Karki"
                     className="h-11"
                   />
                   {errors.lastName && (
@@ -125,7 +125,7 @@ export default function RegisterForm() {
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   {...register("email", { required: "Email is required" })}
-                  placeholder="john@example.com"
+                  placeholder="gauravkarki@example.com"
                   className="h-11"
                 />
                 {errors.email && (
@@ -139,7 +139,7 @@ export default function RegisterForm() {
                   {...register("phoneNumber", {
                     required: "Phone number is required",
                   })}
-                  placeholder="977 9812345678"
+                  placeholder="9812345678"
                   className="h-11"
                 />
                 {errors.phoneNumber && (
