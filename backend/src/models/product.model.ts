@@ -78,7 +78,7 @@ const ProductSchema: Schema = new Schema(
       type: Boolean,
       default: false,
     },
-    isActive:{
+    isActive: {
       type: Boolean,
       default: false,
     },

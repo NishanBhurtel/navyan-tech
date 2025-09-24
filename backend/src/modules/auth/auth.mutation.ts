@@ -1,8 +1,8 @@
 import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { authContract } from "../../contract/auth/auth.contract";
 import userRepository from "../../repository/mongodb/user/users.repository";
-import bcrypt from "bcryptjs";
 import { authRepository } from "../../repository/mongodb/auth/auth.repository";
+import bcrypt from "bcryptjs";
 import env from "../../config/env";
 
 export const registerUser: AppRouteMutationImplementation<
@@ -14,6 +14,7 @@ export const registerUser: AppRouteMutationImplementation<
     const existingUsers = await userRepository.getAllUsers({
       email: email.toLowerCase(),
     });
+
     if (existingUsers.length > 0) {
       return {
         status: 400,
@@ -39,6 +40,7 @@ export const registerUser: AppRouteMutationImplementation<
         userId: newUser._id.toString(),
       },
     };
+    
   } catch (error) {
     console.error("Register error:", error);
     return {

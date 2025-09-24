@@ -15,7 +15,7 @@ class AuthRepository {
     try {
       return jwt.verify(token, secret, options) as string | jwt.JwtPayload;
     } catch (err) {
-      return null;
+      throw new Error(err instanceof Error ? err.message : "Invalid token");
     }
   }
 
