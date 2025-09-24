@@ -11,7 +11,7 @@ export default function ProductTableRow({
   onSetActive,
 }: {
   product: IProduct;
-  onDelete: (id: string) => void;
+  onDelete: (id: IProduct) => void;
   onSetActive: (id: string, isActive: boolean) => void;
 }) {
   return (
@@ -36,13 +36,12 @@ export default function ProductTableRow({
       </TableCell>
       <TableCell>
         <span
-          className={`${
-            product.stock === 0
-              ? "text-red-600"
-              : product.stock < 10
+          className={`${product.stock === 0
+            ? "text-red-600"
+            : product.stock < 10
               ? "text-yellow-600"
               : "text-green-600"
-          }`}
+            }`}
         >
           {product.stock}
         </span>
@@ -55,8 +54,7 @@ export default function ProductTableRow({
       </TableCell>
       <TableCell className="text-right">
         <ProductActions
-          productId={product._id}
-          isActive={product.isActive}
+          product={product}
           onDelete={onDelete}
           onSetActive={onSetActive}
         />

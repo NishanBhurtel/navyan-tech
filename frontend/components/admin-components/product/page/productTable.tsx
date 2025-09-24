@@ -12,7 +12,7 @@ import { IProduct } from "@/lib/utils/types/product.type";
 
 interface ProductTableProps {
   products: IProduct[];
-  onDelete: (id: string) => void;
+  onDelete: (id: IProduct) => void;
   onSetActive: (id: string, isActive: boolean) => void;
 }
 

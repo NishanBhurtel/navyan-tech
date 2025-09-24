@@ -16,16 +16,15 @@ import {
   CheckCircle,
   CircleOff,
 } from "lucide-react";
+import { IProduct } from "@/lib/utils/types/product.type";
 
 export default function ProductActions({
-  productId,
-  isActive,
+  product,
   onDelete,
   onSetActive,
 }: {
-  productId: string;
-  isActive: boolean;
-  onDelete: (id: string) => void;
+  product:IProduct
+  onDelete: (id: IProduct) => void;
   onSetActive: (id: string, isActive: boolean) => void;
 
 }) {
@@ -38,23 +37,23 @@ export default function ProductActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>
-          <Link href={`/admin/products/${productId}`}>
+          <Link href={`/admin/products/${product._id}`}>
             <Eye className="h-4 w-4 mr-2 hover:text-white" />
             View
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
 
-          <Link href={`/admin/products/${productId}/edit`}>
+          <Link href={`/admin/products/${product._id}/edit`}>
             <Edit className="h-4 w-4 mr-2 hover:text-white" />
             Edit
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() =>{console.log(isActive) , onSetActive(productId, !isActive)}}
-          className={isActive ? "text-gray-600" : "text-green-600"}
+          onClick={() =>{console.log(product.isActive) , onSetActive(product._id, !product.isActive)}}
+          className={product.isActive ? "text-gray-600" : "text-green-600"}
         >
-          {isActive ? (
+          {product.isActive ? (
             <>
               <CircleOff className="h-4 w-4 mr-2 text-red-600 group-hover:text-white" />
               Set Inactive
@@ -68,7 +67,7 @@ export default function ProductActions({
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-red-600"
-          onClick={() => onDelete(productId)}
+          onClick={() => onDelete(product)}
         >
           <Trash2 className="h-4 w-4 mr-2 hover:text-white" />
           Delete

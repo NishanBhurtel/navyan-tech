@@ -128,6 +128,7 @@ class ProductRepository {
     filters,
     skip = 0,
     limit = 9,
+    displayInactive = false,
   }: {
     searchQuery?: string;
     filters?: Partial<
@@ -138,6 +139,7 @@ class ProductRepository {
     >;
     skip?: number;
     limit?: number;
+    displayInactive?: boolean;
   } = {}): Promise<{ products: any[]; total: number }> {
     try {
       const query: any = {};
@@ -168,6 +170,13 @@ class ProductRepository {
         query.subCategoryID = filters.subCategoryID;
       }
 
+      // --- Active Status Filter ---
+      if (displayInactive) {
+        query.isActive = { $in: [true, false] }; // show all
+      } else {
+        query.isActive = true; // only active products
+      }
+
       // --- Search Query ---
       if (searchQuery?.trim()) {
         const searchRegex = new RegExp(searchQuery, "i");
@@ -177,7 +186,6 @@ class ProductRepository {
           { brand: searchRegex },
         ];
       }
-
 
       // --- Count total products for pagination ---
       const total = await Product.countDocuments(query);
@@ -225,14 +233,20 @@ class ProductRepository {
 
   async countProducts({
     categoryID,
+    countInActive = false,
   }: {
     categoryID?: string;
+    countInActive?: boolean;
   }): Promise<number> {
     try {
       const query: any = {};
       if (categoryID) {
         query.categoryID = categoryID;
       }
+      if (!countInActive) {
+        query.isActive = true;
+      }
+
       return await Product.countDocuments(query);
     } catch (error) {
       throw new Error(`Error counting products by category: ${error}`);

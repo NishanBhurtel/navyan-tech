@@ -1,6 +1,7 @@
 import { AppRouteQueryImplementation } from "@ts-rest/express";
 import { productContract } from "../../contract/products/product.contract";
 import productRepository from "../../repository/mongodb/product/product.repository";
+import { TsRestAuthRequest } from "../../types/AuthRequest";
 
 const getProductDetailsByID: AppRouteQueryImplementation<
   typeof productContract.getProductDetailsByID
@@ -68,9 +69,10 @@ const getProductDetailsByID: AppRouteQueryImplementation<
 
 const getALLProduct: AppRouteQueryImplementation<
   typeof productContract.getAllProduct
-> = async ({ query }) => {
+> = async ({ req, query }) => {
   try {
-    console.log("Query received in getALLProduct:", query);
+    const tsRestReq = req as TsRestAuthRequest;
+    const reqUser = tsRestReq.user;
 
     // Extract pagination params (default page=1, limit=10)
     const page = query.page ? Number(query.page) : 1;
@@ -89,6 +91,7 @@ const getALLProduct: AppRouteQueryImplementation<
       },
       skip, // pass to DB query
       limit, // pass to DB query
+      displayInactive: reqUser?.role === "admin" ? true : false,
     });
 
     // Count total for pagination metadata

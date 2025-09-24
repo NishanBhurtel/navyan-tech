@@ -21,6 +21,7 @@ import { useProductStatus } from "@/hooks/product/setProductStatus";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { productApi } from "@/lib/api/product.api";
+import { useDeleteImages } from "@/hooks/images/useDeleteFirebaseImage";
 
 export default function ProductsPage() {
   const { mutate: deleteProduct } = useDeleteProduct();
@@ -52,24 +53,30 @@ export default function ProductsPage() {
     limit,
   };
 
-  const [itemToRemove, setItemToRemove] = useState<string | null>(null);
+  const [itemToRemove, setItemToRemove] = useState<IProduct | null>(null);
   const [itemToActive, setItemToActive] = useState<{
     id: string;
     isActive: boolean;
   } | null>(null);
 
   const queryClient = useQueryClient();
+  const { deleteImages } = useDeleteImages();
   const { mutate: setProductStatus } = useProductStatus();
 
-  const handleRemoveClick = (id: string) => {
+  const handleRemoveClick = (id: IProduct) => {
     setItemToRemove(id);
   };
 
   const confirmRemove = () => {
     if (itemToRemove) {
-      deleteProduct(itemToRemove, {
-        onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: ["searchProducts"] }),
+      deleteProduct(itemToRemove._id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["searchProducts"] });
+          // Delete associated images from Firebase Storage
+          if (itemToRemove.images && itemToRemove.images.length > 0) {
+            deleteImages(itemToRemove.images || []);
+          }
+        }
       });
       setItemToRemove(null);
     }
@@ -91,50 +98,50 @@ export default function ProductsPage() {
   };
 
   const handleExport = async () => {
-  try {
-    const res = await productApi.getAllProductsApi({
-      page: 1,
-      limit: pagination.total,
-      search: filters.search,
-      filter: {
-        categoryID: filters.category !== "all" ? filters.category : undefined,
-        subCategoryID: filters.subCategory !== "all" ? filters.subCategory : undefined,
-      },
-    });
+    try {
+      const res = await productApi.getAllProductsApi({
+        page: 1,
+        limit: pagination.total,
+        search: filters.search,
+        filter: {
+          categoryID: filters.category !== "all" ? filters.category : undefined,
+          subCategoryID: filters.subCategory !== "all" ? filters.subCategory : undefined,
+        },
+      });
 
-    const allProducts = res.data;
+      const allProducts = res.data;
 
-    if (!allProducts.length) return;
+      if (!allProducts.length) return;
 
-    const data = allProducts.map((product: any, i) => ({
-      "S.N.": String(i + 1),
-      Name: product.name,
-      Brand: product.brand,
-      Category: product.categoryID?.name || "",
-      Sub_Category: product.subCategoryID?.name || "",
-      Original_Price: product.originalPrice,
-      Discounted_Price: product.discountedPrice,
-      Stock: product.stock,
-      Description: product.description || "",
-      Specifications: product.specifications
-        .map((spec: any) => `${spec.key}: ${spec.value}`)
-        .join("; "),
-      CreatedAt: product.createdAt
-        ? new Date(product.createdAt).toLocaleString()
-        : "",
-    }));
+      const data = allProducts.map((product: any, i) => ({
+        "S.N.": String(i + 1),
+        Name: product.name,
+        Brand: product.brand,
+        Category: product.categoryID?.name || "",
+        Sub_Category: product.subCategoryID?.name || "",
+        Original_Price: product.originalPrice,
+        Discounted_Price: product.discountedPrice,
+        Stock: product.stock,
+        Description: product.description || "",
+        Specifications: product.specifications
+          .map((spec: any) => `${spec.key}: ${spec.value}`)
+          .join("; "),
+        CreatedAt: product.createdAt
+          ? new Date(product.createdAt).toLocaleString()
+          : "",
+      }));
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`);
-  } catch (error) {
-    console.error("Export failed", error);
-  }
-};
+      const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+      saveAs(blob, `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`);
+    } catch (error) {
+      console.error("Export failed", error);
+    }
+  };
 
 
   return (
