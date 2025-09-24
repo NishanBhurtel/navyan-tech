@@ -26,7 +26,7 @@ export const addToWishlist = (item: WishlistItem): { success: boolean; message: 
 };
 
 
-export const removeFromWishlist = (id: number): void => {
+export const removeFromWishlist = (id: string): void => {
   const current = getWishlist().filter((w) => w.id !== id);
   saveWishlist(current);
 };

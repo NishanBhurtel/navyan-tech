@@ -68,11 +68,11 @@ import {
   addToWishlist,
   getWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
-import DataUnavailable from "../layout/LoadingPage";
 import ErrorState from "../layout/ErrorPage";
 import { useAppToast } from "@/lib/tostify";
 import { useEffect, useState } from "react";
 import { productApi } from "@/lib/api/product.api";
+import DataLoading from "../layout/LoadingPage";
 
 export default function GamingLaptop() {
   const heading = "Gaming Laptops";
@@ -152,7 +152,7 @@ export default function GamingLaptop() {
 
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
-  if (isLoading) return <DataUnavailable />;
+  if (isLoading) return <DataLoading />;
   if (isError) return <ErrorState />;
 
   return (

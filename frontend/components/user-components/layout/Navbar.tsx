@@ -25,15 +25,13 @@ import DataLoading from "./LoadingPage";
 import { getSession } from "next-auth/react";
 import { ISession } from "@/lib/utils/types/auth.type";
 import { signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
 
 interface FormValues {
   search: string;
 }
 
 const Navbar = () => {
-  const { data: categories, isLoading, error } = useCategories();
-  const [token, setToken] = useState<string | null>(null);
+  const { data: categories, isLoading, isError } = useCategories();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [session, setSession] = useState<ISession | null>(null);
@@ -60,20 +58,14 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-
     const items = getWishlist();
     setWishlistItems(items.slice().reverse());
   }, []);
 
   if (isLoading) return <DataLoading />;
-  if (error) return <ErrorState />;
+  if (isError) return <ErrorState />;
 
   const handleLogout = async () => {
-    // Clear storages
-    localStorage.clear();
-    sessionStorage.clear();
 
     // Sign out user
     await signOut({
@@ -83,7 +75,6 @@ const Navbar = () => {
   };
 
   const authUser = session?.user;
-  console.log(authUser);
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">

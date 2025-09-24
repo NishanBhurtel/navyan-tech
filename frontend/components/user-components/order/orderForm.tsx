@@ -25,6 +25,9 @@ import { orderApi } from "@/lib/api/order.api";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
 import { useAppToast } from "@/lib/tostify";
+import { useEffect, useState } from "react";
+import { ISession } from "@/lib/utils/types/auth.type";
+import { getSession } from "next-auth/react";
 
 interface OrderFormProps {
   product: IProduct;
@@ -58,9 +61,21 @@ export default function OrderForm({
       totalPrice: total,
     },
   });
+  const [session, setSession] = useState<ISession | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+    };
+    fetchSession();
+  }, []);
+
+  const authUser = session?.user.token;
+  console.log(authUser)
 
   const router = useRouter();
-const { toastSuccess, toastError} = useAppToast();
+  const { toastSuccess, toastError } = useAppToast();
   const mutation = useMutation({
     mutationFn: (data: TCreateOrderFormSchema) =>
       orderApi.createOrderApi({
@@ -92,7 +107,7 @@ const { toastSuccess, toastError} = useAppToast();
     },
 
     onError: (error: any) => {
-     toastError("Failed to placed your order!")
+      toastError("Failed to placed your order!");
     },
   });
 
@@ -100,6 +115,9 @@ const { toastSuccess, toastError} = useAppToast();
     data.productID = product._id;
     data.quantity = quantity;
     data.totalPrice = total;
+    // if (!authUser) {
+    //   toastError("Please login to place your order!");
+    // }
     mutation.mutate(data);
   };
 

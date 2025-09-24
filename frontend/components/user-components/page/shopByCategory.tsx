@@ -3,13 +3,9 @@ import Link from "next/link";
 
 // Icons for categories
 import { Cpu, Monitor, Laptop, Gamepad2, Headphones } from "lucide-react";
-import ErrorState from "../layout/ErrorPage";
+import { useCategories } from "@/hooks/categories/getCategories";
 import DataLoading from "../layout/LoadingPage";
-import { Category } from "@/components/admin-components/category/types";
-
-type CategoryProps = {
-  category?: Category[];
-};
+import ErrorState from "../layout/ErrorPage";
 
 // Map category names to icons
 const categoryIcons: Record<string, any> = {
@@ -32,18 +28,14 @@ const categoryColors: string[] = [
   "from-emerald-500 to-green-600",
 ];
 
-export default function ShopByCategory({ category }: CategoryProps) {
+export default function ShopByCategory() {
 
-  // if (isLoading) {
-  //   return <DataLoading />;
-  // }
+    const {data: categories, isError, isLoading } = useCategories();
 
-  // if (error) {
-  //   return (
-  //     <ErrorState />
-  //   );
-  // }
-
+    if (isLoading)
+    return <DataLoading  />;
+    if (isError || !categories)
+    return <ErrorState />
 
   return (
     <section className="py-16 bg-background">
@@ -58,7 +50,7 @@ export default function ShopByCategory({ category }: CategoryProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {category?.map((cat, index: number) => {
+          {categories?.map((cat, index: number) => {
             const Icon = categoryIcons[cat.name] || Monitor; // default icon
             const color = categoryColors[index % categoryColors.length];
 

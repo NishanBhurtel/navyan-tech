@@ -12,10 +12,11 @@ import {
   getWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import { useAppToast } from "@/lib/tostify";
+import { getSession } from "next-auth/react";
+import { ISession } from "@/lib/utils/types/auth.type";
 
 export default function ProductInfo({ product }: { product: IProduct }) {
   const [orderNumber, setOrderNumber] = useState(1);
-  const [token, setToken] = useState<string | null>(null);
   const [alreadyInWishlist, setAlreadyInWishlist] = useState(false);
   const { toastSuccess, toastError } = useAppToast();
 
@@ -53,6 +54,16 @@ export default function ProductInfo({ product }: { product: IProduct }) {
   const decrementOrder = () =>
     setOrderNumber((prev) => (prev > 1 ? prev - 1 : 1));
   const isAvailable = product.stock > 0;
+  const [session, setSession] = useState<ISession | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+    };
+    fetchSession();
+  }, []);
+  const userAuth = session?.user;
 
   return (
     <div className="space-y-6">
@@ -120,7 +131,7 @@ export default function ProductInfo({ product }: { product: IProduct }) {
 
         {/* Actions */}
         <div className="flex space-x-4">
-          {/* {token ? (
+          {userAuth ? (
             <Link
               href={`/order?product=${product._id}&order=${orderNumber}`}
               className="flex-1"
@@ -135,15 +146,7 @@ export default function ProductInfo({ product }: { product: IProduct }) {
                 Order Now
               </Button>
             </Link>
-          )} */}
-            <Link
-              href={`/order?product=${product._id}&order=${orderNumber}`}
-              className="flex-1"
-            >
-              <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium py-3">
-                Order Now
-              </Button>
-            </Link>
+          )}
           <div
             className=" h-9 w-9 flex items-center justify-center border border-gray-200 rounded-[8px]"
             onClick={() => handleAddToWishlist(product)}
