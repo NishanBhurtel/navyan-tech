@@ -3,8 +3,8 @@ import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { emailContract } from "../../contract/email/email.contract";
 
 import { SentMail } from "../../repository/EmailRepository/sentMail";
-import EmailTemplate from "./emailTemplate";
 import EmailTemplateForSpecificUser from "./emailTemplateForSpecificUser";
+import { EmailTemplate } from "./emailTemplate";
 const emailService = new SentMail();
 
 const sentMailMutation: AppRouteMutationImplementation<
@@ -16,7 +16,7 @@ const sentMailMutation: AppRouteMutationImplementation<
       subject,
       text: text,
       // html: `<p>${text}  </p>`,
-      html: EmailTemplate(),
+      html: EmailTemplate(subject,text),
     });
     return {
       status: 200,

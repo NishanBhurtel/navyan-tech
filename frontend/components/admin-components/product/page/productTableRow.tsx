@@ -6,16 +6,19 @@ import ProductActions from "./productAction";
 import { IProduct } from "@/lib/utils/types/product.type";
 
 export default function ProductTableRow({
+  sn,
   product,
   onDelete,
   onSetActive,
 }: {
+  sn: number;
   product: IProduct;
   onDelete: (id: IProduct) => void;
   onSetActive: (id: string, isActive: boolean) => void;
 }) {
   return (
     <TableRow>
+      <TableCell>{String(sn)}</TableCell>
       <TableCell>
         <div className="flex items-center space-x-3">
           <img

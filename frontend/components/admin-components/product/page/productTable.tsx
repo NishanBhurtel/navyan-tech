@@ -11,12 +11,14 @@ import ProductTableRow from "./productTableRow";
 import { IProduct } from "@/lib/utils/types/product.type";
 
 interface ProductTableProps {
+  currentPageNo: number;
   products: IProduct[];
   onDelete: (id: IProduct) => void;
   onSetActive: (id: string, isActive: boolean) => void;
 }
 
 export default function ProductTable({
+  currentPageNo,
   products,
   onDelete,
   onSetActive,
@@ -26,6 +28,7 @@ export default function ProductTable({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>S.N.</TableHead>
             <TableHead>Product</TableHead>
             <TableHead>Brand</TableHead>
             <TableHead>Category</TableHead>
@@ -37,14 +40,18 @@ export default function ProductTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <ProductTableRow
-              key={product._id}
-              product={product}
-              onDelete={onDelete}
-              onSetActive={onSetActive}
-            />
-          ))}
+          {products.map((product, i) => {
+            const SN = ((currentPageNo-1) * 9) + (i+1);
+            return (
+              <ProductTableRow
+                sn={SN}
+                key={product._id}
+                product={product}
+                onDelete={onDelete}
+                onSetActive={onSetActive}
+              />
+            );
+          })}
         </TableBody>
       </Table>
     </div>

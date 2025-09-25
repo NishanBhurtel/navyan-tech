@@ -122,9 +122,12 @@ export default function FeaturedProduct() {
     };
 
     const result = addToWishlist(item);
-    result.success
-      ? toastSuccess("Item added to wishlist")
-      : toastError("Item failed to add in your wishlist");
+    if (result.success) {
+      toastSuccess("Item added to wishlist");
+      setWishlist((prev) => [...prev, item]); // 🟢 THIS is what was missing
+    } else {
+      toastError("Item already in your wishlist");
+    }
   };
 
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
@@ -186,7 +189,7 @@ export default function FeaturedProduct() {
                     <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
                       <Link
                         className="hover:underline hover:text-blue-600"
-                        href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
+                        href={`/search?categoryID=${product.categoryID._id}`}
                       >
                         {product.categoryID?.name}{" "}
                       </Link>

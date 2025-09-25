@@ -39,7 +39,7 @@ export default function SearchPage() {
 
   const products = data?.data || [];
   const pagination = data?.pagination;
-
+console.log("Debug 2 ",data)
   // ✅ Update product availability safely
   useEffect(() => {
     setIsProductAvailable(products.length > 0);
@@ -69,7 +69,7 @@ export default function SearchPage() {
           {/* Products Section */}
           <div className="md:col-span-4 lg:col-span-3">
             <div className="space-y-6">
-              <SortByFeatured products={products} />
+              <SortByFeatured filteredProductCount={products.length} totalProductsCount={data?.pagination.total}  />
               <ProductGrid products={products} />
 
               {/* ✅ Show pagination only if products exist */}

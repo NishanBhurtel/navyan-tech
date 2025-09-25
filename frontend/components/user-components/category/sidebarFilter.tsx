@@ -34,6 +34,7 @@ export default function SidebarFilter({ products }: ProductGridProps) {
 
   if (isLoading) return <DataLoading />;
   if (!categories) return <DataLoading />;
+  
 
   // --- Collect subcategory counts dynamically ---
   const subCategoryCounts: Record<string, number> = {};

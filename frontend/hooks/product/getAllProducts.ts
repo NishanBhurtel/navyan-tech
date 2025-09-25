@@ -17,6 +17,7 @@ export interface IProductQueryParams {
   limit?: number; // ✅ add this
 }
 export function useAllProducts({ page, limit, search, filter }: IProductQueryParams) {
+  console.log("Debug All product",filter )
   return useQuery<PaginatedResponse<IProduct>>({
     queryKey: ["searchProducts", page, limit, search, JSON.stringify(filter)], // ✅ stable key
     queryFn: () => productApi.getAllProductsApi({ page, limit, search, filter }),

@@ -23,7 +23,6 @@
 //   const categoryID = pcComponents?.[0]?.categoryID?._id;
 //     const subCategoryID = pcComponents?.[0]?.subCategoryID?._id;
 
-
 //   if (isLoading)
 //     return <DataLoading />;
 //   if (isError || !products)
@@ -51,7 +50,10 @@ import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Heart, ChevronRight } from "lucide-react";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-import { addToWishlist, getWishlist } from "@/lib/localStorage/wishlist.localStorage";
+import {
+  addToWishlist,
+  getWishlist,
+} from "@/lib/localStorage/wishlist.localStorage";
 import DataLoading from "../layout/LoadingPage";
 import ErrorState from "../layout/ErrorPage";
 import { useAppToast } from "@/lib/tostify";
@@ -59,7 +61,7 @@ import { useEffect, useState } from "react";
 import { productApi } from "@/lib/api/product.api";
 
 export default function PcComponents() {
-  const heading = "PC Components";
+  const categoryID = process.env.NEXT_PUBLIC_PC_COMPONENTS_CATEGORY_ID;
   const { toastSuccess, toastError } = useAppToast();
   const [products, setProducts] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
@@ -103,6 +105,8 @@ export default function PcComponents() {
     };
   }, []);
 
+  console.log(categoryID);
+
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
     const item: WishlistItem = {
@@ -129,23 +133,27 @@ export default function PcComponents() {
 
   // filter all products by "Components" category
   const pcComponents = products.filter(
-    (product) => product.categoryID?.name === "Components"
-  );
+    (product) => product.categoryID._id === categoryID
+  ).slice(0,10);
 
-  const categoryID = pcComponents?.[0]?.categoryID?._id;
-  const subCategoryID = pcComponents?.[0]?.subCategoryID?._id;
 
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
-  
+
   return (
     <section className="py-16 bg-background" id="components">
       <div className="container mx-auto px-4">
         <div className="flex-cols items-center justify-between mb-12">
           <div className="w-full flex items-center justify-between py-4">
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
-              {heading}
+              PC Components
             </h2>
-            <Link href={categoryID ? `/search?categoryID=${categoryID}&subCategoryID=${subCategoryID}` : "#"}>
+            <Link
+              href={
+                categoryID
+                  ? `/search?categoryID=${categoryID}`
+                  : "#"
+              }
+            >
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -160,14 +168,14 @@ export default function PcComponents() {
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-muted-foreground">
               No any product related to{" "}
-              <span className="font-bold">{heading}</span>
+              <span className="font-bold">PC Components</span>
             </h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {pcComponents.map((product: any) => {
               const isAvailable = product.stock > 0;
-                            const alreadyInWishlist = isInWishlist(product._id);
+              const alreadyInWishlist = isInWishlist(product._id);
               return (
                 <Card
                   key={product._id}
@@ -182,10 +190,11 @@ export default function PcComponents() {
                         className="w-full h-full object-cover"
                       />
                       <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${isAvailable
-                          ? "bg-green-600 text-white"
-                          : "bg-red-500 text-white"
-                          }`}
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
+                          isAvailable
+                            ? "bg-green-600 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {isAvailable ? "In Stock" : "Out of Stock"}
                       </span>
@@ -196,13 +205,15 @@ export default function PcComponents() {
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
                     <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
-                      <Link className="hover:underline hover:text-blue-600"
-                        href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.categoryID._id}`}
                       >
                         {product.categoryID?.name}{" "}
                       </Link>
                       <ChevronRight className="w-3 h-3" />
-                      <Link className="hover:underline hover:text-blue-600"
+                      <Link
+                        className="hover:underline hover:text-blue-600"
                         href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
                       >
                         {product.subCategoryID?.name}{" "}
