@@ -3,19 +3,18 @@ import {
   TLoginSchema,
   TRegisterSchema,
   TVerifyOtpSchema,
-  TResendOtpSchema
+  TResendOtpSchema,
 } from "../form-validation/auth-validation";
 
 // POST /auth/register - Register new user
-const registerApi = async (
-  registerPayload: TRegisterSchema
-) => {
+const registerApi = async (registerPayload: TRegisterSchema) => {
   const response = await apiClient.post("/auth/register", registerPayload);
   return response.data;
 };
 
 // POST /auth/login - Login user
 const loginApi = async (loginPayload: TLoginSchema) => {
+  console.log("loginPayload in auth api: ", loginPayload);
   const response = await apiClient.post("/auth/login", loginPayload);
   console.log("response from login api : ", response);
   return response.data;
@@ -45,12 +44,11 @@ const resendOtpApi = async (resendOtpPayload: TResendOtpSchema) => {
   return response.data;
 };
 
-
 export const authApi = {
   registerApi,
   loginApi,
   logoutApi,
   getLoggedInUserApi,
   verifyOtpApi,
-  resendOtpApi
+  resendOtpApi,
 };

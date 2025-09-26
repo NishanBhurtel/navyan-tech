@@ -27,6 +27,8 @@ export default function LoginForm() {
   const router = useRouter();
   const { toastSuccess, toastError } = useAppToast();
 
+  console.log("next auth env : ", process.env.NEXTAUTH_URL);
+  console.log("next auth env : ", process.env.NEXTAUTH_SECRET);
   const {
     register,
     handleSubmit,
