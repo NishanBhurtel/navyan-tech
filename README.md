@@ -1,2 +1,1 @@
-.Navyan Tech.......
-.,..
+Navyan tech
