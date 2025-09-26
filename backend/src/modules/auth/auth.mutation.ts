@@ -86,9 +86,13 @@ export const loginUser: AppRouteMutationImplementation<
 
     const userId = user._id.toString();
 
+    console.log("jwt secret", env.JWT_SECRET);
+    
     const token = authRepository.createJwtToken({ userId }, env.JWT_SECRET, {
       expiresIn: "1d",
     });
+
+    console.log("token: ", token);
 
     return {
       status: 200,
