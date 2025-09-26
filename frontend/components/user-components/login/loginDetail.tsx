@@ -31,7 +31,7 @@ export default function LoginDetails() {
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-2xl font-bold">
-                {products ? products.pagination.total : 120}+
+                {products ? products.pagination?.total : 120}+
               </div>
               <div className="opacity-80">Tech Products</div>
             </div>

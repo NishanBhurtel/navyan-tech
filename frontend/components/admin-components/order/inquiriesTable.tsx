@@ -139,7 +139,7 @@ export default function InquiriesTable({
                     </div>
                   </TableCell>
                   <TableCell className="font-medium text-sm text-gray-500">
-                    Rs.{inquiry.totalAmount.toLocaleString()}
+                    Rs.{inquiry?.totalAmount.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-sm text-gray-500">
                     {moment(inquiry.createdAt).format("llll")}

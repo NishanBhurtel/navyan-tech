@@ -61,7 +61,7 @@ export default function OrderSummary({ product, quantity, paymentDetails }: Orde
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span>Rs.{paymentDetails.total.toLocaleString()}</span>
+              <span>Rs.{paymentDetails?.total.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>
