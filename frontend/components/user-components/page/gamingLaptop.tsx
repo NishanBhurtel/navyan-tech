@@ -233,11 +233,7 @@ export default function GamingLaptop() {
                       <ChevronRight className="w-3 h-3" />
                       <Link
                         className="hover:underline hover:text-blue-600"
-<<<<<<< HEAD
-                        href={`/search?categoryID=${product.subCategoryID._id}`}
-=======
                         href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
->>>>>>> 67635c25994443a44970b6d12a1c2730b5209bde
                       >
                         {product.subCategoryID?.name}{" "}
                       </Link>
