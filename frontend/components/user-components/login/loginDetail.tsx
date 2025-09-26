@@ -2,7 +2,7 @@
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
 export default function LoginDetails() {
-  const { data: products, isError, isLoading } = useAllProducts({});
+  const { data: products } = useAllProducts({});
 
   const { data: users } = useAllUsers();
   const customerCount = users
@@ -11,19 +11,13 @@ export default function LoginDetails() {
 
   const displayCount = customerCount > 100 ? customerCount : 120;
 
-
-  if (isLoading)
-    return <div className="p-12 text-center">Loading product details...</div>;
-  if (isError || !products)
-    return <div className="p-12 text-center">Product details Not Found</div>;
-
   return (
     <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 via-green-700 to-green-800 relative overflow-hidden">
       <div className="absolute inset-0 bg-black/20" />
       <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
         <div className="max-w-md text-center">
           <h1 className="text-5xl font-bold mb-6">
-            Welcome Back to Navyan Tech!
+            Welcome Back to NavYantra!
           </h1>
           <p className="text-xl mb-8 opacity-90">
             Your trusted partner in cutting-edge technology. Experience premium
@@ -37,7 +31,7 @@ export default function LoginDetails() {
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-2xl font-bold">
-                {products ? products.length : 500}+
+                {products ? products.pagination.total : 120}+
               </div>
               <div className="opacity-80">Tech Products</div>
             </div>

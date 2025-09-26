@@ -24,6 +24,10 @@ import { orderApi } from "@/lib/api/order.api";
 // import useToast from "../../../lib/Toast";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/lib/utils/types/product.type";
+import { useAppToast } from "@/lib/tostify";
+import { useEffect, useState } from "react";
+import { ISession } from "@/lib/utils/types/auth.type";
+import { getSession } from "next-auth/react";
 
 interface OrderFormProps {
   product: IProduct;
@@ -57,10 +61,21 @@ export default function OrderForm({
       totalPrice: total,
     },
   });
+  const [session, setSession] = useState<ISession | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+    };
+    fetchSession();
+  }, []);
+
+  const authUser = session?.user.token;
+  console.log(authUser)
 
   const router = useRouter();
-  // const { showToast } = useToast();
-
+  const { toastSuccess, toastError } = useAppToast();
   const mutation = useMutation({
     mutationFn: (data: TCreateOrderFormSchema) =>
       orderApi.createOrderApi({
@@ -85,19 +100,14 @@ export default function OrderForm({
         totalPrice: data.totalPrice,
       }),
     onSuccess: () => {
-      // showToast("Order submitted successfully", "bg-primary");
-
-      // Wait 1-2 seconds before redirect
+      toastSuccess("Order placed successfully!");
       setTimeout(() => {
         router.push("/order/success");
       }, 1500);
     },
 
     onError: (error: any) => {
-      // showToast(
-      //   "Failed to submit order! " + (error?.message || "Unknown error"),
-      //   "bg-destructive"
-      // );
+      toastError("Failed to placed your order!");
     },
   });
 
@@ -105,6 +115,9 @@ export default function OrderForm({
     data.productID = product._id;
     data.quantity = quantity;
     data.totalPrice = total;
+    // if (!authUser) {
+    //   toastError("Please login to place your order!");
+    // }
     mutation.mutate(data);
   };
 

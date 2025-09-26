@@ -20,10 +20,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-// import  useToast  from "../../../lib/Toast";
+import { useAppToast } from "@/lib/tostify";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const { toastSuccess, toastError } = useAppToast();
 
   const {
     register,
@@ -33,8 +34,6 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  // const { showToast } = useToast();
-  // ✅ Mutation for registration API
   const mutation = useMutation({
     mutationFn: (data: TRegisterSchema) =>
       authApi.registerApi({
@@ -47,20 +46,18 @@ export default function RegisterForm() {
         termsAccepted: data.termsAccepted,
       }),
     onSuccess: () => {
+      toastSuccess("User registration successfull!");
       router.push("/login");
-      // showToast("Registration successful!", "bg-primary");
     },
     onError: (error: any) => {
-      // showToast(
-      // //   "Registration failed: " + error?.message || "Unknown error",
-      // //   "bg-destructive"
-      // );
+      toastError("User registration failed!");
       console.log(error.message);
     },
   });
 
   // ✅ Form submit handler
   const onSubmit = (data: TRegisterSchema) => {
+    console.log("Form Data:", data);
     if (data.password !== data.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -68,17 +65,19 @@ export default function RegisterForm() {
     mutation.mutate(data);
   };
 
+  console.log("Form Errors:", errors);
+
   return (
     <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-green-600">Navyan Tech</h1>
+          <Link href="/" className="flex items-center justify-center space-x-2">
+            <img src="/NavYantra-Logo.png" alt="logo" className="h-14 w-auto" />
           </Link>
-          <p className="text-gray-600 mt-2">Create your account</p>
+          <p className="text-2xl text-gray-600 mt-2">Create your account</p>
         </div>
 
-        <Card className="shadow-lg border border-gray-200">
+        <Card className="shadow-lg border border-gray-200 py-6">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
               Get Started
@@ -96,7 +95,7 @@ export default function RegisterForm() {
                     {...register("firstName", {
                       required: "First name is required",
                     })}
-                    placeholder="John"
+                    placeholder="Gaurav"
                     className="h-11"
                   />
                   {errors.firstName && (
@@ -111,7 +110,7 @@ export default function RegisterForm() {
                     {...register("lastName", {
                       required: "Last name is required",
                     })}
-                    placeholder="Doe"
+                    placeholder="Karki"
                     className="h-11"
                   />
                   {errors.lastName && (
@@ -126,7 +125,7 @@ export default function RegisterForm() {
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   {...register("email", { required: "Email is required" })}
-                  placeholder="john@example.com"
+                  placeholder="gauravkarki@example.com"
                   className="h-11"
                 />
                 {errors.email && (
@@ -140,7 +139,7 @@ export default function RegisterForm() {
                   {...register("phoneNumber", {
                     required: "Phone number is required",
                   })}
-                  placeholder="977 9812345678"
+                  placeholder="9812345678"
                   className="h-11"
                 />
                 {errors.phoneNumber && (

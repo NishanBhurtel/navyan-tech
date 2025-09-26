@@ -7,6 +7,7 @@ import OrderSummary from "@/components/user-components/order/orderSummary";
 import Footer from "@/components/user-components/layout/Footer";
 import { useProductByID } from "@/hooks/product/getProductByID";
 import Navbar from "@/components/user-components/layout/Navbar";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function OrderPage() {
   const searchParams = useSearchParams();
@@ -36,7 +37,7 @@ export default function OrderPage() {
   };
 
   if (!productId || isLoading) {
-    return <div className="p-12 text-center">Loading product...</div>;
+    return <DataLoading />;
   }
 
   if (isError || !product) {

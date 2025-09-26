@@ -1,6 +1,6 @@
 import { AppRouteMutationImplementation } from "@ts-rest/express";
 import { subCategoryContract } from "../../contract/subcategories/subcategory.contract";
-import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+import subCategoryRepository from "../../repository/mongodb/subCategory/subCategory.repository";
 
 export const createSubCategory: AppRouteMutationImplementation<
   typeof subCategoryContract.createCategory

@@ -1,11 +1,11 @@
-// src/config/db.ts
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import env from "./env";
 
 dotenv.config();
 
 export async function connectToDatabase() {
-  const mongoUri = process.env.MONGO_URI;
+  const mongoUri = env.MONGO_URI;
 
   if (!mongoUri) {
     throw new Error("❌ MONGO_URI is not defined in your .env file.");
@@ -13,7 +13,7 @@ export async function connectToDatabase() {
 
   try {
     await mongoose.connect(mongoUri, {
-      dbName: process.env.DB_NAME || "doClocks",
+      dbName: env.DB_NAME,
     });
 
     console.log("✅ Connected to MongoDB via Mongoose");

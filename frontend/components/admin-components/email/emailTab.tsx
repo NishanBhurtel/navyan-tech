@@ -19,9 +19,11 @@ import { Input } from "@/components/user-components/ui/input";
 import { Send, Loader2 } from "lucide-react";
 import { adminEmailSchema, TAdminEmailFormSchema } from "@/lib/form-validation/sendEmailToUser.validation";
 import { adminEmailApi } from "@/lib/api/sendEmailToUser.api";
+import { useAppToast } from "@/lib/tostify";
 
 export default function EmailTab() {
   const [resetKey, setResetKey] = useState(0); // force reset UI messages if needed
+  const { toastSuccess, toastError } = useAppToast();
 
   const {
     register,
@@ -39,13 +41,13 @@ export default function EmailTab() {
   const mutation = useMutation({
     mutationFn: (data: TAdminEmailFormSchema) => adminEmailApi.adminEmailFormApi(data),
     onSuccess: (data) => {
-      toast.success("Email campaign sent successfully to all users!");
+      toastSuccess("Email campaign sent successfully to all users!");
       reset(); // clear form
       setResetKey((k) => k + 1);
       console.log("Email sent:", data);
     },
     onError: (err: any) => {
-      toast.error(err?.message || "Failed to send email campaign");
+      toastError(err?.message || "Failed to send email campaign");
       console.error("Email sending failed:", err);
     },
   });

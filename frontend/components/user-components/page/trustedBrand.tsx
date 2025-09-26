@@ -28,7 +28,7 @@ export default function TrustedBrand() {
             We partner with the world's leading technology brands
           </p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+        <div className="flex flex-wrap justify-center gap-4 items-center">
           {brands.map((brand, index) => (
             <Link
               href={brand.url}

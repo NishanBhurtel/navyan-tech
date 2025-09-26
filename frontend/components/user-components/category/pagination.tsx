@@ -1,8 +1,28 @@
+import React from "react";
 import { Button } from "../ui/button";
 
-export default function Pagination() {
-  const totalPages = 5;
-  const currentPage = 1;
+interface PaginationProps {
+  totalPages: number;
+  currentPage: number;
+  maxLimit?: number;
+  onPageChange: (page: number) => void; // ✅ tell TS that page is a number
+}
+
+export default function Pagination({
+  totalPages,
+  currentPage,
+  maxLimit = 9,
+  onPageChange,
+}: PaginationProps) {
+  const safeCurrent = Math.min(Math.max(currentPage, 1), totalPages);
+
+  const half = Math.floor(maxLimit / 2);
+  let start = Math.max(1, safeCurrent - half);
+  let end = Math.min(totalPages, start + maxLimit - 1);
+  if (end - start + 1 < maxLimit) {
+    start = Math.max(1, end - maxLimit + 1);
+  }
+  const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 pt-6 sm:pt-8">
@@ -11,18 +31,22 @@ export default function Pagination() {
         variant="outline"
         size="sm"
         className="bg-transparent px-3 sm:px-4"
+        disabled={safeCurrent === 1}
+        onClick={() => safeCurrent > 1 && onPageChange(safeCurrent - 1)}
       >
         Previous
       </Button>
 
       {/* Page numbers */}
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+      {pages.map((page) => (
         <Button
           key={page}
-          variant={page === currentPage ? "default" : "outline"}
+          variant={page === safeCurrent ? "default" : "outline"}
           size="sm"
-          className={`px-3 sm:px-4 ${page !== currentPage ? "bg-transparent" : ""} 
-            ${page > 3 ? "hidden sm:inline-flex" : "inline-flex"}`}
+          className={`px-3 sm:px-4 ${
+            page !== safeCurrent ? "bg-transparent" : ""
+          }`}
+          onClick={() => onPageChange(page)}
         >
           {page}
         </Button>
@@ -33,6 +57,10 @@ export default function Pagination() {
         variant="outline"
         size="sm"
         className="bg-transparent px-3 sm:px-4"
+        disabled={safeCurrent === totalPages}
+        onClick={() =>
+          safeCurrent < totalPages && onPageChange(safeCurrent + 1)
+        }
       >
         Next
       </Button>

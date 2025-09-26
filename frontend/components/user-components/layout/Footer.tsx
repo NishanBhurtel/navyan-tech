@@ -3,17 +3,19 @@ import { useCategories } from "@/hooks/categories/getCategories";
 import Link from "next/link";
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import { FaTiktok } from "react-icons/fa";
+import ErrorState from "./ErrorPage";
+import DataLoading from "./LoadingPage";
 
 const Footer = () => {
   const { data: categories, isError, isLoading } = useCategories();
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading categories...</div>;
+    return <DataLoading  />;
   if (isError || !categories)
-    return <div className="p-12 text-center">Categories Not Found</div>;
+    return <ErrorState />
 
   return (
-    <footer className="bg-card border-t border-border py-16 mt-4">
+    <footer className="bg-card border-t border-border py-16">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo + Description */}
@@ -162,7 +164,7 @@ const Footer = () => {
         {/* Bottom Footer */}
         <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
           <p>
-            &copy; 2025 NavyanTech. All rights reserved. Built with precision
+            &copy; 2025 NavYantra. All rights reserved. Built with precision
             and passion.
           </p>
         </div>

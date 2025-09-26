@@ -6,7 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import {
   loginSchema,
   TLoginSchema,
@@ -14,10 +20,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
-// import useToast from "../../../lib/Toast";
+import { getSession, signIn } from "next-auth/react";
+import { useAppToast } from "@/lib/tostify";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { toastSuccess, toastError } = useAppToast();
 
   const {
     register,
@@ -27,8 +35,6 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  // const { showToast } = useToast();
-
   // ✅ Mutation for login API
   const mutation = useMutation({
     mutationFn: (data: TLoginSchema) =>
@@ -37,32 +43,52 @@ export default function LoginForm() {
         password: data.password,
       }),
     onSuccess: () => {
+      toastSuccess("User login successfull!");
       router.push("/");
-      // showToast("Login successful!", "bg-primary");
     },
     onError: (error: any) => {
-      // showToast("Login failed: " + (error?.message || "Unknown error"), "bg-destructive");
+      toastSuccess("User login failed!");
     },
   });
 
   // ✅ Form submit handler
-  const onSubmit = (data: TLoginSchema) => {
-    mutation.mutate(data);
+  const onSubmit = async (data: TLoginSchema) => {
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false, // stay on same page
+    });
+    if (res?.ok) {
+      router.push("/");
+      const session = await getSession();
+      if (session?.user?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+      toastSuccess("Login successful!");
+    } else {
+      toastError("Login failed: " + (res?.error || "Unknown error"));
+    }
   };
+
 
   return (
     <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-green-600">Navyan Tech</h1>
+          <Link href="/" className="flex items-center justify-center space-x-2">
+            <img src="/NavYantra-Logo.png" alt="logo" className="h-14 w-auto" />
           </Link>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+
+          <p className="text-2xl text-gray-600 mt-2">Sign in to your account</p>
         </div>
 
-        <Card className="shadow-lg border border-gray-200">
+        <Card className="shadow-lg border border-gray-200 py-6">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">
+              Welcome Back
+            </CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to continue
             </CardDescription>
@@ -96,7 +122,9 @@ export default function LoginForm() {
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password.message}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 

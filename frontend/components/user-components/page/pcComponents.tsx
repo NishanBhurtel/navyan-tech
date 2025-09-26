@@ -1,28 +1,111 @@
+// "use client";
+// import Link from "next/link";
+// import { Card, CardContent } from "../ui/card";
+// import { Button } from "../ui/button";
+// import { Heart, ChevronRight } from "lucide-react";
+// import { useAllProducts } from "@/hooks/product/getAllProducts";
+// import { WishlistItem } from "@/lib/utils/types/wishlist.type";
+// import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
+// import DataLoading from "../layout/LoadingPage";
+// import ErrorState from "../layout/ErrorPage";
+// import { useAppToast } from "@/lib/tostify";
+
+// export default function PcComponents() {
+//   const { data: products, isLoading, isError } = useAllProducts({
+//   });
+//   const { toastSuccess, toastError } = useAppToast();
+//   const heading = "PC Components";
+
+//   const pcComponents = products
+//     ? products.data?.filter((product) => product.categoryID.name === "Components")
+//     : [];
+
+//   const categoryID = pcComponents?.[0]?.categoryID?._id;
+//     const subCategoryID = pcComponents?.[0]?.subCategoryID?._id;
+
+//   if (isLoading)
+//     return <DataLoading />;
+//   if (isError || !products)
+//     return <ErrorState />
+
+//   const handleAddToWishlist = (product: any) => {
+//     const isAvailable = product.stock > 0;
+//     const item: WishlistItem = {
+//       id: product._id,
+//       name: product.name,
+//       image: product.images?.[0] ?? "",
+//       price: product.originalPrice ?? "",
+//       originalPrice: product.discountedPrice ?? "",
+//       category: product.categoryID?.name ?? "",
+//       inStock: isAvailable,
+//     };
+
+//     const result = addToWishlist(item);
+//      result.success ? toastSuccess("Item added to wishlist") : toastError("Item failed to add in your wishlist");
+//   };
+
 "use client";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Heart, ChevronRight } from "lucide-react";
-import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import useToast from "../../../lib/Toast";
+import {
+  addToWishlist,
+  getWishlist,
+} from "@/lib/localStorage/wishlist.localStorage";
+import DataLoading from "../layout/LoadingPage";
+import ErrorState from "../layout/ErrorPage";
+import { useAppToast } from "@/lib/tostify";
+import { useEffect, useState } from "react";
+import { productApi } from "@/lib/api/product.api";
 
 export default function PcComponents() {
-  // const { showToast } = useToast();
-  const { data: products, isLoading, isError } = useAllProducts({});
-  const heading = "PC Components";
+  const categoryID = process.env.NEXT_PUBLIC_PC_COMPONENTS_CATEGORY_ID;
+  const { toastSuccess, toastError } = useAppToast();
+  const [products, setProducts] = useState<any[]>([]);
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  const pcComponents = products
-    ? products.filter((product) => product.categoryID.name === "Components")
-    : [];
+  useEffect(() => {
+    let isMounted = true;
 
-  const categoryID = pcComponents?.[0]?.categoryID?._id;
+    const fetchAllProducts = async () => {
+      try {
+        let page = 1;
+        const limit = 50; // number of products per page
+        let allProducts: any[] = [];
+        let totalPages = 1;
 
-  if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
-  if (isError || !products)
-    return <div className="p-12 text-center">Product Not Found</div>;
+        do {
+          const res = await productApi.getAllProductsApi({ page, limit });
+          allProducts = [...allProducts, ...(res.data || [])];
+          totalPages = res.pagination?.totalPages || 1;
+          page++;
+        } while (page <= totalPages);
+
+        if (isMounted) {
+          setProducts(allProducts);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchAllProducts();
+    setWishlist(getWishlist());
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  console.log(categoryID);
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -37,8 +120,24 @@ export default function PcComponents() {
     };
 
     const result = addToWishlist(item);
-    // showToast(result.message, result.success ? "bg-primary" : "bg-destructive");
+    if (result.success) {
+      toastSuccess("Item added to wishlist");
+      setWishlist((prev) => [...prev, item]);
+    } else {
+      toastError("Item already in your wishlist");
+    }
   };
+
+  if (isLoading) return <DataLoading />;
+  if (isError) return <ErrorState />;
+
+  // filter all products by "Components" category
+  const pcComponents = products.filter(
+    (product) => product.categoryID._id === categoryID
+  ).slice(0,10);
+
+
+  const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
   return (
     <section className="py-16 bg-background" id="components">
@@ -46,9 +145,15 @@ export default function PcComponents() {
         <div className="flex-cols items-center justify-between mb-12">
           <div className="w-full flex items-center justify-between py-4">
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
-              {heading}
+              PC Components
             </h2>
-            <Link href={categoryID ? `/search/categoryID=${categoryID}` : "#"}>
+            <Link
+              href={
+                categoryID
+                  ? `/search?categoryID=${categoryID}`
+                  : "#"
+              }
+            >
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -63,13 +168,14 @@ export default function PcComponents() {
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-muted-foreground">
               No any product related to{" "}
-              <span className="font-bold">{heading}</span>
+              <span className="font-bold">PC Components</span>
             </h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {pcComponents.map((product: any) => {
               const isAvailable = product.stock > 0;
+              const alreadyInWishlist = isInWishlist(product._id);
               return (
                 <Card
                   key={product._id}
@@ -84,10 +190,11 @@ export default function PcComponents() {
                         className="w-full h-full object-cover"
                       />
                       <span
-                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[2px] shadow-sm ${isAvailable
-                          ? "bg-green-600 text-white"
-                          : "bg-red-500 text-white"
-                          }`}
+                        className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
+                          isAvailable
+                            ? "bg-green-600 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {isAvailable ? "In Stock" : "Out of Stock"}
                       </span>
@@ -98,14 +205,16 @@ export default function PcComponents() {
                   <CardContent className="p-3 space-y-2">
                     {/* Category */}
                     <p className="text-xs font-medium text-muted-foreground flex gap-1 items-center">
-                      <Link className="hover:underline hover:text-blue-600"
+                      <Link
+                        className="hover:underline hover:text-blue-600"
                         href={`/search?categoryID=${product.categoryID._id}`}
                       >
                         {product.categoryID?.name}{" "}
                       </Link>
                       <ChevronRight className="w-3 h-3" />
-                      <Link className="hover:underline hover:text-blue-600"
-                        href={`/search?categoryID=${product.subCategoryID._id}`}
+                      <Link
+                        className="hover:underline hover:text-blue-600"
+                        href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
                       >
                         {product.subCategoryID?.name}{" "}
                       </Link>
@@ -135,13 +244,18 @@ export default function PcComponents() {
                           View Details
                         </Button>
                       </Link>
+
                       <Button
                         size="icon"
                         variant="outline"
-                        className="w-8 h-8 hover:bg-primary hover:text-white"
+                        className="w-8 h-8 bg-white hover:bg-white"
                         onClick={() => handleAddToWishlist(product)}
                       >
-                        <Heart className="w-3 h-3" />
+                        <Heart
+                          className="w-3 h-3"
+                          fill={alreadyInWishlist ? "green" : "none"}
+                          color={alreadyInWishlist ? "green" : "gray"}
+                        />
                       </Button>
                     </div>
                   </CardContent>

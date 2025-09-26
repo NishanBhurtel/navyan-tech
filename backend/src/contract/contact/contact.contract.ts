@@ -1,7 +1,6 @@
 import { initContract } from "@ts-rest/core";
 import { errorSchema } from "../common.schema";
 import { createContactSchema, contactSuccessSchema } from "./contact.schema";
-import z from "zod";
 
 const c = initContract();
 
@@ -19,4 +18,3 @@ export const contactContract = c.router({
   },
 });
 
-export type ContactFormData = z.infer<typeof createContactSchema>;

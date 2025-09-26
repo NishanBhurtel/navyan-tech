@@ -8,4 +8,5 @@ const s = initServer();
 
 export const emailRouter = s.router(emailContract, {
   sendMail: emailMutationHandler.sentMailMutation,
+  sendEmailToSpecificUser: emailMutationHandler.sentEmailToSpecificUserMutation,
 });

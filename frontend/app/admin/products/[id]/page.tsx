@@ -32,6 +32,7 @@ import {
 import { useProductByID } from "@/hooks/product/getProductByID";
 import { useDeleteProduct } from "@/hooks/product/removeProduct";
 import ConfirmDialog from "@/lib/confirmModel";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function ProductViewPage({
   params,
@@ -59,11 +60,11 @@ export default function ProductViewPage({
   };
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <DataLoading />
   }
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
+    return <DataLoading />
   if (isError || !responseData?.data)
     return <div className="p-12 text-center">Product Not Found</div>;
 

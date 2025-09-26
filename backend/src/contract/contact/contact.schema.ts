@@ -28,6 +28,7 @@ export const createContactSchema = z.object({
   subscribeToNewsLatter: z.boolean().optional().default(false),
 });
 
+export type TContactFormDataSchema = z.infer<typeof createContactSchema>;
 export const contactSuccessSchema = z.object({
   success: z.boolean(),
   message: z.string(),

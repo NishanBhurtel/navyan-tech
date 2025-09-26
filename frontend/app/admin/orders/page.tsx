@@ -12,6 +12,7 @@ import { Inquiry } from "@/components/admin-components/order/order-inqueries";
 import { useAllOrders } from "@/hooks/order/getAllOrders";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function OrderInquiriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,7 +61,7 @@ export default function OrderInquiriesPage() {
       "S.N.": String(i+1),
       Customer_Name: order.customerName,
       Customer_Email: order.customerEmail,
-      Customer_Phone: order.customerEmail,
+      Customer_Phone: order.customerPhone,
       Product_Name: order.productName,
       "Product_Price(Rs)": order.productPrice,
       Quantity: order.quantity,
@@ -98,12 +99,12 @@ export default function OrderInquiriesPage() {
   }
 
   if (isLoading) {
-    return <div>Loading orders...</div>;
+    return <DataLoading />
   }
 
   return (
     <div className="space-y-6">
-      <OrderHeader onExport={handleExport} />
+      <OrderHeader onExport={handleExport} totalOrder ={ordersResp?.data.length} />
       {/* <StatsGrid stats={inquiryStats} /> */}
       <FiltersBar searchTerm={searchTerm} onSearch={setSearchTerm} />
       <InquiriesTable

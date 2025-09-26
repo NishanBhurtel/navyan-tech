@@ -7,6 +7,7 @@ import { Filter } from "lucide-react";
 import { useCategories } from "@/hooks/categories/getCategories";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import DataLoading from "../layout/LoadingPage";
 
 type ProductGridProps = {
   products: any[];
@@ -21,7 +22,7 @@ export default function SidebarFilter({ products }: ProductGridProps) {
   const categoryID = searchParams.get("categoryID");
   const subCategoryID = searchParams.get("subCategoryID");
   const minPrice = searchParams.get("minPrice") || "0";
-  const maxPrice = searchParams.get("maxPrice") || "300000";
+  const maxPrice = searchParams.get("maxPrice") || "3000";
   const brand = searchParams.get("brand") || "";
 
   const updateQuery = (key: string, value: string | null) => {
@@ -31,9 +32,9 @@ export default function SidebarFilter({ products }: ProductGridProps) {
     router.push(`/search?${params.toString()}`);
   };
 
-  if (isLoading) return <p>Loading categories...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (!categories) return <>Loading</>;
+  if (isLoading) return <DataLoading />;
+  if (!categories) return <DataLoading />;
+  
 
   // --- Collect subcategory counts dynamically ---
   const subCategoryCounts: Record<string, number> = {};
@@ -55,19 +56,15 @@ export default function SidebarFilter({ products }: ProductGridProps) {
   }));
 
   // --- Category/subCategory filtering logic ---
-const searchedCategory = categories?.find(
-  (cat) => cat._id === categoryID
-);
+  const searchedCategory = categories?.find((cat) => cat._id === categoryID);
 
-
-const categoriesRelatedToSearchQuery = categories.filter((cat) => {
-  if (search) {
-    const regex = new RegExp(search, "i");
-    return regex.test(cat.name) || regex.test(cat.description || "");
-  }
-  return false;
-});
-
+  const categoriesRelatedToSearchQuery = categories.filter((cat) => {
+    if (search) {
+      const regex = new RegExp(search, "i");
+      return regex.test(cat.name) || regex.test(cat.description || "");
+    }
+    return false;
+  });
 
   const isSearchedByCategory = categoryID || subCategoryID;
   const shouldDisplaySearchCategoryFilter =
@@ -82,9 +79,7 @@ const categoriesRelatedToSearchQuery = categories.filter((cat) => {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-6">
               <Filter className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold text-foreground">
-                Filters
-              </h2>
+              <h2 className="text-xl font-bold text-foreground">Filters</h2>
             </div>
 
             {/* Subcategories if searched by category */}
@@ -175,16 +170,19 @@ const categoriesRelatedToSearchQuery = categories.filter((cat) => {
               <h3 className="font-semibold text-foreground">Price Range</h3>
               <div className="space-y-4">
                 <Slider
-                  defaultValue={[+minPrice, +maxPrice]}
+                  value={[+minPrice, +maxPrice]}
                   max={3000}
                   min={0}
                   step={100}
                   className="w-full"
                   onValueChange={(val) => {
-                    updateQuery("minPrice", val[0].toString());
-                    updateQuery("maxPrice", val[1].toString());
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set("minPrice", val[0].toString());
+                    params.set("maxPrice", val[1].toString());
+                    router.push(`/search?${params.toString()}`);
                   }}
                 />
+
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <span>Rs.{minPrice}</span>
                   <span>Rs.{maxPrice}</span>

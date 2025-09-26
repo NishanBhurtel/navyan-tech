@@ -10,6 +10,7 @@ import { User } from "../types";
 import UserFilters from "@/components/admin-components/user/filter";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function UsersPage() {
   const { data: users = [], error, isLoading } = useAllUsers();
@@ -60,7 +61,7 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-gray-900">Users</h1>
+          <h1 className="text-3xl font-serif font-bold text-gray-900">Users ({users.length})</h1>
           <p className="text-gray-600 mt-2">
             Manage user accounts and permissions
           </p>
@@ -81,7 +82,7 @@ export default function UsersPage() {
 
       <UserFilters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      {isLoading && <p>Loading users...</p>}
+      {isLoading && <DataLoading />}
       {error && <p className="text-red-500">Failed to load users.</p>}
 
       {!isLoading && !error && <UsersTable users={filteredUsers} />}
