@@ -57,7 +57,7 @@ export default function InquiryDialog({
                       </div>
                       <div>
                         <Label>Preferred Contact</Label>
-                        <Badge className="mt-1">{inquiry.preferredContact}</Badge>
+                        <Badge className="mt-1 py-1">{inquiry.preferredContact}</Badge>
                       </div>
                     </div>
                   </div>
@@ -72,7 +72,7 @@ export default function InquiryDialog({
                       </div>
                       <div>
                         <Label>Price</Label>
-                        <p className="text-sm text-gray-900">₹{inquiry.productPrice.toLocaleString()}</p>
+                        <p className="text-sm text-gray-900">Rs.{inquiry.productPrice.toLocaleString()}</p>
                       </div>
                       <div>
                         <Label>Quantity</Label>
@@ -80,7 +80,7 @@ export default function InquiryDialog({
                       </div>
                       <div>
                         <Label>Total Amount</Label>
-                        <p className="text-sm font-semibold text-gray-900">₹{inquiry.totalAmount.toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-gray-900">Rs.{inquiry.totalAmount.toLocaleString()}</p>
                       </div>
                     </div>
                   </div>

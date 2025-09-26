@@ -75,7 +75,7 @@ import { productApi } from "@/lib/api/product.api";
 import DataLoading from "../layout/LoadingPage";
 
 export default function GamingLaptop() {
-  const heading = "Gaming Laptops";
+  const subCategoryID = process.env.NEXT_PUBLIC_GAMING_LAPTOP_SUB_CATEGORY_ID;
   const { toastSuccess, toastError } = useAppToast();
 
   const [products, setProducts] = useState<any[]>([]);
@@ -120,6 +120,7 @@ export default function GamingLaptop() {
       isMounted = false;
     };
   }, []);
+  console.log(subCategoryID);
 
   const handleAddToWishlist = (product: any) => {
     const isAvailable = product.stock > 0;
@@ -144,11 +145,10 @@ export default function GamingLaptop() {
 
   // filter products by heading
   const gamingLaptops = products.filter(
-    (product) => product.subCategoryID?.name === heading
-  );
+    (product) => product.subCategoryID?._id === subCategoryID
+  ).slice(0,10);
 
   const categoryID = gamingLaptops?.[0]?.categoryID?._id;
-  const subCategoryID = gamingLaptops?.[0]?.subCategoryID?._id;
 
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
@@ -162,7 +162,7 @@ export default function GamingLaptop() {
         <div className="flex-cols items-center justify-between mb-12">
           <div className="w-full flex items-center justify-between py-4">
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
-              {heading}
+              Gaming Laptops
             </h2>
             <Link
               href={
@@ -186,7 +186,7 @@ export default function GamingLaptop() {
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-muted-foreground">
               No any product related to{" "}
-              <span className="font-bold">{heading}</span>
+              <span className="font-bold">Gaming Laptop"</span>
             </h3>
           </div>
         ) : (
@@ -233,7 +233,7 @@ export default function GamingLaptop() {
                       <ChevronRight className="w-3 h-3" />
                       <Link
                         className="hover:underline hover:text-blue-600"
-                        href={`/search?subCategoryID=${product.subCategoryID._id}`}
+                        href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
                       >
                         {product.subCategoryID?.name}{" "}
                       </Link>
@@ -258,18 +258,18 @@ export default function GamingLaptop() {
 
                     {/* Buttons */}
 
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="w-8 h-8 bg-white hover:bg-white"
-                        onClick={() => handleAddToWishlist(product)}
-                      >
-                        <Heart
-                          className="w-3 h-3"
-                          fill={alreadyInWishlist ? "green" : "none"}
-                          color={alreadyInWishlist ? "green" : "gray"}
-                        />
-                      </Button>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="w-8 h-8 bg-white hover:bg-white"
+                      onClick={() => handleAddToWishlist(product)}
+                    >
+                      <Heart
+                        className="w-3 h-3"
+                        fill={alreadyInWishlist ? "green" : "none"}
+                        color={alreadyInWishlist ? "green" : "gray"}
+                      />
+                    </Button>
                   </CardContent>
                 </Card>
               );

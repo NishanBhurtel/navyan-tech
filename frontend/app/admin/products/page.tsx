@@ -76,7 +76,7 @@ export default function ProductsPage() {
           if (itemToRemove.images && itemToRemove.images.length > 0) {
             deleteImages(itemToRemove.images || []);
           }
-        }
+        },
       });
       setItemToRemove(null);
     }
@@ -105,7 +105,8 @@ export default function ProductsPage() {
         search: filters.search,
         filter: {
           categoryID: filters.category !== "all" ? filters.category : undefined,
-          subCategoryID: filters.subCategory !== "all" ? filters.subCategory : undefined,
+          subCategoryID:
+            filters.subCategory !== "all" ? filters.subCategory : undefined,
         },
       });
 
@@ -135,19 +136,26 @@ export default function ProductsPage() {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
 
-      const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-      const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-      saveAs(blob, `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`);
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const blob = new Blob([excelBuffer], {
+        type: "application/octet-stream",
+      });
+      saveAs(
+        blob,
+        `Navyan Tech Product Records_${new Date().toISOString()}.xlsx`
+      );
     } catch (error) {
       console.error("Export failed", error);
     }
   };
 
-
   return (
     <div className="space-y-6">
       {/* Header */}
-      <ProductHeader />
+      <ProductHeader totalProducts ={products.length} />
 
       {/* Filters */}
       <Filters
@@ -170,45 +178,54 @@ export default function ProductsPage() {
           </CardHeader>
           <CardContent>
             <ProductTable
+            currentPageNo= {page}
               products={products}
               onDelete={handleRemoveClick}
               onSetActive={handleActiveClick}
             />
 
             {/* Pagination */}
-            <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-              >
-                Prev
-              </Button>
+            {products.length > 0 ? (
+              <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                >
+                  Prev
+                </Button>
 
-              {Array.from({ length: pagination.totalPages }, (_, idx) => {
-                const pageNum = idx + 1;
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={pageNum === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setPage(pageNum)}
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
+                {Array.from({ length: pagination.totalPages }, (_, idx) => {
+                  const pageNum = idx + 1;
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={pageNum === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={page === pagination.totalPages}
-              >
-                Next
-              </Button>
-            </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === pagination.totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <h3 className="text-xl font-semibold text-muted-foreground">
+                  No products found for your search!
+                </h3>
+              </div>
+            )}
           </CardContent>
         </div>
       </Card>

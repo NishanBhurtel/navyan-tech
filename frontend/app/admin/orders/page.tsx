@@ -104,7 +104,7 @@ export default function OrderInquiriesPage() {
 
   return (
     <div className="space-y-6">
-      <OrderHeader onExport={handleExport} />
+      <OrderHeader onExport={handleExport} totalOrder ={ordersResp?.data.length} />
       {/* <StatsGrid stats={inquiryStats} /> */}
       <FiltersBar searchTerm={searchTerm} onSearch={setSearchTerm} />
       <InquiriesTable

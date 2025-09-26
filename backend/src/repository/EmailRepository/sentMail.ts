@@ -85,15 +85,18 @@ export class SentMail {
   }) {
     try {
       // fetch all users from DB
-      const users = await UserModel.find({}, "email"); // only select email field
+      const users = await UserModel.find({
+        role: "customer"
+      }, ["email"]); // only select email field
       if (!users.length) {
         throw new Error("No users found in database");
       }
 
-      const emails = users.map((user) => user.email);
+      const emails = users.map((user) => user.email)
+      console.log(emails, subject, text, html)
       const info = await transporter.sendMail({
         from: from || process.env.SMTP_USER,
-        to: emails.join(", "),
+        to: emails,
         subject,
         text,
         html,

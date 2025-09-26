@@ -97,28 +97,24 @@ export default function InquiriesTable({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between pt-4">
-          <span>Inquiries ({inquiries.length})</span>
-        </CardTitle>
-      </CardHeader>
+    <Card className="py-6">
       <CardContent>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>S.N.</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
-                <TableHead>Address</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Inquired At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inquiries.map((inquiry) => (
+              {inquiries.map((inquiry, i) => (
                 <TableRow key={inquiry.id}>
+                  <TableCell>{String(i + 1)}</TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900">
@@ -142,9 +138,6 @@ export default function InquiriesTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium text-sm text-gray-500">
-                    {inquiry.address}
-                  </TableCell>{" "}
                   <TableCell className="font-medium text-sm text-gray-500">
                     Rs.{inquiry.totalAmount.toLocaleString()}
                   </TableCell>

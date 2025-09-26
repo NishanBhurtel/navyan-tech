@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "doclock-bef33.firebaseapp.com",
   projectId: "doclock-bef33",
   storageBucket: "doclock-bef33.firebasestorage.app",
