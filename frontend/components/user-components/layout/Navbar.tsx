@@ -82,7 +82,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <img src="/NavYantra-Logo.png" alt="logo" className="h-10 w-auto" />
+          <img src="/logos/NavYantra-Logo.png" alt="logo" className="h-10 w-auto" />
         </Link>
 
         {/* Search (hidden on xs) */}

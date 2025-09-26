@@ -21,7 +21,6 @@ import {
 import { Upload, X, Plus } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import useToast from "../../../../lib/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
 import {
@@ -234,7 +233,7 @@ export default function AddProductPage() {
 
           {/* Technical Specification & Specs (same as your code) */}
 
-          {["Computer", "Computers", "Laptop", "Laptops"].includes(
+          {["Computer", "Computers", "Laptop", "Laptops", "computer", "computers", "laptop", "laptops"].includes(
             categories.find((c) => c._id === selectedCategoryID)?.name || ""
           ) && (
             <Card>
