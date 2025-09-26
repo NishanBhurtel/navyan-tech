@@ -195,19 +195,9 @@ export default function RegisterForm() {
                 />
                 <Label htmlFor="termsAccepted" className="text-sm">
                   I agree to the{" "}
-                  <Link
-                    href="/terms"
-                    className="text-green-600 hover:text-green-700"
-                  >
-                    Terms of Service
-                  </Link>{" "}
+                  Terms of Service
                   and{" "}
-                  <Link
-                    href="/privacy"
-                    className="text-green-600 hover:text-green-700"
-                  >
-                    Privacy Policy
-                  </Link>
+                  Privacy Policy
                 </Label>
               </div>
               {errors.termsAccepted && (

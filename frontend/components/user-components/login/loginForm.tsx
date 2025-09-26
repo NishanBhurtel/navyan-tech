@@ -27,8 +27,6 @@ export default function LoginForm() {
   const router = useRouter();
   const { toastSuccess, toastError } = useAppToast();
 
-  console.log("next auth env : ", process.env.NEXTAUTH_URL);
-  console.log("next auth env : ", process.env.NEXTAUTH_SECRET);
   const {
     register,
     handleSubmit,
@@ -142,7 +140,7 @@ export default function LoginForm() {
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Don&apos;t have an account?{" "}
+                Don&apos;t have an account?
                 <Link
                   href="/register"
                   className="text-green-600 hover:text-green-700 font-medium"

@@ -56,23 +56,15 @@ export const authOptions: NextAuthOptions = {
 
           const user = data;
 
-          console.log("debug user 1: ", user);
-
           if (!user) {
             return null;
           }
-
-          console.log("debug user 2: ", user);
 
           if (!user.token) {
             return null;
           }
 
-          console.log("debug user 3: ", user);
-
           if (user && user.token) {
-            console.log("debug user 4: ", user);
-
             return {
               id: user.id,
               _id: user.id, // for backward compatibility
@@ -83,8 +75,6 @@ export const authOptions: NextAuthOptions = {
               token: user.token,
             };
           }
-
-          console.log("debug user 5: ", user);
 
           return null;
         } catch (err) {

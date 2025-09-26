@@ -70,12 +70,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   return (
     <html lang="en" className={`${playfair.variable} ${sourceSans.variable}`}>
       <body>
         <ClientProviders>
           <InnerLayoutClient>{children}</InnerLayoutClient>
-
           <ToastContainer
             position="top-right"
             autoClose={3000}

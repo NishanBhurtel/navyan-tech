@@ -7,6 +7,7 @@ import { Button } from "@/components/user-components/ui/button";
 import { ISession } from "@/lib/utils/types/auth.type";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 
 export default function AdminLayout({
@@ -36,12 +37,13 @@ export default function AdminLayout({
 
 
   if (loading) {
-    return <div>Loading...</div>
+    return <DataLoading />;
   }
 
   if (!session || !session.user || session.user.role !== 'admin') {
     return <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
+      <div className="text-center"> Access Denied. You do not have permission to view this page.
+      </div>
     </div>
   };
 
