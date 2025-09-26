@@ -1,0 +1,269 @@
+import Product, { IProductModel } from "../../../models/product.model";
+
+class ProductRepository {
+  private productModel;
+
+  constructor() {
+    this.productModel = Product;
+  }
+
+  // ✅ Save new product
+  async save(
+    productData: Pick<
+      IProductModel,
+      | "name"
+      | "originalPrice"
+      | "discountedPrice"
+      | "stock"
+      | "brand"
+      | "isFeatured"
+      | "isActive"
+      | "description"
+      | "images"
+      | "technicalSpecification"
+      | "specifications"
+      | "categoryID"
+      | "subCategoryID"
+    >
+  ) {
+    try {
+      const product = new this.productModel({
+        name: productData.name || "",
+        price: productData.discountedPrice || 0,
+        originalPrice: productData.originalPrice || 0,
+        discountedPrice: productData.discountedPrice || 0,
+        stock: productData.stock || 0,
+        description: productData.description || "",
+        brand: productData.brand || "",
+        isFeatured: productData.isFeatured || false,
+        isActive: productData.isActive || false,
+        images: productData.images || [],
+        technicalSpecification: {
+          performance: {
+            series:
+              productData.technicalSpecification?.performance?.series || "",
+            cpu: productData.technicalSpecification?.performance?.cpu || "",
+            graphics:
+              productData.technicalSpecification?.performance?.graphics || "",
+            display:
+              productData.technicalSpecification?.performance?.display || "",
+            operatingSystem:
+              productData.technicalSpecification?.performance
+                ?.operatingSystem || "",
+          },
+          memoryAndStorage: {
+            audio:
+              productData.technicalSpecification?.memoryAndStorage?.audio || "",
+            mainMemory:
+              productData.technicalSpecification?.memoryAndStorage
+                ?.mainMemory || "",
+            storage:
+              productData.technicalSpecification?.memoryAndStorage?.storage ||
+              "",
+            connectivity:
+              productData.technicalSpecification?.memoryAndStorage
+                ?.connectivity || "",
+            camera:
+              productData.technicalSpecification?.memoryAndStorage?.camera ||
+              "",
+            battery:
+              productData.technicalSpecification?.memoryAndStorage?.battery ||
+              "",
+            weight:
+              productData.technicalSpecification?.memoryAndStorage?.weight ||
+              "",
+            warranty:
+              productData.technicalSpecification?.memoryAndStorage?.warranty ||
+              "",
+          },
+        },
+        specifications: productData.specifications || {},
+        categoryID: productData.categoryID || "",
+        subCategoryID: productData.subCategoryID || "",
+      });
+
+      const savedProduct = await product.save();
+      return {
+        success: true,
+        productID: savedProduct._id.toString(),
+        message: "Product saved successfully",
+        data: savedProduct,
+      };
+    } catch (error: any) {
+      throw new Error(
+        `${error.message || "Failed to save product in database"}`
+      );
+    }
+  }
+
+  // ✅ Get by ID
+  async getByID(id: string) {
+    try {
+      return await this.productModel
+        .findById(id)
+        .populate(["categoryID", "subCategoryID"]);
+    } catch (error) {
+      throw new Error(`Error fetching product by ID: ${error}`);
+    }
+  }
+
+  updateProduct = async (
+    productId: string,
+    productData: Partial<IProductModel>
+  ) => {
+    try {
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
+        productId,
+        { $set: productData },
+        { new: true, runValidators: true }
+      );
+      return updatedProduct;
+    } catch (error) {
+      throw new Error("Error updating product: " + (error as Error).message);
+    }
+  };
+
+  async getAllProducts({
+    searchQuery,
+    filters,
+    skip = 0,
+    limit = 9,
+    displayInactive = false,
+  }: {
+    searchQuery?: string;
+    filters?: Partial<
+      Pick<IProductModel, "brand" | "categoryID" | "subCategoryID"> & {
+        minPrice: number;
+        maxPrice: number;
+      }
+    >;
+    skip?: number;
+    limit?: number;
+    displayInactive?: boolean;
+  } = {}): Promise<{ products: any[]; total: number }> {
+    try {
+      const query: any = {};
+
+      // --- Price Filter ---
+      if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+        query.discountedPrice = {};
+        if (filters.minPrice !== undefined) {
+          query.discountedPrice.$gte = filters.minPrice;
+        }
+        if (filters.maxPrice !== undefined) {
+          query.discountedPrice.$lte = filters.maxPrice;
+        }
+      }
+
+      // --- Brand Filter ---
+      if (filters?.brand) {
+        query.brand = { $regex: new RegExp(filters.brand, "i") };
+      }
+
+      // --- Category Filter ---
+      if (filters?.categoryID) {
+        query.categoryID = filters.categoryID;
+      }
+
+      // --- SubCategory Filter ---
+      if (filters?.subCategoryID) {
+        query.subCategoryID = filters.subCategoryID;
+      }
+
+      // --- Active Status Filter ---
+      if (displayInactive) {
+        query.isActive = { $in: [true, false] }; // show all
+      } else {
+        query.isActive = true; // only active products
+      }
+
+      // --- Search Query ---
+      if (searchQuery?.trim()) {
+        const searchRegex = new RegExp(searchQuery, "i");
+        query.$or = [
+          { name: searchRegex },
+          { description: searchRegex },
+          { brand: searchRegex },
+        ];
+      }
+
+      // --- Count total products for pagination ---
+      const total = await Product.countDocuments(query);
+
+      // --- Fetch products with pagination ---
+      const products = await Product.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip) // ✅ apply skip
+        .limit(limit) // ✅ apply limit
+        .populate<{ categoryID: { _id: string; name: string } }>(
+          "categoryID",
+          "name"
+        )
+        .populate<{ subCategoryID: { _id: string; name: string } }>(
+          "subCategoryID",
+          "name"
+        )
+        .exec();
+
+      // --- Format response ---
+      const formattedProducts = products.map((product) => ({
+        _id: product._id.toString(),
+        name: product.name,
+        images: product.images ?? [],
+        discountedPrice: product.discountedPrice,
+        originalPrice: product.originalPrice,
+        brand: product.brand ?? "",
+        isFeatured: product.isFeatured,
+        isActive: product.isActive,
+        description: product.description ?? "",
+        categoryID: product.categoryID ?? {},
+        subCategoryID: product.subCategoryID ?? {},
+        stock: product.stock ?? 0,
+        technicalSpecification: product.technicalSpecification ?? undefined,
+        specifications: product.specifications ?? undefined,
+        createdAt: product.createdAt,
+      }));
+
+      return { products: formattedProducts, total };
+    } catch (error) {
+      console.error("Failed to get products:", error);
+      throw new Error("Failed to get products");
+    }
+  }
+
+  async countProducts({
+    categoryID,
+    countInActive = false,
+  }: {
+    categoryID?: string;
+    countInActive?: boolean;
+  }): Promise<number> {
+    try {
+      const query: any = {};
+      if (categoryID) {
+        query.categoryID = categoryID;
+      }
+      if (!countInActive) {
+        query.isActive = true;
+      }
+
+      return await Product.countDocuments(query);
+    } catch (error) {
+      throw new Error(`Error counting products by category: ${error}`);
+    }
+  }
+
+  // ✅ Delete product
+  async delete(id: string) {
+    try {
+      return await this.productModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error(`Error deleting product: ${error}`);
+    }
+  }
+  async getAll(): Promise<IProductModel[]> {
+    return this.productModel.find().populate("categoryID");
+  }
+}
+
+export default new ProductRepository();

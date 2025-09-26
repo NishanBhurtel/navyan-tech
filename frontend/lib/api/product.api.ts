@@ -5,6 +5,8 @@ import {
   TGetProductByIDSchema,
   TUpdateProductSchema,
 } from "../form-validation/product-validation";
+import { PaginatedResponse } from "../utils/types/common.type";
+import { IProduct } from "../utils/types/product.type";
 
 // POST /products - Create new product
 const createProductApi = async (productPayload: TCreateProductSchema) => {
@@ -22,11 +24,20 @@ const updateProductApi = async (
 };
 
 // GET /products - Get all products (with filters/sorting)
-const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
+const getAllProductsApi = async ({
+  filter,
+  search,
+  page,
+  limit,
+}: IProductQueryParams): Promise<PaginatedResponse<IProduct>> => {
+  console.log("Fetching products with params:", { filter, search });
+
   const response = await apiClient.get("/products", {
     params: {
       search,
-      ...(filter ?? {}), // spread filter fields into params
+      page,
+      limit,
+      ...(filter ? { filter } : {}), // ✅ wrap filter inside `filter`
     },
   });
 
@@ -34,9 +45,7 @@ const getAllProductsApi = async ({ filter, search }: IProductQueryParams) => {
 };
 
 // GET /products/:id - Get product details by ID
-const getProductByIdApi = async (
-  productId: TGetProductByIDSchema["_id"]
-) => {
+const getProductByIdApi = async (productId: TGetProductByIDSchema["_id"]) => {
   const response = await apiClient.get(`/products/details/${productId}`);
   return response.data;
 };
@@ -50,10 +59,18 @@ export const deleteProductApi = async (productId: string) => {
   return response.data;
 };
 
+export const updateProductStatusApi = async (productId: string, isActive: boolean) => {
+  const response = await apiClient.put(`/setProduct/${productId}`, {
+    isActive
+  });
+  return response.data;
+};
+
 export const productApi = {
   createProductApi,
   updateProductApi,
   getAllProductsApi,
   getProductByIdApi,
+  updateProductStatusApi,
   deleteProductApi,
 };

@@ -3,7 +3,7 @@ import { AppRouteQueryImplementation } from "@ts-rest/express";
 
 import { subCategoryContract } from "../../contract/subcategories/subcategory.contract";
 
-import subCategoryRepository from "../../repository/mangodb/subCategory/subCategory.repository";
+import subCategoryRepository from "../../repository/mongodb/subCategory/subCategory.repository";
 const getSubCategoriesByCategoryID: AppRouteQueryImplementation<
   typeof subCategoryContract.getSubCategoriesByCategoryID
 > = async ({ params }) => {

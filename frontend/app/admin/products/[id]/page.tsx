@@ -32,6 +32,7 @@ import {
 import { useProductByID } from "@/hooks/product/getProductByID";
 import { useDeleteProduct } from "@/hooks/product/removeProduct";
 import ConfirmDialog from "@/lib/confirmModel";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function ProductViewPage({
   params,
@@ -59,11 +60,11 @@ export default function ProductViewPage({
   };
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <DataLoading />
   }
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading product...</div>;
+    return <DataLoading />
   if (isError || !responseData?.data)
     return <div className="p-12 text-center">Product Not Found</div>;
 
@@ -223,25 +224,84 @@ export default function ProductViewPage({
         </TabsContent>
 
         <TabsContent value="specifications">
-          <Card>
-            <CardHeader className="pt-4">
-              <CardTitle>Technical Specifications</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableBody>
-                  {product.specifications.map((specification) => (
-                    <TableRow key={specification.key}>
-                      <TableCell className="font-medium capitalize">
-                        {specification.key.replace(/([A-Z])/g, " $1").trim()}
-                      </TableCell>
-                      <TableCell>{specification.value}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <div className="space-y-2">
+            {product.technicalSpecification &&
+              (Object.values(
+                product.technicalSpecification.performance || {}
+              ).some((v) => v) ||
+                Object.values(
+                  product.technicalSpecification.memoryAndStorage || {}
+                ).some((v) => v)) && (
+                <Card>
+                  <CardHeader className="pt-4">
+                    <CardTitle>Technical Specifications</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableBody>
+                        {/* Memory & Storage Details */}
+                        {product.technicalSpecification?.memoryAndStorage &&
+                          Object.entries(
+                            product.technicalSpecification.memoryAndStorage
+                          )
+                            .filter(([_, value]) => value) // only non-empty values
+                            .map(([key, value]) => (
+                              <TableRow key={key}>
+                                <TableCell className="font-medium capitalize">
+                                  {key.replace(/([A-Z])/g, " $1").trim()}
+                                </TableCell>
+                                <TableCell>{String(value)}</TableCell>
+                              </TableRow>
+                            ))}
+
+                        {/* Performance Details */}
+                        {product.technicalSpecification?.performance &&
+                          Object.entries(
+                            product.technicalSpecification.performance
+                          )
+                            .filter(([_, value]) => value) // only non-empty values
+                            .map(([key, value]) => (
+                              <TableRow key={key}>
+                                <TableCell className="font-medium capitalize">
+                                  {key.replace(/([A-Z])/g, " $1").trim()}
+                                </TableCell>
+                                <TableCell>{String(value)}</TableCell>
+                              </TableRow>
+                            ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              )}
+
+            {product.specifications?.some(
+              (spec) => spec.key?.trim() && spec.value?.trim()
+            ) && (
+              <Card>
+                <CardHeader className="pt-4">
+                  <CardTitle>Specifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableBody>
+                      {product.specifications
+                        .filter(
+                          (spec) => spec.key?.trim() && spec.value?.trim()
+                        )
+                        .map((spec) => (
+                          <TableRow key={spec.key}>
+                            <TableCell className="font-medium capitalize">
+                              {spec.key.replace(/([A-Z])/g, " $1").trim()}
+                            </TableCell>
+                            <TableCell>{spec.value}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="images">

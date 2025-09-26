@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function QuickAction() {
   return (
-    <Card>
+    <Card className="pb-6"> 
       <CardHeader>
         <CardTitle className="text-lg font-semibold pt-4">Quick Actions</CardTitle>
       </CardHeader>

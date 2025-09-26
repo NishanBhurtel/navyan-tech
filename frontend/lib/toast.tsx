@@ -10,7 +10,7 @@ type ToastContextType = {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export function useToast() {
+function useToast() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used inside ToastProvider");
   return ctx;
@@ -36,7 +36,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           className={`z-[9999] fixed top-4 right-4 px-4 py-2 rounded-[4px] shadow-lg text-white ${bgColor}`}
           open={open}
           onOpenChange={setOpen}
-          duration={3000} 
+          duration={3000}
         >
           <Toast.Title>{message}</Toast.Title>
         </Toast.Root>
@@ -45,3 +45,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+
+
+export default useToast;

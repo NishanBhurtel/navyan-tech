@@ -7,6 +7,7 @@ import { categoryContract } from "./categories/category.contract";
 import { usersContract } from "./users/users.contract";
 import { emailContract } from "./email/email.contract";
 import { orderContract } from "./order/order.contract";
+import { contactContract } from "./contact/contact.contract";
 
 const c = initContract();
 
@@ -18,4 +19,5 @@ export const contract = c.router({
   subCategory: subCategoryContract,
   email: emailContract,
   order: orderContract,
+  contact: contactContract,
 });

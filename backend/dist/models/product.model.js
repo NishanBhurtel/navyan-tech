@@ -68,6 +68,10 @@ const ProductSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
     technicalSpecification: {
         performance: {
             series: {

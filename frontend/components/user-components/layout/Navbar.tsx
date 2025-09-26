@@ -20,16 +20,29 @@ import { WishlistItem } from "@/lib/utils/types/wishlist.type";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import ErrorState from "./ErrorPage";
+import DataLoading from "./LoadingPage";
+import { getSession } from "next-auth/react";
+import { ISession } from "@/lib/utils/types/auth.type";
+import { signOut } from "next-auth/react";
 
 interface FormValues {
   search: string;
 }
 
 const Navbar = () => {
-  const { data: categories, isLoading, error } = useCategories();
-  const [token, setToken] = useState<string | null>(null);
+  const { data: categories, isLoading, isError } = useCategories();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [session, setSession] = useState<ISession | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+    };
+    fetchSession();
+  }, []);
 
   const { register, watch } = useForm<FormValues>({
     defaultValues: { search: "" },
@@ -45,23 +58,31 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-
     const items = getWishlist();
     setWishlistItems(items.slice().reverse());
   }, []);
 
-  if (isLoading) return <p>Loading categories...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) return <DataLoading />;
+  if (isError) return <ErrorState />;
+
+  const handleLogout = async () => {
+
+    // Sign out user
+    await signOut({
+      redirect: true, // redirect after logout
+      callbackUrl: "/", // where to go after logout
+    });
+  };
+
+  const authUser = session?.user;
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       {/* Top bar */}
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <img src="/NavYantra-Logo.png" alt="logo" className="h-10 w-auto" />
+          <img src="/logo.png" alt="logo" className="h-10 w-auto" />
         </Link>
 
         {/* Search (hidden on xs) */}
@@ -79,7 +100,7 @@ const Navbar = () => {
 
         {/* Right buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {token ? (
+          {authUser ? (
             <>
               <Link href="/wishlist" className="flex items-center space-x-2">
                 <Button variant="ghost" size="icon" className="relative">
@@ -93,16 +114,18 @@ const Navbar = () => {
                 <span className="hidden md:inline">Wishlist</span>
               </Link>
 
-              <Link href="/mycart">
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingCart className="w-6 h-6" />
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs bg-primary rounded-full flex items-center justify-center">
-                    2
-                  </Badge>
+              <Link href="/contact">
+                <Button variant="ghost" size="sm" className="space-x-2">
+                  <Phone className="w-4 h-4" />
+                  <span className="hidden md:inline">Contact</span>
                 </Button>
-                <span className="hidden md:inline">My Cart</span>
               </Link>
-              <Button variant="outline" className="flex items-center space-x-2">
+
+              <Button
+                variant="outline"
+                className="flex items-center space-x-2"
+                onClick={handleLogout}
+              >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
@@ -167,7 +190,7 @@ const Navbar = () => {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-3">
-              {token ? (
+              {session ? (
                 <>
                   <Link href="/wishlist">
                     <Button
@@ -196,6 +219,7 @@ const Navbar = () => {
                   <Button
                     variant="outline"
                     className="flex items-center space-x-2"
+                    onClick={handleLogout}
                   >
                     <User className="w-4 h-4" />
                     <span>Logout</span>
@@ -257,7 +281,7 @@ const Navbar = () => {
                             {cat.subCategories.map((sub) => (
                               <li key={sub._id}>
                                 <Link
-                                  href={`/search?subCategoryID=${sub._id}`}
+                                  href={`/search?categoryID=${cat._id}&subCategoryID=${sub._id}`}
                                   className="block py-1 text-[14px] text-gray-700 hover:text-primary"
                                 >
                                   {sub.name}
@@ -308,7 +332,7 @@ const Navbar = () => {
                         {cat.subCategories.map((sub) => (
                           <Link
                             key={sub._id}
-                            href={`/search?subCategoryID=${sub._id}`}
+                            href={`/search?categoryID=${cat._id}&subCategoryID=${sub._id}`}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             {sub.name}
@@ -323,7 +347,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

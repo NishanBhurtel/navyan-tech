@@ -44,6 +44,5 @@ const subCategorySchema = new mongoose_1.Schema({
         required: true,
     },
 });
-// Mongoose model
 const SubCategoryModel = mongoose_1.default.model("SubCategory", subCategorySchema);
 exports.default = SubCategoryModel;

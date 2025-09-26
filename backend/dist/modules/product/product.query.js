@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productQueryHandler = void 0;
-const product_repository_1 = __importDefault(require("../../repository/mangodb/product/product.repository"));
+const product_repository_1 = __importDefault(require("../../repository/mongodb/product/product.repository"));
 const getProductDetailsByID = async ({ req }) => {
     try {
         const { productID } = req.params;
@@ -40,6 +40,7 @@ const getProductDetailsByID = async ({ req }) => {
                     discountedPrice: product.discountedPrice,
                     brand: product.brand ?? "",
                     isFeatured: product.isFeatured,
+                    isActive: product.isActive,
                     description: product.description ?? "",
                     categoryID: product.categoryID ?? "",
                     subCategoryID: product.subCategoryID ?? "",
@@ -62,19 +63,30 @@ const getProductDetailsByID = async ({ req }) => {
         };
     }
 };
-const getALLProduct = async ({ query }) => {
+const getALLProduct = async ({ req, query }) => {
     try {
-        const products = await product_repository_1.default.getAllProducts({
+        const tsRestReq = req;
+        const reqUser = tsRestReq.user;
+        // Extract pagination params (default page=1, limit=10)
+        const page = query.page ? Number(query.page) : 1;
+        const limit = query.limit ? Number(query.limit) : 9;
+        const skip = (page - 1) * limit;
+        // Get products from repo with filters + pagination
+        const productResponse = await product_repository_1.default.getAllProducts({
             searchQuery: query.search,
             filters: {
                 brand: query.filter?.brand,
                 categoryID: query.filter?.categoryID,
                 maxPrice: query.filter?.maxPrice,
                 minPrice: query.filter?.minPrice,
-                subCategoryID: query.filter?.subCategoryID
-            }
+                subCategoryID: query.filter?.subCategoryID,
+            },
+            skip, // pass to DB query
+            limit, // pass to DB query
+            displayInactive: reqUser?.role === "admin" ? true : false,
         });
-        const formattedProducts = products.map((product) => ({
+        // Count total for pagination metadata
+        const formattedProducts = productResponse.products.map((product) => ({
             _id: product._id.toString(),
             name: product.name,
             images: product.images ?? [],
@@ -82,6 +94,7 @@ const getALLProduct = async ({ query }) => {
             originalPrice: product.originalPrice,
             brand: product.brand ?? "",
             isFeatured: product.isFeatured,
+            isActive: product.isActive,
             description: product.description ?? "",
             categoryID: product.categoryID,
             subCategoryID: product.subCategoryID,
@@ -92,10 +105,19 @@ const getALLProduct = async ({ query }) => {
         }));
         return {
             status: 200,
-            body: formattedProducts,
+            body: {
+                data: formattedProducts,
+                pagination: {
+                    total: productResponse?.total,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(productResponse?.total / limit),
+                },
+            },
         };
     }
     catch (error) {
+        console.error("❌ Error in getALLProduct:", error);
         return {
             status: 500,
             body: {

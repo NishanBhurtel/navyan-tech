@@ -21,7 +21,7 @@ import {
 import { Upload, X, Plus } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/lib/Toast";
+// import useToast from "../../../../lib/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/product.api";
 import {
@@ -31,6 +31,8 @@ import {
 import { useEffect, useState } from "react";
 import { categoriesApi } from "@/lib/api/category";
 import { useUploadImages } from "@/hooks/images/imageUpload";
+import { useAppToast } from "@/lib/tostify";
+import { useCategories } from "@/hooks/categories/getCategories";
 
 interface Subcategory {
   _id: string;
@@ -45,13 +47,13 @@ interface Category {
 
 export default function AddProductPage() {
   const router = useRouter();
-  const { showToast } = useToast();
   const { uploadImages } = useUploadImages();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const { toastSuccess, toastError } = useAppToast();
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -59,7 +61,7 @@ export default function AddProductPage() {
         const data = await categoriesApi.getAll();
         setCategories(data);
       } catch (err: any) {
-        showToast(err.message || "Failed to load categories", "bg-destructive");
+        toastError(err.message || "Failed to load categories");
       }
     };
     fetchCategories();
@@ -74,6 +76,12 @@ export default function AddProductPage() {
     formState: { errors },
   } = useForm<TCreateProductSchema>({
     resolver: zodResolver(createProductSchema),
+    defaultValues: {
+      technicalSpecification: {
+        performance: {},
+        memoryAndStorage: {},
+      },
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -98,29 +106,25 @@ export default function AddProductPage() {
       productApi.createProductApi(data),
     onSuccess: () => {
       setFiles([]);
-      showToast("Product added successfully", "bg-primary");
+      toastSuccess("Product added successfully");
       router.push("/admin/products");
       setIsUploading(false);
     },
     onError: (err: any) => {
-      showToast(
-        "Failed to add product! " + (err?.message || "Unknown error"),
-        "bg-destructive"
-      );
+      toastError("Product failed to add!");
       setIsUploading(false);
     },
   });
 
   const onSubmit = async (data: TCreateProductSchema) => {
     if (files.length === 0) {
-      showToast("Please upload at least one image", "bg-destructive");
+      toastError("Please upload at least one image");
       return;
     }
 
     try {
       setIsUploading(true);
       const { isCompleted, progress, urls } = await uploadImages(files);
-      console.log(progress);
       setProgress(progress);
       if (isCompleted) {
         mutation.mutate({ ...data, images: urls });
@@ -128,7 +132,7 @@ export default function AddProductPage() {
     } catch (err) {
       setIsUploading(false);
       console.error(err);
-      showToast("Image upload failed", "bg-destructive");
+      toastError("Image upload failed");
     }
   };
 
@@ -608,6 +612,14 @@ export default function AddProductPage() {
                   type="checkbox"
                   className="w-3"
                   {...register("isFeatured")}
+                />
+              </div>
+              <div className="flex gap-2 items-center">
+                <Label>Set product status active</Label>
+                <Input
+                  type="checkbox"
+                  className="w-3"
+                  {...register("isActive")}
                 />
               </div>
             </CardContent>

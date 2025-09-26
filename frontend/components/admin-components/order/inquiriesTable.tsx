@@ -1,4 +1,6 @@
 "use client";
+
+import { useState } from "react";
 import { Button } from "@/components/user-components/ui/button";
 import {
   Card,
@@ -21,11 +23,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/user-components/ui/dropdown-menu";
 import { Eye, Mail, MoreHorizontal } from "lucide-react";
-
-import { Inquiry } from "./order-inqueries";
 import moment from "moment";
+import { Inquiry } from "./order-inqueries";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/user-components/ui/dialog";
+import { Input } from "@/components/user-components/ui/input";
+import { Textarea } from "@/components/user-components/ui/textarea";
+import { useAppToast } from "@/lib/tostify";
+import { emailApi } from "@/lib/api/email.api";
 
-export type InquiryAction = "view" | "contact" | "email" | "notes";
+export type InquiryAction = "view" | "email";
 
 interface InquiriesTableProps {
   inquiries: Inquiry[];
@@ -36,28 +50,71 @@ export default function InquiriesTable({
   inquiries,
   onAction,
 }: InquiriesTableProps) {
+  const { toastSuccess, toastError } = useAppToast();
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const emailMutation = useMutation({
+    mutationFn: async ({
+      email,
+      subject,
+      text,
+      streetAddress,
+    }: {
+      email: string;
+      subject: string;
+      text: string;
+      streetAddress: string;
+    }) =>
+      emailApi.emailToOrderedUserApi({ email, subject, text, streetAddress }),
+    onSuccess: () => {
+      toastSuccess("Email sent successfully!");
+      setOpen(false);
+      setSubject("");
+      setMessage("");
+    },
+
+    onError: () => {
+      toastError("Failed to send email");
+    },
+  });
+
+  const handleSendEmail = () => {
+    if (selectedInquiry) {
+      emailMutation.mutate({
+        email: selectedInquiry.customerEmail,
+        subject:
+          subject ||
+          `Regarding your inquiry about ${selectedInquiry.productName}`,
+        text:
+          message ||
+          `Hello ${selectedInquiry.customerName},\n\nThank you for your inquiry about ${selectedInquiry.productName}.`,
+        streetAddress: selectedInquiry.address || "",
+      });
+    }
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between pt-4">
-          <span>Inquiries ({inquiries.length})</span>
-        </CardTitle>
-      </CardHeader>
+    <Card className="py-6">
       <CardContent>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>S.N.</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Created At</TableHead>
+                <TableHead>Inquired At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inquiries.map((inquiry) => (
+              {inquiries.map((inquiry, i) => (
                 <TableRow key={inquiry.id}>
+                  <TableCell>{String(i + 1)}</TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900">
@@ -81,8 +138,12 @@ export default function InquiriesTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">Rs.{inquiry.totalAmount.toLocaleString()}</TableCell>
-                  <TableCell className="text-sm text-gray-500">{moment(inquiries[0].createdAt).format('llll')}</TableCell>
+                  <TableCell className="font-medium text-sm text-gray-500">
+                    Rs.{inquiry?.totalAmount.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-500">
+                    {moment(inquiry.createdAt).format("llll")}
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -97,7 +158,12 @@ export default function InquiriesTable({
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onAction(inquiry, "email")}>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedInquiry(inquiry);
+                            setOpen(true);
+                          }}
+                        >
                           <Mail className="h-4 w-4 mr-2" />
                           Send Email
                         </DropdownMenuItem>
@@ -110,6 +176,66 @@ export default function InquiriesTable({
           </Table>
         </div>
       </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Send Email to {selectedInquiry?.customerName}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* To (readonly) */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1">To</label>
+              <Input value={selectedInquiry?.customerEmail || ""} disabled />
+            </div>
+
+            {/* Subject with default suggestion */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1">Subject</label>
+              <Input
+                placeholder="Subject"
+                value={
+                  subject ||
+                  `Regarding your inquiry about ${
+                    selectedInquiry?.productName || ""
+                  }`
+                }
+                onChange={(e) => setSubject(e.target.value)}
+              />
+            </div>
+
+            {/* Message always blank for admin to write */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1">Message</label>
+              <Textarea
+                placeholder="Write your message here..."
+                value={
+                  message ||
+                  `Hello ${
+                    selectedInquiry?.customerName || ""
+                  },\n\nThank you for your inquiry about ${
+                    selectedInquiry?.productName || ""
+                  }.`
+                }
+                onChange={(e) => setMessage(e.target.value)}
+                rows={6}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={handleSendEmail}
+              disabled={emailMutation.isPending}
+            >
+              {emailMutation.isPending ? "Sending..." : "Send"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

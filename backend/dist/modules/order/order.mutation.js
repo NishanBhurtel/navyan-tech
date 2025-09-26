@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderMutationHandlers = void 0;
-const order_repository_1 = __importDefault(require("../../repository/mangodb/order/order.repository"));
+const order_repository_1 = __importDefault(require("../../repository/mongodb/order/order.repository"));
 const order_model_1 = require("../../models/order.model");
 const createOrder = async ({ body }) => {
     try {

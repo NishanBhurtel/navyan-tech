@@ -4,18 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectToDatabase = connectToDatabase;
-// src/config/db.ts
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const env_1 = __importDefault(require("./env"));
 dotenv_1.default.config();
 async function connectToDatabase() {
-    const mongoUri = process.env.MONGO_URI;
+    const mongoUri = env_1.default.MONGO_URI;
     if (!mongoUri) {
         throw new Error("❌ MONGO_URI is not defined in your .env file.");
     }
     try {
         await mongoose_1.default.connect(mongoUri, {
-            dbName: process.env.DB_NAME || "doClocks",
+            dbName: env_1.default.DB_NAME,
         });
         console.log("✅ Connected to MongoDB via Mongoose");
     }

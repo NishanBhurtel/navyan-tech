@@ -29,11 +29,19 @@ export const createProductSchema = z.object({
         message: "Only .jpeg, .jpg, .png, or .webp files are allowed",
       }
     ),
-  specifications: z.array(z.object({ key: z.string(), value: z.string() })),
+  specifications: z
+    .array(
+      z.object({
+        key: z.string().min(1, "Key is required"),
+        value: z.string().min(1, "Value is required"),
+      })
+    )
+    .optional(),
   categoryID: z.string().min(1, "Category ID is required"),
   subCategoryID: z.string().min(1, "SubCategory ID is required"),
   brand: z.string().min(1, "Brand is required"),
   isFeatured: z.boolean().optional(),
+  isActive: z.boolean().optional(),
   technicalSpecification: z.object({
     performance: z.object({
       series: z.string().optional(),
@@ -91,6 +99,7 @@ export const updateProductDetailsSchema = z.object({
   subCategoryID: z.string().min(1, "Sub category is required"),
   brand: z.string().min(1, "Brand is required"),
   isFeatured: z.boolean().optional(),
+  isActive: z.boolean().optional(),
   technicalSpecification: z.object({
     performance: z.object({
       series: z.string().optional(),
@@ -134,6 +143,7 @@ export const getAllProductDetailsSchema = z.object({
   categoryID: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
   isFeatured: z.boolean().optional(),
+  isActive: z.boolean().optional(),
   createdAt: z.string().min(1, "Date is required"),
   technicalSpecification: z.object({
     performance: z.object({
@@ -179,6 +189,7 @@ export const getProductDetailsByID = z.object({
   subCategoryID: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
   isFeatured: z.boolean().optional(),
+  isActive: z.boolean().optional(),
   createdAt: z.string().min(1, "Date is required"),
   technicalSpecification: z.object({
     performance: z.object({

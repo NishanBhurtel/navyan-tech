@@ -4,7 +4,7 @@ import {
   createCategory,
   removeCategoryByID,
   updateCategoryByID,
-} from "../../repository/mangodb/category/category.repository";
+} from "../../repository/mongodb/category/category.repository";
 
 // Create Category Mutation
 export const createCategoryMutation: AppRouteMutationImplementation<

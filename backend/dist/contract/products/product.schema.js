@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeProductSchema = exports.updateProductDetailsSchema = exports.getProductDetailsByID = exports.getAllProductSchema = exports.createProductSchema = void 0;
+exports.removeProductSchema = exports.updateProductStatus = exports.updateProductDetailsSchema = exports.getProductDetailsByID = exports.getAllProductSchema = exports.allProductSchema = exports.createProductSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.createProductSchema = zod_1.default.object({
     name: zod_1.default.string().min(1, "Product name is required"),
@@ -12,11 +12,14 @@ exports.createProductSchema = zod_1.default.object({
     originalPrice: zod_1.default.preprocess((val) => Number(val), zod_1.default.number().min(0, "Price must be positive")),
     discountedPrice: zod_1.default.preprocess((val) => Number(val), zod_1.default.number().min(0, "Price must be positive")),
     images: zod_1.default.array(zod_1.default.string()).nonempty("At least one image is required"),
-    specifications: zod_1.default.array(zod_1.default.object({ key: zod_1.default.string(), value: zod_1.default.string() })),
+    specifications: zod_1.default
+        .array(zod_1.default.object({ key: zod_1.default.string(), value: zod_1.default.string() }))
+        .optional(),
     categoryID: zod_1.default.string().min(1, "Category is required"),
     subCategoryID: zod_1.default.string().min(1, "SubCategory ID is required"),
     brand: zod_1.default.string().min(1, "Brand is required"),
     isFeatured: zod_1.default.boolean().optional(),
+    isActive: zod_1.default.boolean().optional(),
     technicalSpecification: zod_1.default.object({
         performance: zod_1.default.object({
             series: zod_1.default.string().optional(),
@@ -37,7 +40,7 @@ exports.createProductSchema = zod_1.default.object({
         }),
     }),
 });
-exports.getAllProductSchema = zod_1.default.array(zod_1.default.object({
+exports.allProductSchema = zod_1.default.array(zod_1.default.object({
     _id: zod_1.default.string(),
     name: zod_1.default.string(),
     images: zod_1.default.array(zod_1.default.string()),
@@ -45,13 +48,13 @@ exports.getAllProductSchema = zod_1.default.array(zod_1.default.object({
     originalPrice: zod_1.default.number(),
     brand: zod_1.default.string(),
     isFeatured: zod_1.default.boolean(),
+    isActive: zod_1.default.boolean().optional(),
     description: zod_1.default.string(),
     categoryID: zod_1.default.object({ _id: zod_1.default.string(), name: zod_1.default.string() }),
     subCategoryID: zod_1.default.object({ _id: zod_1.default.string(), name: zod_1.default.string() }),
     stock: zod_1.default.number(),
     createdAt: zod_1.default.date(),
-    technicalSpecification: zod_1.default
-        .object({
+    technicalSpecification: zod_1.default.object({
         performance: zod_1.default.object({
             brand: zod_1.default.string().optional(),
             series: zod_1.default.string().optional(),
@@ -73,6 +76,15 @@ exports.getAllProductSchema = zod_1.default.array(zod_1.default.object({
     }),
     specifications: zod_1.default.array(zod_1.default.object({ key: zod_1.default.string(), value: zod_1.default.string() })),
 }));
+exports.getAllProductSchema = zod_1.default.object({
+    data: exports.allProductSchema,
+    pagination: zod_1.default.object({
+        total: zod_1.default.number(),
+        page: zod_1.default.number(),
+        limit: zod_1.default.number(),
+        totalPages: zod_1.default.number(),
+    }),
+});
 exports.getProductDetailsByID = zod_1.default.object({
     success: zod_1.default.boolean(),
     data: zod_1.default.object({
@@ -83,12 +95,12 @@ exports.getProductDetailsByID = zod_1.default.object({
         originalPrice: zod_1.default.number(),
         brand: zod_1.default.string(),
         isFeatured: zod_1.default.boolean(),
+        isActive: zod_1.default.boolean().optional(),
         description: zod_1.default.string(),
         categoryID: zod_1.default.string(),
         subCategoryID: zod_1.default.string(),
         stock: zod_1.default.number(),
-        technicalSpecification: zod_1.default
-            .object({
+        technicalSpecification: zod_1.default.object({
             performance: zod_1.default.object({
                 series: zod_1.default.string().optional(),
                 cpu: zod_1.default.string().optional(),
@@ -121,6 +133,7 @@ exports.updateProductDetailsSchema = zod_1.default.object({
     subCategoryID: zod_1.default.string().min(1, "Sub category is required"),
     stock: zod_1.default.number().min(0),
     isFeatured: zod_1.default.boolean().optional(),
+    isActive: zod_1.default.boolean().optional(),
     technicalSpecification: zod_1.default.object({
         performance: zod_1.default.object({
             series: zod_1.default.string().optional(),
@@ -142,6 +155,9 @@ exports.updateProductDetailsSchema = zod_1.default.object({
         }),
     }),
     specifications: zod_1.default.array(zod_1.default.object({ key: zod_1.default.string(), value: zod_1.default.string() })),
+});
+exports.updateProductStatus = zod_1.default.object({
+    isActive: zod_1.default.boolean(),
 });
 exports.removeProductSchema = zod_1.default.object({
     _id: zod_1.default.string(),

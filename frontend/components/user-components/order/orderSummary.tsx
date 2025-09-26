@@ -35,7 +35,6 @@ export default function OrderSummary({ product, quantity, paymentDetails }: Orde
             <div className="flex-1">
               <h4 className="font-semibold text-foreground text-sm">{product.name}</h4>
               <p className="text-xs text-muted-foreground">
-                {/* {product.specifications?.map((s) => s.value).join(" | ")} */}
                 {product.brand}
               </p>
               <p className="text-sm font-bold text-primary">
@@ -62,7 +61,7 @@ export default function OrderSummary({ product, quantity, paymentDetails }: Orde
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span>Rs.{paymentDetails.total.toLocaleString()}</span>
+              <span>Rs.{paymentDetails?.total.toLocaleString()}</span>
             </div>
           </div>
         </CardContent>

@@ -17,4 +17,15 @@ exports.emailContract = c.router({
             500: common_schema_1.errorSchema,
         },
     },
+    sendEmailToSpecificUser: {
+        method: "POST",
+        path: "/api/emailToOrderedUser",
+        summary: "sent email to specific user",
+        body: email_schema_1.emailSchemaToSpecificUser,
+        responses: {
+            200: common_schema_1.successSchema,
+            400: common_schema_1.errorSchema,
+            500: common_schema_1.errorSchema,
+        },
+    },
 });

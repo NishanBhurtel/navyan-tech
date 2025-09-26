@@ -16,7 +16,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
             <div className="h-4 w-4 bg-gray-600 rounded-full" />
             <div className="ml-2">
               <p className="text-sm font-medium text-gray-600">Total</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-2xl font-bold text-gray-900">{stats?.total}</p>
             </div>
           </div>
         </CardContent>

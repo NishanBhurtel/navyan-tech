@@ -12,13 +12,9 @@ const categorySchema = new mongoose_1.default.Schema({
     description: {
         type: String,
         required: true,
-    }
+    },
 }, {
-    timestamps: true
+    timestamps: true,
 });
 const CategoryModel = mongoose_1.default.model("Category", categorySchema);
 exports.default = CategoryModel;
-// row          document
-// column       field
-// table        collection
-// db           db                  

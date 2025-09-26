@@ -1,15 +1,35 @@
-// app/root-layout-client.tsx
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { SessionProvider, getSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 export default function InnerLayoutClient({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setLoading(false);
+      if (sess?.user?.role === "admin") {
+        router.push("/");
+      }
+    };
+
+    fetchSession();
+  }, [router]);
+
+  if (loading) return <DataLoading />;
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <SessionProvider>
+        {children}
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

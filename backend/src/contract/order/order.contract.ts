@@ -1,8 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import {
-  getAllOrdersSchema,
-  createOrderSchema,
-} from "./order.schema";
+import { getAllOrdersSchema, createOrderSchema } from "./order.schema";
 import { errorSchema, successSchema } from "../common.schema";
 
 const c = initContract();

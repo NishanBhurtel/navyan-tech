@@ -1,9 +1,13 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type React from "react"
 import { Menu } from "lucide-react"
 import SideBar from "@/components/admin-components/layout/sideBar";
 import { Button } from "@/components/user-components/ui/button";
+import { ISession } from "@/lib/utils/types/auth.type";
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
 
 
 export default function AdminLayout({
@@ -12,6 +16,38 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<ISession | null>(null);
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sess = await getSession();
+      setSession(sess);
+      setLoading(false);
+      if (sess?.user.role !== 'admin') {
+        router.push('/');
+      }
+    };
+    fetchSession();
+  }, []);
+
+
+
+
+  if (loading) {
+    return <DataLoading />;
+  }
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    return <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center"> Access Denied. You do not have permission to view this page.
+      </div>
+    </div>
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

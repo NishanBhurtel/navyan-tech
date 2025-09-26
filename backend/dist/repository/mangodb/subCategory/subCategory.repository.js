@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const subCategory_model_1 = __importDefault(require("../../../models/subCategory.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const createSubCategoryDB = async (data) => {
-    console.log(data.description);
     const subCategory = new subCategory_model_1.default({
         name: data.name,
         description: data.description,

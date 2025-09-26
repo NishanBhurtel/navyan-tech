@@ -4,6 +4,8 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useAllProducts } from "@/hooks/product/getAllProducts";
 import { useAllUsers } from "@/hooks/users/getAllUser";
+import DataLoading from "../layout/LoadingPage";
+import ErrorState from "../layout/ErrorPage";
 
 export default function Hero() {
   const { data: products, isError, isLoading } = useAllProducts({});
@@ -16,9 +18,9 @@ export default function Hero() {
   const displayCount = customerCount > 100 ? customerCount : 120;
 
   if (isLoading)
-    return <div className="p-12 text-center">Loading product details...</div>;
+    return <DataLoading />;
   if (isError || !products)
-    return <div className="p-12 text-center">Product details Not Found</div>;
+    return <ErrorState />;
 
   return (
     <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20">
@@ -67,7 +69,7 @@ export default function Hero() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {products?.length}+
+                  {products?.pagination?.total}+
                 </div>
                 <div className="text-sm text-muted-foreground">Products</div>
               </div>

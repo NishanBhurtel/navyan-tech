@@ -2,7 +2,7 @@ import { AppRouteMutationImplementation } from "@ts-rest/express";
 
 import { productContract } from "../../contract/products/product.contract";
 
-import productRepository from "../../repository/mangodb/product/product.repository";
+import productRepository from "../../repository/mongodb/product/product.repository";
 
 export const createProduct: AppRouteMutationImplementation<
   typeof productContract.createProduct
@@ -15,6 +15,7 @@ export const createProduct: AppRouteMutationImplementation<
       originalPrice,
       brand,
       isFeatured,
+      isActive,
       categoryID,
       subCategoryID,
       description,
@@ -53,6 +54,7 @@ export const createProduct: AppRouteMutationImplementation<
       subCategoryID: subCategoryID,
       brand: brand,
       isFeatured: !!isFeatured,
+      isActive: !!isActive,
       images: images,
       technicalSpecification: {
         performance: {
@@ -73,7 +75,7 @@ export const createProduct: AppRouteMutationImplementation<
           warranty,
         },
       },
-      specifications:specifications
+      specifications:specifications || []
     });
 
     return {
@@ -97,6 +99,46 @@ export const createProduct: AppRouteMutationImplementation<
   }
 };
 
+export const updateProductStatus: AppRouteMutationImplementation<
+  typeof productContract.updateProductStatus
+> = async ({ req }) => {
+  try {
+    const { productID } = req.params;
+    const { isActive } = req.body;
+    const productExist = await productRepository.getByID(productID);
+    if (!productExist) {
+      return {
+        status: 404,
+        body: {
+          success: false,
+          error: "Product not found",
+        },
+      };
+    }
+  await productRepository.updateProduct(productID, {isActive});
+
+    return {
+      status: 200,
+      body: {
+        success: true,
+        message: "Successfully updated product status",
+
+      },
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      body: {
+        success: false,
+        message: "Failed to update product status",
+        error: (error as Error).message,
+      },
+    };
+  }
+};
+
+      
+
 export const updateProductDetails: AppRouteMutationImplementation<
   typeof productContract.updateProductDetails
 > = async ({ req }) => {
@@ -110,6 +152,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
       originalPrice,
       brand,
       isFeatured,
+      isActive,
       stock,
       description,
       categoryID,
@@ -146,6 +189,7 @@ export const updateProductDetails: AppRouteMutationImplementation<
       description: description,
       brand,
       isFeatured,
+      isActive,
       images: images,
       technicalSpecification: {
         performance: {
@@ -242,4 +286,5 @@ export const productMutationHandler = {
   createProduct,
   updateProductDetails,
   removeProduct,
+  updateProductStatus,
 };
