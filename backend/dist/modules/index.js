@@ -10,6 +10,7 @@ const category_router_1 = require("./category/category.router");
 const user_router_1 = require("./users/user.router");
 const email_router_1 = require("./email/email.router");
 const order_router_1 = require("./order/order.router");
+const contact_router_1 = require("./contact/contact.router");
 const s = (0, express_1.initServer)();
 exports.router = s.router(contract_1.contract, {
     user: user_router_1.userRouter,
@@ -19,4 +20,5 @@ exports.router = s.router(contract_1.contract, {
     category: category_router_1.categoryRouter,
     email: email_router_1.emailRouter,
     order: order_router_1.orderRouter,
+    contact: contact_router_1.contactRouter,
 });

@@ -1,9 +1,8 @@
+"use strict";
 // mutations/contact/confirmationTemplate.ts
-
-import { TContactFormDataSchema } from "../../contract/contact/contact.schema";
-
-const ConfirmationTemplate = (formData: TContactFormDataSchema): string => {
-  return `
+Object.defineProperty(exports, "__esModule", { value: true });
+const ConfirmationTemplate = (formData) => {
+    return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -80,5 +79,4 @@ const ConfirmationTemplate = (formData: TContactFormDataSchema): string => {
     </html>
   `;
 };
-
-export default ConfirmationTemplate;
+exports.default = ConfirmationTemplate;

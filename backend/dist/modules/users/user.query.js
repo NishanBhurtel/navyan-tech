@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersQueryHandler = void 0;
-const users_repository_1 = __importDefault(require("../../repository/mangodb/user/users.repository"));
+const users_repository_1 = __importDefault(require("../../repository/mongodb/user/users.repository"));
 // GET /users/details/:userID
 const getUserDetailsByID = async ({ req }) => {
     const { UsersID } = req.params; // matches pathParams in your contract

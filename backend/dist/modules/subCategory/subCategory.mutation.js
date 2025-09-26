@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subCategoryMutationHandler = exports.removeSubCategoryByID = exports.updateSubCategoryDetailsByID = exports.createSubCategory = void 0;
-const subCategory_repository_1 = __importDefault(require("../../repository/mangodb/subCategory/subCategory.repository"));
+const subCategory_repository_1 = __importDefault(require("../../repository/mongodb/subCategory/subCategory.repository"));
 const createSubCategory = async ({ req }) => {
     try {
         const { name, description, parentCategoryId } = req.body;

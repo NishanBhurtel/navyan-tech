@@ -1,67 +1,49 @@
-// services/contact.service.ts
-import { TContactFormDataSchema } from "../../contract/contact/contact.schema";
-import { SentMail } from "./sentMail";
-import { v4 as uuidv4 } from "uuid";
-
-export class ContactService {
-  private emailService: SentMail;
-
-  constructor() {
-    this.emailService = new SentMail();
-  }
-
-  async submitContactForm(
-    formData: TContactFormDataSchema
-  ): Promise<{ success: boolean; message: string; id?: string }> {
-    try {
-      // Generate unique ID for tracking
-      const submissionId = uuidv4();
-
-      // Generate email template
-      const emailTemplate = this.generateEmailTemplate(formData);
-
-      // Send email to admin using your existing SentMail service
-      await this.emailService.sendMail({
-        to: process.env.ADMIN_EMAIL!,
-        subject: emailTemplate.subject,
-        html: emailTemplate.html,
-        text: emailTemplate.text,
-        from: `"Contact Form" <${process.env.EMAIL_USER}>`,
-      });
-
-      // Optional: Send confirmation email to user
-      if (process.env.SEND_CONFIRMATION_EMAIL === "true") {
-        await this.sendConfirmationEmail(formData);
-      }
-
-      console.log(
-        `✅ Contact form submitted successfully - ID: ${submissionId}`
-      );
-
-      return {
-        success: true,
-        message:
-          "Message sent successfully! We'll get back to you within 24 hours.",
-        id: submissionId,
-      };
-    } catch (error) {
-      console.error("❌ Error processing contact form:", error);
-      return {
-        success: false,
-        message:
-          "An error occurred while processing your request. Please try again later.",
-      };
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContactService = void 0;
+const sentMail_1 = require("./sentMail");
+const uuid_1 = require("uuid");
+class ContactService {
+    emailService;
+    constructor() {
+        this.emailService = new sentMail_1.SentMail();
     }
-  }
-
-  private generateEmailTemplate(formData: TContactFormDataSchema): {
-    subject: string;
-    html: string;
-    text: string;
-  } {
-    const subject = `🔔 New Contact Form: ${formData.subject} - ${formData.firstName} ${formData.lastName}`;
-
-    const html = `
+    async submitContactForm(formData) {
+        try {
+            // Generate unique ID for tracking
+            const submissionId = (0, uuid_1.v4)();
+            // Generate email template
+            const emailTemplate = this.generateEmailTemplate(formData);
+            // Send email to admin using your existing SentMail service
+            await this.emailService.sendMail({
+                to: process.env.ADMIN_EMAIL,
+                subject: emailTemplate.subject,
+                html: emailTemplate.html,
+                text: emailTemplate.text,
+                from: `"Contact Form" <${process.env.EMAIL_USER}>`,
+            });
+            // Optional: Send confirmation email to user
+            if (process.env.SEND_CONFIRMATION_EMAIL === "true") {
+                await this.sendConfirmationEmail(formData);
+            }
+            console.log(`✅ Contact form submitted successfully - ID: ${submissionId}`);
+            return {
+                success: true,
+                message: "Message sent successfully! We'll get back to you within 24 hours.",
+                id: submissionId,
+            };
+        }
+        catch (error) {
+            console.error("❌ Error processing contact form:", error);
+            return {
+                success: false,
+                message: "An error occurred while processing your request. Please try again later.",
+            };
+        }
+    }
+    generateEmailTemplate(formData) {
+        const subject = `🔔 New Contact Form: ${formData.subject} - ${formData.firstName} ${formData.lastName}`;
+        const html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -179,25 +161,20 @@ export class ContactService {
           <div class="content">
             <div class="field">
               <span class="label">👤 Full Name</span>
-              <div class="value">${formData.firstName} ${
-      formData.lastName
-    }</div>
+              <div class="value">${formData.firstName} ${formData.lastName}</div>
             </div>
             
             <div class="field">
               <span class="label">✉️ Email Address</span>
               <div class="value">
-                <a href="mailto:${
-                  formData.email
-                }" style="color: #2d5a27; text-decoration: none;">
+                <a href="mailto:${formData.email}" style="color: #2d5a27; text-decoration: none;">
                   ${formData.email}
                 </a>
               </div>
             </div>
             
-            ${
-              formData.phone
-                ? `
+            ${formData.phone
+            ? `
             <div class="field">
               <span class="label">📱 Phone Number</span>
               <div class="value">
@@ -207,33 +184,28 @@ export class ContactService {
               </div>
             </div>
             `
-                : ""
-            }
+            : ""}
             
             <div class="field">
               <span class="label">🏷️ Subject Category</span>
               <div class="value">
                 ${formData.subject}
-                ${
-                  [
-                    "Technical Support",
-                    "Order Status",
-                    "Warranty Claim",
-                  ].includes(formData.subject)
-                    ? '<span class="priority-badge">HIGH PRIORITY</span>'
-                    : ""
-                }
+                ${[
+            "Technical Support",
+            "Order Status",
+            "Warranty Claim",
+        ].includes(formData.subject)
+            ? '<span class="priority-badge">HIGH PRIORITY</span>'
+            : ""}
               </div>
             </div>
             
             <div class="field">
               <span class="label">📰 Newsletter Subscription</span>
               <div class="value">
-                ${
-                  formData.subscribeToNewsLatter
-                    ? '<span class="newsletter-badge">✅ SUBSCRIBED</span>'
-                    : "❌ Not Subscribed"
-                }
+                ${formData.subscribeToNewsLatter
+            ? '<span class="newsletter-badge">✅ SUBSCRIBED</span>'
+            : "❌ Not Subscribed"}
               </div>
             </div>
             
@@ -245,25 +217,20 @@ export class ContactService {
             </div>
             
             <div class="reply-info">
-              <strong>💡 Quick Reply:</strong> Simply reply to this email to respond directly to ${
-                formData.firstName
-              }
+              <strong>💡 Quick Reply:</strong> Simply reply to this email to respond directly to ${formData.firstName}
             </div>
           </div>
           
           <div class="footer">
-            <p><strong>📅 Submitted:</strong> ${new Date().toLocaleString(
-              "en-US",
-              {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                timeZoneName: "short",
-              }
-            )}</p>
+            <p><strong>📅 Submitted:</strong> ${new Date().toLocaleString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZoneName: "short",
+        })}</p>
             <p>This message was sent via the website contact form</p>
             <p style="color: #2d5a27;"><strong>⏰ Response Time Goal: Within 24 hours</strong></p>
           </div>
@@ -271,8 +238,7 @@ export class ContactService {
       </body>
       </html>
     `;
-
-    const text = `
+        const text = `
 🔔 NEW CONTACT FORM SUBMISSION
 =====================================
 
@@ -291,15 +257,11 @@ ${formData.message}
 
 💡 Reply directly to this email to respond to ${formData.firstName}
     `;
-
-    return { subject, html, text };
-  }
-
-  private async sendConfirmationEmail(
-    formData: TContactFormDataSchema
-  ): Promise<void> {
-    try {
-      const confirmationHtml = `
+        return { subject, html, text };
+    }
+    async sendConfirmationEmail(formData) {
+        try {
+            const confirmationHtml = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -336,18 +298,18 @@ ${formData.message}
         </body>
         </html>
       `;
-
-      await this.emailService.sendMail({
-        to: formData.email,
-        subject: "✅ Contact Form Confirmation - We received your message!",
-        html: confirmationHtml,
-        text: `Hi ${formData.firstName}, thank you for contacting us! We've received your message about "${formData.subject}" and will get back to you within 24 hours.`,
-      });
-
-      console.log(`✅ Confirmation email sent to ${formData.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send confirmation email:", error);
-      // Don't throw error here, as the main contact form was successful
+            await this.emailService.sendMail({
+                to: formData.email,
+                subject: "✅ Contact Form Confirmation - We received your message!",
+                html: confirmationHtml,
+                text: `Hi ${formData.firstName}, thank you for contacting us! We've received your message about "${formData.subject}" and will get back to you within 24 hours.`,
+            });
+            console.log(`✅ Confirmation email sent to ${formData.email}`);
+        }
+        catch (error) {
+            console.error("❌ Failed to send confirmation email:", error);
+            // Don't throw error here, as the main contact form was successful
+        }
     }
-  }
 }
+exports.ContactService = ContactService;

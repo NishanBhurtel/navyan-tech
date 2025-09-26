@@ -33,16 +33,34 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-// Mongoose schema
-const subCategorySchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: false },
-    parentCategoryId: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Category",
-        required: true,
-    },
-});
-const SubCategoryModel = mongoose_1.default.model("SubCategory", subCategorySchema);
-exports.default = SubCategoryModel;
+exports.authRepository = void 0;
+const jsonwebtoken_1 = __importStar(require("jsonwebtoken"));
+class AuthRepository {
+    createJwtToken(payload, secret, options) {
+        return jsonwebtoken_1.default.sign(payload, secret, options);
+    }
+    verifyJwtToken(token, secret, options) {
+        try {
+            return jsonwebtoken_1.default.verify(token, secret, options);
+        }
+        catch (err) {
+            throw new Error(err instanceof Error ? err.message : "Invalid token");
+        }
+    }
+    createHash(data, saltRounds) {
+        return jsonwebtoken_1.default.sign(data, saltRounds.toString());
+    }
+    verifyHash(data, hash) {
+        try {
+            jsonwebtoken_1.default.verify(hash, data);
+            return true;
+        }
+        catch (err) {
+            if (err instanceof jsonwebtoken_1.JsonWebTokenError) {
+                return false;
+            }
+            throw err;
+        }
+    }
+}
+exports.authRepository = new AuthRepository();

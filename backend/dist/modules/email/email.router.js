@@ -7,4 +7,5 @@ const email_mutation_1 = require("./email.mutation");
 const s = (0, express_1.initServer)();
 exports.emailRouter = s.router(email_contract_1.emailContract, {
     sendMail: email_mutation_1.emailMutationHandler.sentMailMutation,
+    sendEmailToSpecificUser: email_mutation_1.emailMutationHandler.sentEmailToSpecificUserMutation,
 });

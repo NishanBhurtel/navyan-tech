@@ -46,8 +46,10 @@ exports.productContract = c.router({
                 minPrice: zod_1.default.coerce.number().optional(),
                 maxPrice: zod_1.default.coerce.number().optional(),
                 categoryID: zod_1.default.string().optional(),
-                subCategoryID: zod_1.default.string().optional()
-            }).optional()
+                subCategoryID: zod_1.default.string().optional(),
+            }).optional(),
+            limit: zod_1.default.coerce.number().min(1).max(100).default(10).optional(),
+            page: zod_1.default.coerce.number().min(1).default(1).optional(),
         }),
         responses: {
             200: product_schema_1.getAllProductSchema,
@@ -63,6 +65,22 @@ exports.productContract = c.router({
         }),
         body: product_schema_1.updateProductDetailsSchema,
         summary: "Update product details details",
+        responses: {
+            200: common_schema_1.successSchema,
+            400: common_schema_1.errorSchema,
+            401: common_schema_1.errorSchema,
+            404: common_schema_1.errorSchema,
+            500: common_schema_1.errorSchema,
+        },
+    },
+    updateProductStatus: {
+        method: "PUT",
+        path: "/setProduct/:productID",
+        pathParams: zod_1.default.object({
+            productID: zod_1.default.string().min(1, "Product ID is required"),
+        }),
+        body: product_schema_1.updateProductStatus,
+        summary: "Update product status",
         responses: {
             200: common_schema_1.successSchema,
             400: common_schema_1.errorSchema,

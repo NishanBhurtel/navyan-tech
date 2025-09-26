@@ -13,6 +13,7 @@ exports.getAllCategorySchema = zod_1.default.array(zod_1.default.object({
     _id: zod_1.default.string(),
     name: zod_1.default.string(),
     description: zod_1.default.string(),
+    totalItems: zod_1.default.number(),
     subCategories: zod_1.default.array(zod_1.default.object({
         _id: zod_1.default.string(),
         name: zod_1.default.string(),

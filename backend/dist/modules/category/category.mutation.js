@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.categoryMutationHandler = exports.deleteCategoryMutation = exports.updateCategoryMutation = exports.createCategoryMutation = void 0;
-const category_repository_1 = require("../../repository/mangodb/category/category.repository");
+const category_repository_1 = require("../../repository/mongodb/category/category.repository");
 // Create Category Mutation
 const createCategoryMutation = async ({ req }) => {
     try {
