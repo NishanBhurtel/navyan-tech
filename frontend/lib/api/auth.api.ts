@@ -18,7 +18,7 @@ const loginApi = async (loginPayload: TLoginSchema) => {
   const targetUrl = `${apiClient.defaults.baseURL}/auth/login`; // Adjust path if not /auth/login
   console.log("Calling login endpoint at:", targetUrl);
   const response = await apiClient.post("/auth/login", loginPayload);
-  console.log("response from login api : ", response);
+  console.log("response from login api : ", response.data);
   return response.data;
 };
 
