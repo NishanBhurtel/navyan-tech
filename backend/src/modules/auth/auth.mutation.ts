@@ -40,7 +40,6 @@ export const registerUser: AppRouteMutationImplementation<
         userId: newUser._id.toString(),
       },
     };
-    
   } catch (error) {
     console.error("Register error:", error);
     return {
@@ -63,6 +62,9 @@ export const loginUser: AppRouteMutationImplementation<
     const adminUser = await userRepository.getAdminUser(email.toLowerCase());
 
     const customerUser = customerUsers[0];
+
+    console.log("adminUser: ", adminUser);
+    console.log("customerUser: ", customerUser);
 
     if (adminUser && customerUser) {
       return {
@@ -87,7 +89,6 @@ export const loginUser: AppRouteMutationImplementation<
     const token = authRepository.createJwtToken({ userId }, env.JWT_SECRET, {
       expiresIn: "1d",
     });
-
 
     return {
       status: 200,
