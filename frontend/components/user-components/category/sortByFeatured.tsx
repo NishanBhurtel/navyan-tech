@@ -6,7 +6,11 @@ type ProductGridProps = {
 };
 
 export default function SortByFeatured({ products }: ProductGridProps) {
-  const {data: allProduct } = useAllProducts({});
+  const { data: allProduct } = useAllProducts({});
+
+
+  console.log("allProduct", allProduct);
+
   return (
     <div className="grid grid-cols-1">
       <div className="w-full flex justify-between items-center">

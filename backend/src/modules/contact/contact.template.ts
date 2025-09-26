@@ -1,6 +1,6 @@
-import { ContactFormData } from "../../contract/contact/contact.contract";
+import { TContactFormDataSchema } from "../../contract/contact/contact.schema";
 
-const ContactTemplate = (formData: ContactFormData): string => {
+const ContactTemplate = (formData: TContactFormDataSchema): string => {
   return `
     <!DOCTYPE html>
     <html>
@@ -134,13 +134,13 @@ const ContactTemplate = (formData: ContactFormData): string => {
           </div>
           
           ${
-            formData.phoneNumber
+            formData.phone
               ? `
           <div class="field">
             <span class="label">📱 Phone Number</span>
             <div class="value">
-              <a href="tel:${formData.phoneNumber}" style="color: #2d5a27; text-decoration: none;">
-                ${formData.phoneNumber}
+              <a href="tel:${formData.phone}" style="color: #2d5a27; text-decoration: none;">
+                ${formData.phone}
               </a>
             </div>
           </div>
@@ -164,16 +164,6 @@ const ContactTemplate = (formData: ContactFormData): string => {
             </div>
           </div>
           
-          <div class="field">
-            <span class="label">📰 Newsletter Subscription</span>
-            <div class="value">
-              ${
-                formData.subscribeToNewsLatter
-                  ? '<span class="newsletter-badge">✅ SUBSCRIBED</span>'
-                  : "❌ Not Subscribed"
-              }
-            </div>
-          </div>
           
           <div class="field">
             <span class="label">💬 Message</span>

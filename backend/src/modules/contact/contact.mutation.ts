@@ -1,12 +1,12 @@
 import { AppRouteMutationImplementation } from "@ts-rest/express";
 import {
   contactContract,
-  ContactFormData,
 } from "../../contract/contact/contact.contract";
 import { SentMail } from "../../repository/EmailRepository/sentMail";
 import ContactTemplate from "./contact.template";
 import ConfirmationTemplate from "./confirmationTemplate";
 import { v4 as uuidv4 } from "uuid";
+import { TContactFormDataSchema } from "../../contract/contact/contact.schema";
 
 const emailService = new SentMail();
 
@@ -14,7 +14,7 @@ const sendMessageMutation: AppRouteMutationImplementation<
   typeof contactContract.createContact
 > = async ({ req }) => {
   try {
-    const formData: ContactFormData = req.body;
+    const formData: TContactFormDataSchema = req.body;
     const submissionId = uuidv4();
 
     // Validate required fields
