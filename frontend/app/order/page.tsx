@@ -64,7 +64,7 @@ export default function OrderPage() {
           <OrderForm
             product={product}
             quantity={quantity}
-            total={paymentDetails.total}
+            total={paymentDetails?.total}
           />
           {/* Pass product and quantity to OrderSummary */}
           <OrderSummary

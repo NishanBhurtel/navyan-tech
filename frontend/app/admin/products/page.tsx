@@ -101,7 +101,7 @@ export default function ProductsPage() {
     try {
       const res = await productApi.getAllProductsApi({
         page: 1,
-        limit: pagination.total,
+        limit: pagination?.total,
         search: filters.search,
         filter: {
           categoryID: filters.category !== "all" ? filters.category : undefined,

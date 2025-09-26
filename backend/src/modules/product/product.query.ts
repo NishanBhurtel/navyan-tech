@@ -119,10 +119,10 @@ const getALLProduct: AppRouteQueryImplementation<
       body: {
         data: formattedProducts,
         pagination: {
-          total: productResponse.total,
+          total: productResponse?.total,
           page,
           limit,
-          totalPages: Math.ceil(productResponse.total / limit),
+          totalPages: Math.ceil(productResponse?.total / limit),
         },
       },
     };

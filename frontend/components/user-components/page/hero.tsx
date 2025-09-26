@@ -69,7 +69,7 @@ export default function Hero() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {products?.pagination.total}+
+                  {products?.pagination?.total}+
                 </div>
                 <div className="text-sm text-muted-foreground">Products</div>
               </div>
