@@ -15,6 +15,8 @@ const registerApi = async (registerPayload: TRegisterSchema) => {
 // POST /auth/login - Login user
 const loginApi = async (loginPayload: TLoginSchema) => {
   console.log("loginPayload in auth api: ", loginPayload);
+  const targetUrl = `${apiClient.defaults.baseURL}/auth/login`; // Adjust path if not /auth/login
+  console.log("Calling login endpoint at:", targetUrl);
   const response = await apiClient.post("/auth/login", loginPayload);
   console.log("response from login api : ", response);
   return response.data;
