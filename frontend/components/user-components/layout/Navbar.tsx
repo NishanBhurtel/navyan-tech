@@ -77,12 +77,12 @@ const Navbar = () => {
   const authUser = session?.user;
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       {/* Top bar */}
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <img src="/NavYantra-Logo.png" alt="logo" className="h-10 w-auto" />
+          <img src="/logo.png" alt="logo" className="h-10 w-auto" />
         </Link>
 
         {/* Search (hidden on xs) */}
@@ -347,7 +347,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

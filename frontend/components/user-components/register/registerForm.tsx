@@ -72,7 +72,7 @@ export default function RegisterForm() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center justify-center space-x-2">
-            <img src="/NavYantra-Logo.png" alt="logo" className="h-14 w-auto" />
+            <img src="/logo.png" alt="logo" className="h-14 w-auto" />
           </Link>
           <p className="text-2xl text-gray-600 mt-2">Create your account</p>
         </div>

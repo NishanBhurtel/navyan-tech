@@ -62,7 +62,7 @@ export const EmailTemplate = (
     <body>
       <div class="container">
         <div class="logo">
-          <img src="https://navyan-tech-hazel.vercel.app/NavYantra-Logo.png" alt="NavYantra Logo" />
+          <img src="https://navyan-tech-hazel.vercel.app/logo.png" alt="NavYantra Logo" />
         </div>
         <h2>${subject}</h2>
         <p>Hi there,</p>

@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-28 h-15 rounded-lg flex items-center justify-center">
-                <img src="/NavYantra-Logo.png" alt="NavYantra Logo" />
+                <img src="/logo.png" alt="NavYantra Logo" />
               </div>
             </Link>
             <p className="text-muted-foreground">
