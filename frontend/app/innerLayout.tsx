@@ -16,7 +16,7 @@ export default function InnerLayoutClient({ children }: { children: React.ReactN
       const sess = await getSession();
       setLoading(false);
       if (sess?.user?.role === "admin") {
-        router.push("/");
+        router.push("/admin");
       }
     };
 
