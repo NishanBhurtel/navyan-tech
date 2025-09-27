@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  CreateCategoryRequest,
   UpdateCategoryRequest,
-  CreateSubcategoryRequest,
   UpdateSubcategoryRequest,
 } from "../../components/admin-components/category/types";
 import { toast } from "sonner";

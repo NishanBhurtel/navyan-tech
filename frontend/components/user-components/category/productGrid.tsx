@@ -63,7 +63,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
   if (products.length === 0) return <NoProduct />; // ✅ render this if no products
 
   return (
-    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => {
         const isAvailable = product.stock > 0;
         const alreadyInWishlist = isInWishlist(product._id);
@@ -106,7 +106,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
                 <ChevronRight className="w-3 h-3" />
                 <Link
                   className="hover:underline hover:text-blue-600"
-                  href={`/search?categoryID=${product.subCategoryID._id}`}
+                  href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
                 >
                   {product.subCategoryID?.name}{" "}
                 </Link>

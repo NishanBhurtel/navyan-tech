@@ -62,12 +62,10 @@ console.log("Debug 2 ",data)
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8">
         <div className="grid gap-8 grid-cols-1 md:grid-cols-4">
           {/* Sidebar Filters */}
-          <div className="md:col-span-4 lg:col-span-1">
-            <SidebarFilter products={products} />
-          </div>
+          <SidebarFilter products={products} />
 
-          {/* Products Section */}
-          <div className="md:col-span-4 lg:col-span-3">
+          {/* Products Grid */}
+          <div className="lg:col-span-3">
             <div className="space-y-6">
               <SortByFeatured filteredProductCount={products.length} totalProductsCount={data?.pagination.total}  />
               <ProductGrid products={products} />
@@ -85,6 +83,8 @@ console.log("Debug 2 ",data)
           </div>
         </div>
       </div>
+
+      {/* Footer */}
 
       <Footer />
     </div>

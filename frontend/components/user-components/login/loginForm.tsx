@@ -22,10 +22,15 @@ import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
 import { getSession, signIn } from "next-auth/react";
 import { useAppToast } from "@/lib/tostify";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
   const { toastSuccess, toastError } = useAppToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   const {
     register,
@@ -53,6 +58,7 @@ export default function LoginForm() {
 
   // ✅ Form submit handler
   const onSubmit = async (data: TLoginSchema) => {
+    setIsSubmitting(true);
     const res = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -70,15 +76,19 @@ export default function LoginForm() {
     } else {
       toastError("Login failed: " + (res?.error || "Unknown error"));
     }
+    setIsSubmitting(false);
   };
-
 
   return (
     <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center justify-center space-x-2">
-            <img src="/logo.png" alt="logo" className="h-14 w-auto" />
+            <img
+              src="/logos/NavYantra-Logo.png"
+              alt="logo"
+              className="h-14 w-auto"
+            />
           </Link>
 
           <p className="text-2xl text-gray-600 mt-2">Sign in to your account</p>
@@ -114,27 +124,31 @@ export default function LoginForm() {
               {/* Password Field */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="h-11"
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </p>
-                )}
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className="h-11 pr-10"
+                    {...register("password")}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePassword}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full h-11 bg-green-600 hover:bg-green-700"
-                disabled={mutation.isPending}
+                disabled={isSubmitting}
               >
-                {mutation.isPending ? "Signing In..." : "Sign In"}
+                {isSubmitting ? "Signing In..." : "Sign In"}
               </Button>
             </form>
 

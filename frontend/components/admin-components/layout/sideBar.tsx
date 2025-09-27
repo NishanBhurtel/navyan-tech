@@ -46,7 +46,7 @@ export default function SideBar({
         <div className="flex items-center space-x-2">
           <Link href="/" className="flex items-center space-x-4">
             <div className="w-24 h-15 rounded-lg flex items-center justify-center">
-              <img src="/logo.png" alt="" />
+              <img src="/logos/NavYantra-Logo.png" alt="" />
             </div>
           </Link>
         </div>

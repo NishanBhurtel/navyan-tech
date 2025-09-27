@@ -35,9 +35,8 @@ export default function AdminLayout({
 
 
 
-
   if (loading) {
-    return <DataLoading />;
+    return <DataLoading />
   }
 
   if (!session || !session.user || session.user.role !== 'admin') {

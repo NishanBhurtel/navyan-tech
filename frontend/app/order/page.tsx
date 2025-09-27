@@ -1,5 +1,4 @@
 "use client";
-
 import { useSearchParams } from "next/navigation";
 import Annoucement from "@/components/user-components/layout/Annoucement";
 import OrderForm from "@/components/user-components/order/orderForm";
@@ -8,7 +7,6 @@ import Footer from "@/components/user-components/layout/Footer";
 import { useProductByID } from "@/hooks/product/getProductByID";
 import Navbar from "@/components/user-components/layout/Navbar";
 import DataLoading from "@/components/user-components/layout/LoadingPage";
-
 export default function OrderPage() {
   const searchParams = useSearchParams();
   const productId = searchParams.get("product");
