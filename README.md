@@ -1,1 +1,1 @@
-Navyan tech
+Navyan techh
