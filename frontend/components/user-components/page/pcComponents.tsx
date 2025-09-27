@@ -1,49 +1,3 @@
-// "use client";
-// import Link from "next/link";
-// import { Card, CardContent } from "../ui/card";
-// import { Button } from "../ui/button";
-// import { Heart, ChevronRight } from "lucide-react";
-// import { useAllProducts } from "@/hooks/product/getAllProducts";
-// import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-// import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import DataLoading from "../layout/LoadingPage";
-// import ErrorState from "../layout/ErrorPage";
-// import { useAppToast } from "@/lib/tostify";
-
-// export default function PcComponents() {
-//   const { data: products, isLoading, isError } = useAllProducts({
-//   });
-//   const { toastSuccess, toastError } = useAppToast();
-//   const heading = "PC Components";
-
-//   const pcComponents = products
-//     ? products.data?.filter((product) => product.categoryID.name === "Components")
-//     : [];
-
-//   const categoryID = pcComponents?.[0]?.categoryID?._id;
-//     const subCategoryID = pcComponents?.[0]?.subCategoryID?._id;
-
-//   if (isLoading)
-//     return <DataLoading />;
-//   if (isError || !products)
-//     return <ErrorState />
-
-//   const handleAddToWishlist = (product: any) => {
-//     const isAvailable = product.stock > 0;
-//     const item: WishlistItem = {
-//       id: product._id,
-//       name: product.name,
-//       image: product.images?.[0] ?? "",
-//       price: product.originalPrice ?? "",
-//       originalPrice: product.discountedPrice ?? "",
-//       category: product.categoryID?.name ?? "",
-//       inStock: isAvailable,
-//     };
-
-//     const result = addToWishlist(item);
-//      result.success ? toastSuccess("Item added to wishlist") : toastError("Item failed to add in your wishlist");
-//   };
-
 "use client";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
@@ -55,7 +9,6 @@ import {
   getWishlist,
 } from "@/lib/localStorage/wishlist.localStorage";
 import DataLoading from "../layout/LoadingPage";
-import ErrorState from "../layout/ErrorPage";
 import { useAppToast } from "@/lib/tostify";
 import { useEffect, useState } from "react";
 import { productApi } from "@/lib/api/product.api";
@@ -66,7 +19,6 @@ export default function PcComponents() {
   const [products, setProducts] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -91,7 +43,6 @@ export default function PcComponents() {
         }
       } catch (error) {
         if (isMounted) {
-          setIsError(true);
           setIsLoading(false);
         }
       }
@@ -129,7 +80,6 @@ export default function PcComponents() {
   };
 
   if (isLoading) return <DataLoading />;
-  if (isError) return <ErrorState />;
 
   // filter all products by "Components" category
   const pcComponents = products.filter(

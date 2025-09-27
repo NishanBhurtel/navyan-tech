@@ -106,7 +106,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
                 <ChevronRight className="w-3 h-3" />
                 <Link
                   className="hover:underline hover:text-blue-600"
-                  href={`/search?categoryID=${product.subCategoryID._id}`}
+                  href={`/search?categoryID=${product.categoryID._id}&subCategoryID=${product.subCategoryID._id}`}
                 >
                   {product.subCategoryID?.name}{" "}
                 </Link>

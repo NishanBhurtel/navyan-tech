@@ -21,10 +21,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/lib/api/auth.api";
 import { useForm } from "react-hook-form";
 import { useAppToast } from "@/lib/tostify";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export default function RegisterForm() {
   const router = useRouter();
   const { toastSuccess, toastError } = useAppToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -72,7 +76,11 @@ export default function RegisterForm() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center justify-center space-x-2">
-            <img src="/logo.png" alt="logo" className="h-14 w-auto" />
+            <img
+              src="/logos/NavYantra-Logo.png"
+              alt="logo"
+              className="h-14 w-auto"
+            />
           </Link>
           <p className="text-2xl text-gray-600 mt-2">Create your account</p>
         </div>
@@ -125,7 +133,7 @@ export default function RegisterForm() {
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   {...register("email", { required: "Email is required" })}
-                  placeholder="gauravkarki@example.com"
+                  placeholder="gauravkarki@gmail.com"
                   className="h-11"
                 />
                 {errors.email && (
@@ -151,15 +159,24 @@ export default function RegisterForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: { value: 6, message: "Minimum 6 characters" },
-                  })}
-                  type="password"
-                  placeholder="Create a strong password"
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: { value: 6, message: "Minimum 6 characters" },
+                    })}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Create a strong password"
+                    className="h-11 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm">
                     {errors.password.message}
@@ -167,16 +184,30 @@ export default function RegisterForm() {
                 )}
               </div>
 
+              {/* Confirm Password Field */}
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  {...register("confirmPassword", {
-                    required: "Confirm your password",
-                  })}
-                  type="password"
-                  placeholder="Confirm your password"
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    {...register("confirmPassword", {
+                      required: "Confirm your password",
+                    })}
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    className="h-11 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm">
                     {errors.confirmPassword.message}
@@ -194,10 +225,7 @@ export default function RegisterForm() {
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                 />
                 <Label htmlFor="termsAccepted" className="text-sm">
-                  I agree to the{" "}
-                  Terms of Service
-                  and{" "}
-                  Privacy Policy
+                  I agree to the Terms of Service and Privacy Policy
                 </Label>
               </div>
               {errors.termsAccepted && (

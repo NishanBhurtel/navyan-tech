@@ -3,16 +3,13 @@ import { useCategories } from "@/hooks/categories/getCategories";
 import Link from "next/link";
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import { FaTiktok } from "react-icons/fa";
-import ErrorState from "./ErrorPage";
 import DataLoading from "./LoadingPage";
 
 const Footer = () => {
-  const { data: categories, isError, isLoading } = useCategories();
+  const { data: categories, isLoading } = useCategories();
 
   if (isLoading)
     return <DataLoading  />;
-  if (isError || !categories)
-    return <ErrorState />
 
   return (
     <footer className="bg-card border-t border-border py-16">
@@ -22,7 +19,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-28 h-15 rounded-lg flex items-center justify-center">
-                <img src="/logo.png" alt="NavYantra Logo" />
+                <img src="/logos/NavYantra-Logo.png" alt="NavYantra Logo" />
               </div>
             </Link>
             <p className="text-muted-foreground">

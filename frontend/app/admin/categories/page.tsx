@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, FolderTree, Loader2 } from "lucide-react";
 import { Button } from "@/components/user-components/ui/button";
 import {
@@ -21,6 +21,7 @@ import {
   useSubcategoryMutations,
 } from "@/hooks/categories/getCategories";
 import ConfirmDialog from "@/lib/confirmModel";
+import { useAppToast } from "@/lib/tostify";
 
 type EditingItem =
   | { type: "category"; id: string }
@@ -156,6 +157,54 @@ export default function CategoriesPage() {
       resetForm();
     }
   };
+
+  const { toastSuccess } = useAppToast();
+
+  useEffect(() => {
+    const categoryCreatedSuccess = categoryMutations.createCategory.isSuccess;
+
+    const subcategoryCreatedSuccess =
+      subcategoryMutations.createSubcategory.isSuccess;
+
+    const categoryUpdatedSuccess = categoryMutations.updateCategory.isSuccess;
+
+    const subcategoryUpdatedSuccess =
+      subcategoryMutations.updateSubcategory.isSuccess;
+
+    if (categoryCreatedSuccess) {
+      setIsDialogOpen(false);
+      toastSuccess("Category created successfully");
+      resetForm();
+      categoryMutations.createCategory.reset();
+      refetch(); // Optional: to refresh the list
+    }
+    if (subcategoryCreatedSuccess) {
+      setIsDialogOpen(false);
+      toastSuccess("Sub-category created successfully");
+      resetForm();
+      subcategoryMutations.createSubcategory.reset();
+      refetch(); // Optional: to refresh the list
+    }
+        if (categoryUpdatedSuccess) {
+      setIsDialogOpen(false);
+      toastSuccess("Category updated successfully");
+      resetForm();
+      categoryMutations.updateCategory.reset();
+      refetch(); // Optional: to refresh the list
+    }
+    if (subcategoryUpdatedSuccess) {
+      setIsDialogOpen(false);
+      toastSuccess("Sub-category updated successfully");
+      resetForm();
+      subcategoryMutations.updateSubcategory.reset();
+      refetch(); // Optional: to refresh the list
+    }
+  }, [
+    categoryMutations.createCategory.isSuccess,
+    categoryMutations.updateCategory.isSuccess,
+    subcategoryMutations.createSubcategory.isSuccess,
+    subcategoryMutations.updateSubcategory.isSuccess,
+  ]);
 
   const handleFormChange = (data: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));

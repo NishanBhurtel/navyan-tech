@@ -38,7 +38,7 @@ export default function ProductImages({ product }: ProductImagesProps) {
           onClick={handleMainClick}
         />
         <Badge className="absolute top-4 left-4 bg-red-600 text-white">
-          Rs.{product.originalPrice - product.discountedPrice} Off
+          Rs.{product.discountedPrice - product.originalPrice} Off
         </Badge>
       </div>
 

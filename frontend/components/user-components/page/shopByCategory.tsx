@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Cpu, Monitor, Laptop, Gamepad2, Headphones } from "lucide-react";
 import { useCategories } from "@/hooks/categories/getCategories";
 import DataLoading from "../layout/LoadingPage";
-import ErrorState from "../layout/ErrorPage";
 
 // Map category names to icons
 const categoryIcons: Record<string, any> = {
@@ -30,12 +29,10 @@ const categoryColors: string[] = [
 
 export default function ShopByCategory() {
 
-    const {data: categories, isError, isLoading } = useCategories();
+    const {data: categories, isLoading } = useCategories();
 
     if (isLoading)
     return <DataLoading  />;
-    if (isError || !categories)
-    return <ErrorState />
 
   return (
     <section className="py-16 bg-background">

@@ -3,6 +3,8 @@
 import { Card, CardContent } from "@/components/user-components/ui/card";
 import { Users, Loader2 } from "lucide-react";
 import { useAllUsers } from "@/hooks/users/getAllUser";
+import DataLoading from "@/components/user-components/layout/LoadingPage";
+import ErrorState from "@/components/user-components/layout/ErrorPage";
 
 export default function StatsCard() {
 
@@ -21,12 +23,9 @@ export default function StatsCard() {
               </p>
 
               {isLoading ? (
-                <div className="flex items-center">
-                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-                  <span className="ml-2 text-sm text-gray-500">Loading...</span>
-                </div>
+                <DataLoading />
               ) : isError ? (
-                <p className="text-sm text-red-600">Error loading count</p>
+                <ErrorState />
               ) : (
                 <p className="text-2xl font-bold text-gray-900">
                   {customerUsers ? customerUsers.length : "100"}

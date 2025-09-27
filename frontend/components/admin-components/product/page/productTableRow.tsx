@@ -22,7 +22,7 @@ export default function ProductTableRow({
       <TableCell>
         <div className="flex items-center space-x-3">
           <img
-            src={(product.images && product.images[0]) || "/placeholder.svg"}
+            src={(product.images && product.images[0]) || "/placeholder/placeholder.svg"}
             alt={product.name}
             className="h-12 w-12 rounded-lg object-cover bg-gray-100"
           />
