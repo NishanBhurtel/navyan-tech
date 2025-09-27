@@ -114,6 +114,7 @@ export default function CategoriesPage() {
     else subcategoryMutations.deleteSubcategory.mutate(id);
 
     setItemToRemove(null);
+    
   };
 
   // Form submission
