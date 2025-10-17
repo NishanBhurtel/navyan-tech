@@ -120,7 +120,7 @@ export default function RelatedProducts({
                       {p.name}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      {p.description || `${p.brand} | ${p.originalPrice}`}
+                      { `${p.brand} | ${p.originalPrice}`}
                     </p>
                   </div>
 

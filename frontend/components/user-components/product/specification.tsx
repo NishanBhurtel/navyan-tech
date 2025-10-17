@@ -26,7 +26,7 @@ export default function Specification({ product }: { product: IProduct }) {
             <h3 className="text-2xl font-bold font-serif text-foreground mb-6">
               Technical Specifications
             </h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-1 gap-6">
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-foreground">
                   Performance

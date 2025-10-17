@@ -68,7 +68,7 @@ export default function ProductInfo({ product }: { product: IProduct }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-serif text-foreground mb-2">
+        <h1 className="text-3xl font-bold  text-foreground mb-2">
           {product.name} |{" "}
           <span className="text-lg text-gray-700 my-2">{product.brand}</span>
         </h1>
@@ -86,16 +86,15 @@ export default function ProductInfo({ product }: { product: IProduct }) {
           <span className="text-sm text-muted-foreground">Price:</span>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground line-through">
-              Rs.{product.discountedPrice?.toLocaleString()}
+              Rs.{product.originalPrice?.toLocaleString()}
             </span>
             <span className="text-3xl font-bold text-foreground">
-              Rs.{product.originalPrice?.toLocaleString()}
+              Rs.{product.discountedPrice?.toLocaleString()}
             </span>
           </div>
           <Badge
-            className={`${
-              isAvailable ? "bg-primary" : "bg-destructive"
-            } text-white`}
+            className={`${isAvailable ? "bg-primary" : "bg-destructive"
+              } text-white`}
           >
             {isAvailable ? "In Stock" : "Not in Stock"}
           </Badge>
