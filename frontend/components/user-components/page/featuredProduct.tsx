@@ -1,49 +1,3 @@
-// "use client";
-// import Link from "next/link";
-// import { ChevronRight, Heart } from "lucide-react";
-// import { Card, CardContent } from "../ui/card";
-// import { Button } from "../ui/button";
-// import { useAllProducts } from "@/hooks/product/getAllProducts";
-// import { WishlistItem } from "@/lib/utils/types/wishlist.type";
-// import { addToWishlist } from "@/lib/localStorage/wishlist.localStorage";
-// import { useAppToast } from "@/lib/tostify";
-// import ErrorState from "../layout/ErrorPage";
-// import DataLoading from "../layout/LoadingPage";
-
-// export default function FeaturedProduct() {
-//   const { data: products, isLoading, isError } = useAllProducts({});
-
-//   const heading = "Featured Products";
-
-//   const featuredProducts = products
-//     ? products.data.filter((product) => product.isFeatured === true)
-//     : [];
-
-//   if (isLoading) {
-//     return <DataLoading />;
-//   }
-
-//   if (isError || !products) {
-//     return <ErrorState />
-//   }
-
-//   const { toastSuccess, toastError } = useAppToast();
-
-//   const handleAddToWishlist = (product: any) => {
-//     const isAvailable = product.stock > 0;
-//     const item: WishlistItem = {
-//       id: product._id,
-//       name: product.name,
-//       image: product.images?.[0] ?? "",
-//       price: product.originalPrice ?? "",
-//       originalPrice: product.discountedPrice ?? "",
-//       category: product.categoryID?.name ?? "",
-//       inStock: isAvailable,
-//     };
-
-//     const result = addToWishlist(item);
-//      result.success ? toastSuccess("Item added to wishlist") : toastError("Item failed to add in your wishlist");
-//   }
 "use client";
 import Link from "next/link";
 import { ChevronRight, Heart, Heart as HeartOutline } from "lucide-react";
@@ -56,7 +10,6 @@ import {
 } from "@/lib/localStorage/wishlist.localStorage";
 import { useAppToast } from "@/lib/tostify";
 import DataLoading from "../layout/LoadingPage";
-import ErrorState from "../layout/ErrorPage";
 import { productApi } from "@/lib/api/product.api";
 import { useState, useEffect } from "react";
 
@@ -67,7 +20,6 @@ export default function FeaturedProduct() {
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   // fetch all products by paging
   useEffect(() => {
@@ -95,7 +47,6 @@ export default function FeaturedProduct() {
         }
       } catch (error) {
         if (isMounted) {
-          setIsError(true);
           setIsLoading(false);
         }
       }
@@ -133,7 +84,6 @@ export default function FeaturedProduct() {
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
   if (isLoading) return <DataLoading />;
-  if (isError) return <ErrorState />;
 
   return (
     <section className="py-16 bg-muted/30">

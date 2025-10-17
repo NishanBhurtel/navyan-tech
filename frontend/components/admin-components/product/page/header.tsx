@@ -3,7 +3,7 @@ import { Button } from "@/components/user-components/ui/button"
 import { Plus } from "lucide-react"
 
 interface ProductHeaderProps {
-  totalProducts: number;
+  totalProducts?: number;
 }
 
 export default function ProductHeader({totalProducts}:ProductHeaderProps){

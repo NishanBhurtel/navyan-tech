@@ -8,7 +8,7 @@ import DataLoading from "../layout/LoadingPage";
 import ErrorState from "../layout/ErrorPage";
 
 export default function Hero() {
-  const { data: products, isError, isLoading } = useAllProducts({});
+  const { data: products, isLoading } = useAllProducts({});
 
   const { data: users } = useAllUsers();
   const customerCount = users
@@ -18,9 +18,7 @@ export default function Hero() {
   const displayCount = customerCount > 100 ? customerCount : 120;
 
   if (isLoading)
-    return <DataLoading />;
-  if (isError || !products)
-    return <ErrorState />;
+  return <DataLoading />;
 
   return (
     <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20">
@@ -83,7 +81,7 @@ export default function Hero() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-3xl"></div>
             <img
-              src="/hero_image.png"
+              src="/placeholder/hero_image.png"
               alt="Custom PC Components"
               className="relative z-10 w-full h-auto rounded-2xl"
             />

@@ -34,11 +34,11 @@ export default function ProductImages({ product }: ProductImagesProps) {
         <img
           src={displayImage}
           alt={product.name}
-          className="w-full h-100 object-cover rounded-xl border cursor-pointer"
+          className="w-full h-100 object-contain rounded-xl border cursor-pointer"
           onClick={handleMainClick}
         />
         <Badge className="absolute top-4 left-4 bg-red-600 text-white">
-          Rs.{product.originalPrice - product.discountedPrice} Off
+          Rs.{product.discountedPrice - product.originalPrice} Off
         </Badge>
       </div>
 
@@ -49,7 +49,7 @@ export default function ProductImages({ product }: ProductImagesProps) {
             key={index}
             src={img}
             alt={`${product.name} view ${index + 1}`}
-            className={`w-full h-30 object-cover rounded-lg border cursor-pointer transition ${
+            className={`w-full h-30 object-contain rounded-lg border cursor-pointer transition ${
               selected === img ? "ring-2 ring-primary" : "hover:border-primary"
             }`}
             onClick={() => handleThumbClick(img)}

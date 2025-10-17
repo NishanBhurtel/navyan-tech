@@ -155,7 +155,7 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <ProductHeader totalProducts ={products.length} />
+      <ProductHeader totalProducts ={data?.pagination.total} />
 
       {/* Filters */}
       <Filters

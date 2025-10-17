@@ -12,6 +12,7 @@ import {
 } from "@/lib/localStorage/wishlist.localStorage";
 import { useAppToast } from "@/lib/tostify";
 import { useEffect, useState } from "react";
+import DataLoading from "../layout/LoadingPage";
 
 interface RelatedProductsProps {
   currentProduct: any;
@@ -29,7 +30,7 @@ export default function RelatedProducts({
     setWishlist(getWishlist());
   }, []);
 
-  if (isLoading) return <div>Loading related products...</div>;
+  if (isLoading) return <DataLoading />
 
   // Filter related products: same category or subcategory, exclude current product
   const relatedProducts = data?.data
