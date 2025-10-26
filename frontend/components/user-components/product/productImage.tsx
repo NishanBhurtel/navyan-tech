@@ -27,6 +27,9 @@ export default function ProductImages({ product }: ProductImagesProps) {
     setSelected(null);
   };
 
+  const truncatedProductName =
+    product.name.length > 20 ? product.name.slice(0, 20) + "..." : product.name;
+
   return (
     <div className="space-y-4">
       {/* Main Image */}
@@ -48,8 +51,8 @@ export default function ProductImages({ product }: ProductImagesProps) {
           <img
             key={index}
             src={img}
-            alt={`${product.name} view ${index + 1}`}
-            className={`w-full h-30 object-contain rounded-lg border cursor-pointer transition ${
+            alt={`${truncatedProductName} view ${index + 1}`}
+            className={`w-full h-30 line-clamp-2 object-contain rounded-lg border cursor-pointer transition ${
               selected === img ? "ring-2 ring-primary" : "hover:border-primary"
             }`}
             onClick={() => handleThumbClick(img)}

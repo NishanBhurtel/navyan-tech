@@ -107,6 +107,10 @@ export default function FeaturedProduct() {
             {featuredProducts.map((product) => {
               const isAvailable = product.stock > 0;
               const alreadyInWishlist = isInWishlist(product._id);
+              const truncatedProductName =
+                product.name.length > 20
+                  ? product.name.slice(0, 20) + "..."
+                  : product.name;
 
               return (
                 <Card
@@ -118,8 +122,8 @@ export default function FeaturedProduct() {
                     <div className="relative w-full h-40 overflow-hidden">
                       <img
                         src={product.images?.[0] ?? ""}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
+                        alt={truncatedProductName}
+                        className="w-full h-full object-cover line-clamp-2"
                       />
                       <span
                         className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${

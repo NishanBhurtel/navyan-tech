@@ -58,12 +58,12 @@ export default function Specification({ product }: { product: IProduct }) {
                 ].map((spec, i) => (
                   <div
                     key={i}
-                    className="flex justify-between py-3 border-b border-border/50"
+                    className="flex justify-left py-3 border-b border-border/50"
                   >
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className="text-sm font-medium text-muted-foreground w-1/2">
                       {spec.label}:
                     </span>
-                    <span className="text-sm text-foreground max-w-md text-right">
+                    <span className="text-sm text-foreground max-w-md w-1/2">
                       {spec.value}
                     </span>
                   </div>
@@ -120,12 +120,12 @@ export default function Specification({ product }: { product: IProduct }) {
                 ].map((spec, i) => (
                   <div
                     key={i}
-                    className="flex justify-between py-3 border-b border-border/50"
+                    className="flex justify-left py-3 border-b border-border/50"
                   >
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className="text-sm font-medium text-muted-foreground w-1/2">
                       {spec.label}:
                     </span>
-                    <span className="text-sm text-foreground max-w-md text-right">
+                    <span className="text-sm text-foreground max-w-md w-1/2">
                       {spec.value}
                     </span>
                   </div>

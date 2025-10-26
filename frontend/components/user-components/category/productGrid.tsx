@@ -57,8 +57,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
     }
   };
 
-  const isInWishlist = (id: string) =>
-    wishlist.some((item) => item.id === id);
+  const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
   if (products.length === 0) return <NoProduct />; // ✅ render this if no products
 
@@ -67,6 +66,11 @@ export default function ProductGrid({ products }: ProductGridProps) {
       {products.map((product) => {
         const isAvailable = product.stock > 0;
         const alreadyInWishlist = isInWishlist(product._id);
+
+        const truncatedProductName =
+          product.name.length > 20
+            ? product.name.slice(0, 20) + "..."
+            : product.name;
 
         return (
           <Card
@@ -78,7 +82,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
               <div className="relative w-full h-40 overflow-hidden">
                 <img
                   src={product.images?.[0] ?? ""}
-                  alt={product.name}
+                  alt={truncatedProductName}
                   className="w-full h-full object-cover"
                 />
                 <span

@@ -96,7 +96,7 @@ export default function RelatedProducts({
                       <img
                         src={p.images ? p.images[0] : p.name}
                         alt={p.name}
-                        className="object-contain h-full w-full rounded"
+                        className="object-contain h-full w-full rounded line-clamp-2"
                       />
                     </Link>
                   </div>
@@ -117,7 +117,7 @@ export default function RelatedProducts({
                         {p.subCategoryID?.name}{" "}
                       </Link>
                     </p>
-                    <h4 className="text-lg font-bold font-serif text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                    <h4 className="text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                       {p.name}
                     </h4>
                     <p className="text-sm text-muted-foreground">
@@ -126,7 +126,7 @@ export default function RelatedProducts({
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold font-serif text-foreground">
+                    <span className="text-xl font-bold text-foreground">
                       ₹
                       {p.discountedPrice?.toLocaleString() ||
                         p.originalPrice?.toLocaleString()}

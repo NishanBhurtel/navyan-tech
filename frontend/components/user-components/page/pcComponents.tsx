@@ -82,10 +82,9 @@ export default function PcComponents() {
   if (isLoading) return <DataLoading />;
 
   // filter all products by "Components" category
-  const pcComponents = products.filter(
-    (product) => product.categoryID._id === categoryID
-  ).slice(0,10);
-
+  const pcComponents = products
+    .filter((product) => product.categoryID._id === categoryID)
+    .slice(0, 10);
 
   const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
@@ -97,13 +96,7 @@ export default function PcComponents() {
             <h2 className="text-xl md:text-4xl font-bold text-foreground">
               PC Components
             </h2>
-            <Link
-              href={
-                categoryID
-                  ? `/search?categoryID=${categoryID}`
-                  : "#"
-              }
-            >
+            <Link href={categoryID ? `/search?categoryID=${categoryID}` : "#"}>
               <Button size="sm" variant="outline" className="bg-transparent">
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -126,6 +119,10 @@ export default function PcComponents() {
             {pcComponents.map((product: any) => {
               const isAvailable = product.stock > 0;
               const alreadyInWishlist = isInWishlist(product._id);
+              const truncatedProductName =
+                product.name.length > 20
+                  ? product.name.slice(0, 20) + "..."
+                  : product.name;
               return (
                 <Card
                   key={product._id}
@@ -136,8 +133,8 @@ export default function PcComponents() {
                     <div className="relative w-full h-40 overflow-hidden">
                       <img
                         src={product.images?.[0] ?? ""}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
+                        alt={truncatedProductName}
+                        className="w-full h-full object-cover line-clamp-2"
                       />
                       <span
                         className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${

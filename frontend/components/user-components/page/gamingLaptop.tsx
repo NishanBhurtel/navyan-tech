@@ -81,9 +81,9 @@ export default function GamingLaptop() {
   };
 
   // filter products by heading
-  const gamingLaptops = products.filter(
-    (product) => product.subCategoryID?._id === subCategoryID
-  ).slice(0,10);
+  const gamingLaptops = products
+    .filter((product) => product.subCategoryID?._id === subCategoryID)
+    .slice(0, 10);
 
   const categoryID = gamingLaptops?.[0]?.categoryID?._id;
 
@@ -130,6 +130,10 @@ export default function GamingLaptop() {
             {gamingLaptops.map((product: any) => {
               const isAvailable = product.stock > 0;
               const alreadyInWishlist = isInWishlist(product._id);
+              const truncatedProductName =
+                product.name.length > 20
+                  ? product.name.slice(0, 20) + "..."
+                  : product.name;
 
               return (
                 <Card
@@ -141,8 +145,8 @@ export default function GamingLaptop() {
                     <div className="relative w-full h-40 overflow-hidden">
                       <img
                         src={product.images?.[0] ?? ""}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
+                        alt={truncatedProductName}
+                        className="w-full h-full object-cover line-clamp-2"
                       />
                       <span
                         className={`absolute bottom-2 right-2 px-3 py-1 text-[10px] font-semibold rounded-[4px] shadow-sm ${
