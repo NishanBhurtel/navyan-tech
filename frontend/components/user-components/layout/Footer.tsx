@@ -159,11 +159,31 @@ const Footer = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-          <p>
-            &copy; 2025 NavYantra. All rights reserved. Built with precision
-            and passion.
-          </p>
+        <div className="border-t border-border mt-12 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-muted-foreground text-sm">
+              &copy; 2025 NavYantra. All rights reserved. Built with precision
+              and passion.
+            </p>
+            
+            {/* Made by Cornortech */}
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <span>Made by</span>
+              <Link 
+                href="https://cornortech.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity group"
+              >
+                <img 
+                  src="/logos/cornortech-logo.png" 
+                  alt="Cornortech Logo" 
+                  className="h-6 w-auto object-contain group-hover:scale-105 transition-transform"
+                />
+                <span className="font-medium text-foreground">Cornortech</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
